@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="fondo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B4FC4"/>
+      <stop offset="1" stop-color="#0B1437"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#fondo)"/>
+  <g transform="rotate(-14 256 270)">
+    <rect x="122" y="96" width="190" height="270" rx="22" fill="#fff" stroke="#CBD5E1" stroke-width="4"/>
+    <g transform="translate(150 150) scale(5.4)" fill="#0F172A">
+      <path d="M12 1.8C12 1.8 3.5 8.2 3.5 14c0 2.9 2.2 4.8 4.7 4.8 1.4 0 2.6-.5 3.3-1.4-.1 2-.7 3.3-1.9 4.8h4.8c-1.2-1.5-1.8-2.8-1.9-4.8.7.9 1.9 1.4 3.3 1.4 2.5 0 4.7-1.9 4.7-4.8C20.5 8.2 12 1.8 12 1.8z"/>
+    </g>
+  </g>
+  <g transform="rotate(12 256 270)">
+    <rect x="200" y="130" width="190" height="270" rx="22" fill="#fff" stroke="#CBD5E1" stroke-width="4"/>
+    <text x="222" y="196" font-family="Georgia, serif" font-weight="900" font-size="64" fill="#DC2626">K</text>
+    <g transform="translate(228 232) scale(5.4)" fill="#DC2626">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </g>
+  </g>
+</svg>

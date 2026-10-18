@@ -1,0 +1,148 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { requisitoApertura, tramosApertura } from '../src/dominio/apertura.ts';
+import {
+  calcularEntrada,
+  crearEntradaVacia,
+  formatearPuntos,
+  subtotalBloque1,
+  subtotalBloque2,
+  subtotalBloque3,
+  subtotalBloque4,
+} from '../src/dominio/puntuacion.ts';
+import { calcularRanking, crearPartida, objetivoAlcanzado, quienMezclaYReparte, totalesPartida } from '../src/dominio/partida.ts';
+import { advertenciasRonda, maxCartas, maxTresRojos } from '../src/dominio/validaciones.ts';
+import type { Participante } from '../src/tipos/index.ts';
+
+const jugadores = (...nombres: string[]): Participante[] =>
+  nombres.map((nombre) => ({ id: nombre, nombre, jugadoresIds: [nombre], jugadoresNombres: [nombre] }));
+
+test('requisito de apertura por tramos (50 / 90 / 120)', () => {
+  assert.equal(requisitoApertura(-300), 50);
+  assert.equal(requisitoApertura(0), 50);
+  assert.equal(requisitoApertura(499), 50);
+  assert.equal(requisitoApertura(500), 90);
+  assert.equal(requisitoApertura(999), 90);
+  assert.equal(requisitoApertura(1000), 120);
+  assert.equal(requisitoApertura(4800), 120);
+  assert.deepEqual(tramosApertura().map((t) => t.requisito), [50, 90, 120]);
+});
+
+test('Tres Rojos: 1=100, 2=200, 3=300, 4=500', () => {
+  const entrada = crearEntradaVacia();
+  const esperado = [0, 100, 200, 300, 500];
+  esperado.forEach((puntos, cantidad) => {
+    entrada.tresRojos = cantidad;
+    assert.equal(calcularEntrada(entrada).total, puntos);
+  });
+});
+
+test('canastas estándar, ases y comodines', () => {
+  const entrada = crearEntradaVacia();
+  entrada.canastas['8'] = 'pura'; // 500
+  entrada.canastas['K'] = 'impura'; // 300
+  entrada.canastas['A'] = 'pura'; // 1000
+  assert.equal(subtotalBloque2(entrada), 1800);
+  entrada.canastas['A'] = 'impura'; // 500
+  assert.equal(subtotalBloque2(entrada), 1300);
+  entrada.canastaComodines = true; // 2000
+  assert.equal(subtotalBloque2(entrada), 3300);
+});
+
+test('cartas en mesa suman y cartas en mano restan', () => {
+  const entrada = crearEntradaVacia();
+  entrada.cartasMesa = { c5: 5, c10: 10, c20: 2, c50: 1 };
+  assert.equal(subtotalBloque3(entrada), 25 + 100 + 40 + 50);
+  entrada.cartasMano = { tresNegros: 2, c5: 1, c10: 2, c20: 1, c50: 1 };
+  assert.equal(subtotalBloque4(entrada), -(200 + 5 + 20 + 20 + 50));
+});
+
+test('ejemplo completo: canastas + cartas + bonos − penalizaciones', () => {
+  const entrada = crearEntradaVacia();
+  entrada.corteExacto = true; // +100
+  entrada.cerro = true; // +100
+  entrada.tresRojos = 2; // +200
+  entrada.canastas['5'] = 'pura'; // +500
+  entrada.canastas['Q'] = 'impura'; // +300
+  entrada.cartasMesa = { c5: 5, c10: 10, c20: 0, c50: 0 }; // +125
+  entrada.cartasMano = { tresNegros: 1, c5: 0, c10: 1, c20: 0, c50: 0 }; // −110
+  const desglose = calcularEntrada(entrada);
+  assert.equal(desglose.subtotalBonos, 400);
+  assert.equal(desglose.subtotalCanastas, 800);
+  assert.equal(desglose.subtotalCartas, 125);
+  assert.equal(desglose.subtotalPenalizaciones, -110);
+  assert.equal(desglose.total, 400 + 800 + 125 - 110);
+  assert.equal(subtotalBloque1(entrada), 400);
+  assert.deepEqual(desglose.conteo, { puras: 1, impuras: 1, comodines: 0 });
+});
+
+test('premios opcionales por cantidad de canastas (Canastrón / Canasta de canastas)', () => {
+  const entrada = crearEntradaVacia();
+  for (const figura of ['4', '5', '6', '7', '8'] as const) entrada.canastas[figura] = 'impura';
+  const sinPremio = calcularEntrada(entrada, { premiosPorCantidad: false }).total;
+  const conPremio = calcularEntrada(entrada, { premiosPorCantidad: true }).total;
+  assert.equal(conPremio - sinPremio, 500);
+  entrada.canastas['9'] = 'impura';
+  entrada.canastaComodines = true; // 7 canastas
+  const siete = calcularEntrada(entrada, { premiosPorCantidad: true }).total - calcularEntrada(entrada).total;
+  assert.equal(siete, 2000);
+});
+
+test('formato de puntos', () => {
+  assert.equal(formatearPuntos(-50), '−50');
+  assert.equal(formatearPuntos(50, true), '+50');
+  assert.equal(formatearPuntos(0, true), '0');
+});
+
+test('acumulados, ranking con empates y objetivo', () => {
+  const participantes = jugadores('Ana', 'Beto', 'Caro');
+  const partida = crearPartida({ modo: 'individual', participantes, objetivo: 1000, reglas: { premiosPorCantidad: false } });
+  const ronda = { numero: 1, entradas: Object.fromEntries(participantes.map((p) => [p.id, crearEntradaVacia()])) };
+  ronda.entradas['Ana']!.tresRojos = 4; // 500
+  ronda.entradas['Beto']!.tresRojos = 0;
+  ronda.entradas['Caro']!.cartasMesa.c10 = 0;
+  partida.rondas.push(ronda);
+  const totales = totalesPartida(partida);
+  assert.deepEqual(totales, { Ana: 500, Beto: 0, Caro: 0 });
+  const ranking = calcularRanking(partida);
+  assert.deepEqual(ranking.map((fila) => fila.posicion), [1, 2, 2]);
+  assert.equal(objetivoAlcanzado(1000, totales), false);
+  assert.equal(objetivoAlcanzado(500, totales), true);
+  assert.equal(objetivoAlcanzado(null, { Ana: 99999 }), false);
+});
+
+test('orden de mesa en parejas alterna equipos y rota el reparto', () => {
+  const equipos: Participante[] = [
+    { id: 'eq_1', nombre: 'Equipo 1', jugadoresIds: ['a', 'b'], jugadoresNombres: ['A', 'B'] },
+    { id: 'eq_2', nombre: 'Equipo 2', jugadoresIds: ['c', 'd'], jugadoresNombres: ['C', 'D'] },
+  ];
+  const partida = crearPartida({ modo: 'parejas', participantes: equipos, objetivo: null, reglas: { premiosPorCantidad: false } });
+  assert.deepEqual(partida.ordenMesa, ['A', 'C', 'B', 'D']);
+  assert.deepEqual(quienMezclaYReparte(partida, 1), { mezcla: 'A', reparte: 'C' });
+  assert.deepEqual(quienMezclaYReparte(partida, 4), { mezcla: 'D', reparte: 'A' });
+});
+
+test('límites del mazo: no se pueden cargar más Tres Rojos ni Jokers que los que existen', () => {
+  const participantes = jugadores('Ana', 'Beto');
+  const entradas = { Ana: crearEntradaVacia(), Beto: crearEntradaVacia() };
+  entradas.Ana.tresRojos = 3;
+  assert.equal(maxTresRojos(entradas, 'Beto'), 1);
+  assert.equal(maxTresRojos(entradas, 'Ana'), 4);
+  entradas.Ana.cartasMesa.c50 = 3;
+  entradas.Beto.cartasMano.c50 = 1;
+  assert.equal(maxCartas(entradas, 'Beto', 'mesa', 'c50'), 0);
+  assert.equal(maxCartas(entradas, 'Ana', 'mesa', 'c50'), 3);
+  assert.equal(participantes.length, 2);
+});
+
+test('advertencias: cierre sin canasta y canastas imposibles', () => {
+  const participantes = jugadores('Ana', 'Beto');
+  const entradas = { Ana: crearEntradaVacia(), Beto: crearEntradaVacia() };
+  entradas.Ana.cerro = true;
+  assert.equal(advertenciasRonda(participantes, entradas).length, 1);
+  entradas.Ana.canastas['8'] = 'pura';
+  entradas.Beto.canastas['8'] = 'impura';
+  entradas.Ana.canastaComodines = true;
+  entradas.Beto.canastaComodines = true;
+  assert.equal(advertenciasRonda(participantes, entradas).length, 2);
+});

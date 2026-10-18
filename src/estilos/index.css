@@ -1,0 +1,287 @@
+@import "tailwindcss";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/playfair-display/900.css";
+
+@theme {
+  --color-noche: #0b1437;
+  --color-noche-2: #111c4a;
+  --color-azul: #1e3a8a;
+  --color-azul-vivo: #1d4ed8;
+  --color-rojo: #dc2626;
+  --color-rojo-osc: #b91c1c;
+  --color-tinta: #0f172a;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+:root {
+  --azul: #1e3a8a;
+  --azul-vivo: #1d4ed8;
+  --rojo: #dc2626;
+  --rojo-osc: #b91c1c;
+  --tinta: #0f172a;
+  --borde: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(37, 99, 235, 0.45) 0%, transparent 55%),
+    linear-gradient(180deg, #11205c 0%, var(--noche, #0b1437) 70%);
+  background-color: #0b1437;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='white' font-family='Georgia,serif' font-size='22'%3E%3Ctext x='6' y='28'%3E%E2%99%A0%3C/text%3E%3Ctext x='50' y='72'%3E%E2%99%A5%3C/text%3E%3Ctext x='50' y='28'%3E%E2%99%A6%3C/text%3E%3Ctext x='6' y='72'%3E%E2%99%A3%3C/text%3E%3C/g%3E%3C/svg%3E");
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  /* Playfair usa números "de texto" por defecto: se fuerzan los alineados para que el 1 no parezca una I */
+  font-variant-numeric: lining-nums;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.scroll-oculto {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scroll-oculto::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Tarjetas tipo naipe ─────────────────────────────────────────────── */
+.tarjeta {
+  background: #ffffff;
+  color: var(--tinta);
+  border: 1px solid #e2e8f0;
+  border-radius: 1.1rem;
+  box-shadow:
+    0 12px 24px -10px rgba(2, 6, 23, 0.6),
+    0 2px 4px rgba(2, 6, 23, 0.25),
+    inset 0 1px 0 #ffffff;
+  position: relative;
+}
+
+.tarjeta-acento-azul {
+  border-left: 5px solid var(--azul-vivo);
+}
+.tarjeta-acento-rojo {
+  border-left: 5px solid var(--rojo);
+}
+
+/* ── Botones ─────────────────────────────────────────────────────────── */
+.btn-primario,
+.btn-secundario,
+.btn-claro,
+.btn-fantasma {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-weight: 800;
+  border-radius: 0.9rem;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
+.btn-primario {
+  color: #fff;
+  background: linear-gradient(180deg, #3b6cf0 0%, var(--azul-vivo) 55%, var(--azul) 100%);
+  border-color: #1e3a8a;
+  box-shadow: 0 6px 16px -4px rgba(29, 78, 216, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.btn-secundario {
+  color: #fff;
+  background: linear-gradient(180deg, #ef4444 0%, var(--rojo) 55%, var(--rojo-osc) 100%);
+  border-color: #991b1b;
+  box-shadow: 0 6px 16px -4px rgba(220, 38, 38, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.btn-claro {
+  color: var(--azul);
+  background: #fff;
+  border-color: var(--borde);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+}
+.btn-fantasma {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-primario:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.btn-secundario:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.btn-claro:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+.btn-fantasma:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.btn-primario:active:not(:disabled),
+.btn-secundario:active:not(:disabled),
+.btn-claro:active:not(:disabled),
+.btn-fantasma:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn-primario:disabled,
+.btn-secundario:disabled,
+.btn-claro:disabled,
+.btn-fantasma:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+/* ── Campos ──────────────────────────────────────────────────────────── */
+.campo {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.9rem;
+  color: var(--tinta);
+  background: #fff;
+  border: 1.5px solid var(--borde);
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+}
+.campo::placeholder {
+  color: #94a3b8;
+}
+.campo:focus {
+  outline: none;
+  border-color: var(--azul-vivo);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.22);
+}
+
+/* ── Selector segmentado (Ninguna / Pura / Impura) ───────────────────── */
+.seg {
+  display: grid;
+  gap: 0.3rem;
+}
+.seg-btn {
+  min-height: 2.5rem;
+  padding: 0.25rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1.5px solid var(--borde);
+  border-radius: 0.65rem;
+}
+.seg-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.seg-btn[aria-pressed='true'].tono-neutro {
+  color: #fff;
+  background: #64748b;
+  border-color: #475569;
+}
+.seg-btn[aria-pressed='true'].tono-pura {
+  color: #fff;
+  background: var(--azul-vivo);
+  border-color: var(--azul);
+  box-shadow: 0 3px 8px -2px rgba(29, 78, 216, 0.6);
+}
+.seg-btn[aria-pressed='true'].tono-impura {
+  color: #fff;
+  background: var(--rojo);
+  border-color: var(--rojo-osc);
+  box-shadow: 0 3px 8px -2px rgba(220, 38, 38, 0.55);
+}
+
+/* ── Naipe SVG ───────────────────────────────────────────────────────── */
+.naipe {
+  display: block;
+  height: auto;
+  filter: drop-shadow(0 3px 4px rgba(2, 6, 23, 0.35));
+}
+
+/* ── Animaciones ─────────────────────────────────────────────────────── */
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.entrar {
+  animation: entrar 0.22s ease-out both;
+}
+
+@keyframes latir {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(147, 197, 253, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(147, 197, 253, 0);
+  }
+}
+.latir {
+  animation: latir 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrar,
+  .latir {
+    animation: none;
+  }
+  button {
+    transition: none;
+  }
+}
+
+.pie-seguro {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
