@@ -50,14 +50,14 @@ export function valorCanasta(figura: FiguraCanasta, tipo: TipoCanasta): number {
 const ETIQUETAS_MESA: { clave: keyof CartasMesa; etiqueta: string }[] = [
   { clave: 'c5', etiqueta: 'Cartas de 5 (4 al 7)' },
   { clave: 'c10', etiqueta: 'Cartas de 10 (8 al K)' },
-  { clave: 'c20', etiqueta: 'Cartas de 20 (Ases y los 2)' },
+  { clave: 'c20', etiqueta: 'Cartas de 20 (Ases y los dos)' },
   { clave: 'c50', etiqueta: 'Jokers' },
 ];
 
 const ETIQUETAS_MANO: { clave: keyof CartasMesa; etiqueta: string }[] = [
   { clave: 'c5', etiqueta: 'En mano: cartas de 5' },
   { clave: 'c10', etiqueta: 'En mano: cartas de 10' },
-  { clave: 'c20', etiqueta: 'En mano: Ases y los 2' },
+  { clave: 'c20', etiqueta: 'En mano: Ases y los dos' },
   { clave: 'c50', etiqueta: 'En mano: Jokers' },
 ];
 
@@ -66,8 +66,8 @@ function sumar(lineas: LineaDesglose[]): number {
 }
 
 /**
- * 1 = +100, 2 = +200, 3 = +300, los 4 = +500. Con 4 mazos o más puede haber más de 4:
- * cada Tres Rojo extra suma +100 encima de los +500 de los primeros 4.
+ * 1 = +100, 2 = +200, 3 = +300, 4 = +500, 5 = +1000. Con 4 mazos o más puede haber más de 5:
+ * 1000 + (cantidad − 5) × 100 (6 = 1100, 7 = 1200, 8 = 1300…).
  */
 export function puntosTresRojos(cantidad: number): number {
   const total = Math.max(0, Math.trunc(cantidad));
@@ -99,7 +99,7 @@ export function calcularEntrada(
   }
   if (entrada.tresRojos > 0) {
     bonos.push({
-      etiqueta: entrada.tresRojos === 4 ? 'Los 4 Tres Rojos' : entrada.tresRojos > 4 ? 'Tres Rojos (4 + extras)' : 'Tres Rojos',
+      etiqueta: entrada.tresRojos === 4 ? 'Los 4 Tres Rojos' : entrada.tresRojos === 5 ? 'Los 5 Tres Rojos' : entrada.tresRojos > 5 ? 'Tres Rojos (5 + extras)' : 'Tres Rojos',
       cantidad: entrada.tresRojos,
       puntos: puntosTresRojos(entrada.tresRojos),
     });

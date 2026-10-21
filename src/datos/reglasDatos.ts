@@ -76,7 +76,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       },
       {
         titulo: '🔴 Los Tres Rojos',
-        texto: `Son cartas de bonificación y no sirven para formar canastas. Se bajan apenas se tienen y se reemplazan robando del mazo.\n\n• 1 Tres Rojo: +${tresRojos[1]}\n• 2 Tres Rojos: +${tresRojos[2]}\n• 3 Tres Rojos: +${tresRojos[3]}\n• Los 4 Tres Rojos: +${tresRojos[4]}\n\nSi jugás con 4 mazos o más puede haber más de 4: cada Tres Rojo extra suma +${CONFIG_PUNTAJE.tresRojoExtra} a los +${tresRojos[4]}.`,
+        texto: `Son cartas de bonificación y no sirven para formar canastas. Se bajan apenas se tienen y se reemplazan robando del mazo.\n\n• 1 Tres Rojo: +${tresRojos[1]}\n• 2 Tres Rojos: +${tresRojos[2]}\n• 3 Tres Rojos: +${tresRojos[3]}\n• 4 Tres Rojos: +${tresRojos[4]}\n• 5 Tres Rojos: +${pts(tresRojos[5])}\n• Más de 5 (con 4 mazos o más): +${pts(tresRojos[5])} por los primeros 5, más +${CONFIG_PUNTAJE.tresRojoExtra} por cada Tres Rojo adicional (6 = +${pts(tresRojos[5] + CONFIG_PUNTAJE.tresRojoExtra)}, 7 = +${pts(tresRojos[5] + 2 * CONFIG_PUNTAJE.tresRojoExtra)}, 8 = +${pts(tresRojos[5] + 3 * CONFIG_PUNTAJE.tresRojoExtra)}…).`,
       },
       {
         titulo: '🏁 Cerrar la ronda',

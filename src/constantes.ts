@@ -21,9 +21,9 @@ export const CONFIG_APERTURA = {
 export const CONFIG_PUNTAJE = {
   bonoCorteExacto: 100,
   bonoCierre: 100,
-  /** Índice = cantidad de Tres Rojos (0 a 4). */
-  tresRojos: [0, 100, 200, 300, 500],
-  /** Cada Tres Rojo a partir del quinto (solo posible con 4 mazos o más) suma esto además de los +500 de los primeros 4. */
+  /** Índice = cantidad de Tres Rojos (0 a 5). */
+  tresRojos: [0, 100, 200, 300, 500, 1000],
+  /** Cada Tres Rojo a partir del sexto (solo posible con 4 mazos o más) suma esto además de los +1000 de los primeros 5. */
   tresRojoExtra: 100,
   canastaEstandar: { pura: 500, impura: 300 },
   canastaAses: { pura: 1000, impura: 500 },
@@ -61,7 +61,7 @@ export const LIMITES_POR_MAZO = {
   tresNegros: 2,
   c5: 16, // 4, 5, 6, 7 → 4 números × 4 cartas
   c10: 24, // 8, 9, 10, J, Q, K → 6 números × 4 cartas
-  c20: 8, // 4 Ases + 4 de los 2
+  c20: 8, // 4 Ases + 4 de los dos
   c50: 2, // 2 Jokers
 } as const;
 

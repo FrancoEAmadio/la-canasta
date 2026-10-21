@@ -74,11 +74,11 @@ export function advertenciasRonda(
     }
   }
 
-  /** Comodines en juego: los 2 (4 por mazo) + los Jokers (2 por mazo). */
+  /** Comodines en juego: los dos (4 por mazo) + los Jokers (2 por mazo). */
   const comodinesEnJuego = 6 * mazos;
   const conComodines = participantes.filter((participante) => entradas[participante.id]?.canastaComodines);
   if (conComodines.length * 7 > comodinesEnJuego) {
-    avisos.push(`Canasta de Comodines: con ${mazos} mazos hay ${comodinesEnJuego} comodines en total (${4 * mazos} cartas 2 + ${2 * mazos} Jokers), y cada canasta lleva 7.`);
+    avisos.push(`Canasta de Comodines: con ${mazos} mazos hay ${comodinesEnJuego} comodines en total (${4 * mazos} de los dos + ${2 * mazos} Jokers), y cada canasta lleva 7.`);
   }
 
   return avisos;

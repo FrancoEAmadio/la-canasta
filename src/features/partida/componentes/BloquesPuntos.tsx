@@ -98,7 +98,7 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
       />
       <FilaContador
         titulo="Tres Rojos (3♥ 3♦)"
-        ejemplo={`1 = +100 · 2 = +200 · 3 = +300 · los 4 = +500${partida.reglas.mazos > 2 ? ` · cada extra +${CONFIG_PUNTAJE.tresRojoExtra}` : ''}`}
+        ejemplo={`1 = +100 · 2 = +200 · 3 = +300 · 4 = +500 · 5 = +1.000${partida.reglas.mazos > 2 ? ` · cada extra +${CONFIG_PUNTAJE.tresRojoExtra}` : ''}`}
         unitario={`${entrada.tresRojos} de ${2 * partida.reglas.mazos}`}
         valor={entrada.tresRojos}
         subtotal={puntosTresRojos(entrada.tresRojos)}
@@ -143,14 +143,12 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
     estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastas: { ...actual.canastas, [figura]: tipo } }));
 
   return (
-    <Bloque numero={2} titulo="Canastas (máx. 1 por figura)" subtotal={subtotalBloque2(entrada)}>
+    <Bloque numero={2} titulo="Canastas (máximo 1 por equipo o jugador)" subtotal={subtotalBloque2(entrada)}>
       <FilaCanasta figura="A" tipo={entrada.canastas.A} onCambiar={(tipo) => cambiar('A', tipo)} />
 
       <div className="flex items-center gap-2.5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 text-xs font-black leading-tight text-azul" aria-hidden="true">
-          2 y
-          <br />
-          🃏
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-black text-azul" aria-hidden="true">
+          C
         </span>
         <div className="seg grid-cols-2 flex-1" role="group" aria-label="Canasta de Comodines">
           <button type="button" aria-pressed={!entrada.canastaComodines} onClick={() => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: false }))} className="seg-btn tono-neutro">
@@ -179,7 +177,7 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
   const filas = [
     { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7', unitario: v.c5 },
     { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los 2', unitario: v.c20 },
+    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los dos', unitario: v.c20 },
     { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50', unitario: v.c50 },
   ] as const;
 
@@ -210,7 +208,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
   const filas = [
     { clave: 'c5', titulo: 'Cartas de 5 en mano', ejemplo: '4 al 7', unitario: v.c5 },
     { clave: 'c10', titulo: 'Cartas de 10 en mano', ejemplo: '8 al K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 en mano', ejemplo: 'Ases y los 2', unitario: v.c20 },
+    { clave: 'c20', titulo: 'Cartas de 20 en mano', ejemplo: 'Ases y los dos', unitario: v.c20 },
     { clave: 'c50', titulo: 'Jokers en mano', ejemplo: 'Comodines de 50', unitario: v.c50 },
   ] as const;
 

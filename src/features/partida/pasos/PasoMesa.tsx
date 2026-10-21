@@ -58,7 +58,7 @@ export function PasoMesa({ partida, vista }: PropsPaso) {
       <details className="tarjeta p-4">
         <summary className="cursor-pointer text-sm font-black text-azul">📌 Referencia rápida de puntos</summary>
         <ul className="mt-3 flex flex-col gap-1 text-xs text-slate-700">
-          <li>4 al 7: <strong>{v.c5}</strong> · 8 al K: <strong>{v.c10}</strong> · Ases y los 2: <strong>{v.c20}</strong> · Joker: <strong>{v.c50}</strong></li>
+          <li>4 al 7: <strong>{v.c5}</strong> · 8 al K: <strong>{v.c10}</strong> · Ases y los dos: <strong>{v.c20}</strong> · Joker: <strong>{v.c50}</strong></li>
           <li>Canasta estándar: pura <strong>{CONFIG_PUNTAJE.canastaEstandar.pura}</strong> / impura <strong>{CONFIG_PUNTAJE.canastaEstandar.impura}</strong></li>
           <li>Canasta de Ases: pura <strong>{CONFIG_PUNTAJE.canastaAses.pura}</strong> / impura <strong>{CONFIG_PUNTAJE.canastaAses.impura}</strong></li>
           <li>Canasta de Comodines: <strong>{CONFIG_PUNTAJE.canastaComodines}</strong></li>

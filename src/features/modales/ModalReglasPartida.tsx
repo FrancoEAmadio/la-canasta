@@ -33,10 +33,7 @@ export function ModalReglasPartida({ partida, onGuardar, onCerrar }: Props) {
         {!valida && <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">Completá todos los campos; los límites de puntaje tienen que ir de menor a mayor.</p>}
         <p className="text-xs text-slate-500">El mínimo se calcula con el puntaje acumulado de cada jugador/equipo al inicio de cada ronda.</p>
       </div>
-      <div className="grid grid-cols-2 gap-2 border-t border-slate-200 p-4">
-        <button type="button" onClick={onCerrar} className="btn-fantasma py-3 text-sm">
-          Cancelar
-        </button>
+      <div className="flex flex-col gap-2 border-t border-slate-200 p-4">
         <button
           type="button"
           disabled={!valida}
@@ -44,9 +41,12 @@ export function ModalReglasPartida({ partida, onGuardar, onCerrar }: Props) {
             onGuardar(candidata);
             onCerrar();
           }}
-          className="btn-primario py-3 text-sm"
+          className="btn-primario w-full py-3.5 text-base"
         >
           Guardar
+        </button>
+        <button type="button" onClick={onCerrar} className="btn-claro w-full py-2.5 text-sm">
+          Cancelar
         </button>
       </div>
     </Modal>

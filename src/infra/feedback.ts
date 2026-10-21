@@ -1,9 +1,8 @@
 // ════════════════════════════════════════════════════════════════════════
 //  ENVÍO DE COMENTARIOS Y REPORTES DE ERROR (Web3Forms)
-//  1. Creá una clave gratis en https://web3forms.com (te la mandan por mail).
-//  2. Pegala acá abajo reemplazando "TU_CLAVE_AQUI". Listo: el mail nunca se muestra en la app.
+//  La clave pública de Web3Forms va acá. El mail de destino nunca se muestra en la app.
 // ════════════════════════════════════════════════════════════════════════
-export const FEEDBACK_ACCESS_KEY = 'TU_CLAVE_AQUI';
+export const FEEDBACK_ACCESS_KEY = 'fb32cff6-d356-499d-a2f6-9dbce96dd7ec';
 
 const FEEDBACK_URL = 'https://api.web3forms.com/submit';
 const TIEMPO_MAXIMO_MS = 15000;
@@ -20,7 +19,7 @@ export type ResultadoFeedback = { ok: true } | { ok: false; motivo: 'sin_clave' 
 
 /** Envía el mensaje en segundo plano (fetch + JSON), sin abrir ninguna app de correo. */
 export async function enviarFeedback({ tipo, nombre, mensaje }: DatosFeedback): Promise<ResultadoFeedback> {
-  if (!FEEDBACK_ACCESS_KEY || FEEDBACK_ACCESS_KEY === 'TU_CLAVE_AQUI') return { ok: false, motivo: 'sin_clave' };
+  if (!FEEDBACK_ACCESS_KEY) return { ok: false, motivo: 'sin_clave' };
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return { ok: false, motivo: 'sin_conexion' };
 
   const etiqueta = tipo === 'bug' ? 'Error (bug)' : 'Sugerencia / comentario';

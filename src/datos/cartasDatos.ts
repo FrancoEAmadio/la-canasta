@@ -71,9 +71,9 @@ export const CATALOGO_CARTAS: GrupoCatalogo[] = [
       { rango: '3', palo: 'corazones' },
       { rango: '3', palo: 'diamantes' },
     ],
-    valorIndividual: `Bonificación: +${tresRojos[1]} puntos cada uno. Con 2: +${tresRojos[2]}, con 3: +${tresRojos[3]} y con los 4: +${tresRojos[4]}.`,
+    valorIndividual: `Bonificación: +${tresRojos[1]} puntos cada uno. Con 2: +${tresRojos[2]}, con 3: +${tresRojos[3]}, con 4: +${tresRojos[4]} y con 5: +${tresRojos[5].toLocaleString('es-AR')}. Con más de 5 (4 mazos o más): +${tresRojos[5].toLocaleString('es-AR')} más +${CONFIG_PUNTAJE.tresRojoExtra} por cada uno adicional.`,
     funcion: 'Cartas de bonificación, no sirven para formar canastas. Se bajan apenas se levantan y se reemplazan robando otra carta del mazo.',
-    palabrasClave: ['3', 'tres', 'rojo', 'rojos', 'tres rojos', 'bonificacion', 'bonus', 'honores', '100', '500', 'corazones', 'diamantes'],
+    palabrasClave: ['3', 'tres', 'rojo', 'rojos', 'tres rojos', 'bonificacion', 'bonus', 'honores', '100', '500', '1000', 'corazones', 'diamantes'],
   },
   {
     id: 'negros',

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useApp } from '../../estado/AppProvider';
 import { SimboloPalo } from '../../ui/SimboloPalo';
 import { useInstalarPWA } from '../../ui/useInstalarPWA';
+import { ModalPartidasEnCurso } from './ModalPartidasEnCurso';
 
 export function PantallaInicio() {
   const { setPantallaActual, setAjustesAbiertos, partida } = useApp();
   const { puedeInstalar, instalar, mostrarAyudaIOS } = useInstalarPWA();
   const enCurso = partida.enCurso;
+  const [selectorAbierto, setSelectorAbierto] = useState(false);
 
   return (
     <main className="entrar my-auto flex w-full flex-col items-center py-4 text-center">
@@ -27,7 +30,7 @@ export function PantallaInicio() {
         {enCurso.length > 0 && (
           <button
             type="button"
-            onClick={() => partida.reanudarPartida(enCurso[0]!.id)}
+            onClick={() => (enCurso.length === 1 ? partida.reanudarPartida(enCurso[0]!.id) : setSelectorAbierto(true))}
             className="btn-secundario latir w-full py-4 text-lg"
           >
             ▶ Continuar Partida{enCurso.length > 1 ? ` (${enCurso.length} en curso)` : ''}
@@ -55,6 +58,7 @@ export function PantallaInicio() {
           ⚙️ Ajustes y copia de seguridad
         </button>
       </div>
+      <ModalPartidasEnCurso abierto={selectorAbierto && enCurso.length > 0} onCerrar={() => setSelectorAbierto(false)} />
     </main>
   );
 }

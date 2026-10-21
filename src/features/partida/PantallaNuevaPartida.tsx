@@ -112,7 +112,7 @@ export function PantallaNuevaPartida() {
           {config.mazos !== null && config.mazos >= MAZOS_MIN && config.mazos % 2 === 0 && config.mazos <= MAZOS_MAX && (
             <>
               {' '}
-              Máximos al anotar: Tres Rojos y Negros {limitesMazo(config.mazos).tresRojos}, cartas de 5 → {limitesMazo(config.mazos).c5}, de 10 → {limitesMazo(config.mazos).c10}, Ases y los 2 → {limitesMazo(config.mazos).c20}, Jokers → {limitesMazo(config.mazos).c50}.
+              Máximos al anotar: Tres Rojos y Negros {limitesMazo(config.mazos).tresRojos}, cartas de 5 → {limitesMazo(config.mazos).c5}, de 10 → {limitesMazo(config.mazos).c10}, Ases y los dos → {limitesMazo(config.mazos).c20}, Jokers → {limitesMazo(config.mazos).c50}.
             </>
           )}
         </p>

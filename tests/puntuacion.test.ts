@@ -30,9 +30,9 @@ test('requisito de apertura por tramos (50 / 90 / 120)', () => {
   assert.deepEqual(tramosApertura().map((t) => t.requisito), [50, 90, 120]);
 });
 
-test('Tres Rojos: 1=100, 2=200, 3=300, 4=500', () => {
+test('Tres Rojos: 1=100, 2=200, 3=300, 4=500, 5=1000', () => {
   const entrada = crearEntradaVacia();
-  const esperado = [0, 100, 200, 300, 500];
+  const esperado = [0, 100, 200, 300, 500, 1000];
   esperado.forEach((puntos, cantidad) => {
     entrada.tresRojos = cantidad;
     assert.equal(calcularEntrada(entrada).total, puntos);
@@ -159,10 +159,12 @@ test('mínimos de apertura editables: se usa la configuración de la partida', (
   assert.equal(aperturaValida({ umbrales: [1000], requisitos: [30, 60, 100] }), false);
 });
 
-test('Tres Rojos con más mazos: +500 los primeros 4 y +100 por cada extra', () => {
+test('Tres Rojos con más mazos: 1000 por los primeros 5 y +100 por cada extra', () => {
   assert.equal(puntosTresRojos(4), 500);
-  assert.equal(puntosTresRojos(5), 600);
-  assert.equal(puntosTresRojos(8), 900);
+  assert.equal(puntosTresRojos(5), 1000);
+  assert.equal(puntosTresRojos(6), 1100);
+  assert.equal(puntosTresRojos(7), 1200);
+  assert.equal(puntosTresRojos(8), 1300);
 });
 
 test('cantidad de mazos: par entre 2 y 12', () => {
