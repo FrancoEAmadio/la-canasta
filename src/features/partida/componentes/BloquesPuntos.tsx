@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { CONFIG_PUNTAJE } from '../../../constantes';
-import { FIGURAS_ESTANDAR, formatearPuntos, subtotalBloque1, subtotalBloque2, subtotalBloque3, subtotalBloque4, valorCanasta } from '../../../dominio/puntuacion';
+import { FIGURAS_ESTANDAR, formatearPuntos, puntosTresRojos, subtotalBloque1, subtotalBloque2, subtotalBloque3, subtotalBloque4, valorCanasta } from '../../../dominio/puntuacion';
 import { maxCartas, maxTresNegros, maxTresRojos } from '../../../dominio/validaciones';
 import { useApp } from '../../../estado/AppProvider';
 import { ContadorMasMenos } from '../../../ui/ContadorMasMenos';
@@ -98,11 +98,11 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
       />
       <FilaContador
         titulo="Tres Rojos (3♥ 3♦)"
-        ejemplo="1 = +100 · 2 = +200 · 3 = +300 · los 4 = +500"
-        unitario={`${entrada.tresRojos} de 4`}
+        ejemplo={`1 = +100 · 2 = +200 · 3 = +300 · los 4 = +500${partida.reglas.mazos > 2 ? ` · cada extra +${CONFIG_PUNTAJE.tresRojoExtra}` : ''}`}
+        unitario={`${entrada.tresRojos} de ${2 * partida.reglas.mazos}`}
         valor={entrada.tresRojos}
-        subtotal={CONFIG_PUNTAJE.tresRojos[entrada.tresRojos] ?? 0}
-        max={maxTresRojos(borrador.entradas, participante.id)}
+        subtotal={puntosTresRojos(entrada.tresRojos)}
+        max={maxTresRojos(borrador.entradas, participante.id, partida.reglas.mazos)}
         onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, tresRojos: nuevo }))}
       />
     </Bloque>
@@ -179,7 +179,7 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
   const filas = [
     { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7', unitario: v.c5 },
     { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y doses', unitario: v.c20 },
+    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y 2', unitario: v.c20 },
     { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50', unitario: v.c50 },
   ] as const;
 
@@ -193,7 +193,7 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
           unitario={`×${fila.unitario}`}
           valor={entrada.cartasMesa[fila.clave]}
           subtotal={entrada.cartasMesa[fila.clave] * fila.unitario}
-          max={maxCartas(entradas, participante.id, 'mesa', fila.clave)}
+          max={maxCartas(entradas, participante.id, 'mesa', fila.clave, partida.reglas.mazos)}
           onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { ...actual.cartasMesa, [fila.clave]: nuevo } }))}
         />
       ))}
@@ -224,7 +224,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
         unitario={`×−${CONFIG_PUNTAJE.penalidadTresNegro}`}
         valor={entrada.cartasMano.tresNegros}
         subtotal={-entrada.cartasMano.tresNegros * CONFIG_PUNTAJE.penalidadTresNegro}
-        max={maxTresNegros(entradas, participante.id)}
+        max={maxTresNegros(entradas, participante.id, partida.reglas.mazos)}
         tono="rojo"
         deshabilitado={sinCartas}
         onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, tresNegros: nuevo } }))}
@@ -237,7 +237,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
           unitario={`×−${fila.unitario}`}
           valor={entrada.cartasMano[fila.clave]}
           subtotal={-entrada.cartasMano[fila.clave] * fila.unitario}
-          max={maxCartas(entradas, participante.id, 'mano', fila.clave)}
+          max={maxCartas(entradas, participante.id, 'mano', fila.clave, partida.reglas.mazos)}
           tono="rojo"
           deshabilitado={sinCartas}
           onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, [fila.clave]: nuevo } }))}

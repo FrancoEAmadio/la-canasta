@@ -8,7 +8,9 @@ import {
 } from '../constantes.ts';
 import { crearEstadisticasVacias } from '../dominio/estadisticas.ts';
 import { PALOS } from '../dominio/estadisticas.ts';
+import { aperturaPorDefecto, aperturaValida } from '../dominio/apertura.ts';
 import { crearEntradaVacia } from '../dominio/puntuacion.ts';
+import { mazosValidos } from '../dominio/reglas.ts';
 import type { Ajustes, EntradaRonda, JugadorPermanente, Partida } from '../tipos/index.ts';
 
 export const AJUSTES_POR_DEFECTO: Ajustes = {
@@ -138,10 +140,23 @@ function esPartidaValida(crudo: unknown): crudo is Partida {
   );
 }
 
+function hidratarReglas(cruda: Partial<Partida['reglas']> | undefined): Partida['reglas'] {
+  const apertura = cruda?.apertura;
+  return {
+    premiosPorCantidad: cruda?.premiosPorCantidad ?? false,
+    // Las partidas anteriores a esta opción se jugaron con 2 mazos.
+    mazos: mazosValidos(cruda?.mazos ?? null) ? cruda!.mazos! : 2,
+    apertura:
+      apertura && Array.isArray(apertura.umbrales) && Array.isArray(apertura.requisitos) && aperturaValida(apertura)
+        ? { umbrales: [...apertura.umbrales], requisitos: [...apertura.requisitos] }
+        : aperturaPorDefecto(),
+  };
+}
+
 function hidratarPartida(partida: Partida): Partida {
   return {
     ...partida,
-    reglas: { premiosPorCantidad: partida.reglas?.premiosPorCantidad ?? false },
+    reglas: hidratarReglas(partida.reglas),
     objetivo: partida.objetivo ?? null,
     finalizadaEn: partida.finalizadaEn ?? null,
     rondas: partida.rondas.map((ronda) => ({

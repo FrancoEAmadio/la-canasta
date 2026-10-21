@@ -70,7 +70,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
             <span className="text-[10px] font-bold uppercase text-slate-400">esta ronda</span>
           </div>
         </div>
-        <InsigniaApertura puntosAcumulados={vista.totalesInicioRonda[participante.id] ?? 0} compacta />
+        <InsigniaApertura puntosAcumulados={vista.totalesInicioRonda[participante.id] ?? 0} config={partida.reglas.apertura} compacta />
       </div>
 
       <BloqueBonificaciones partida={partida} participante={participante} entrada={entrada} />

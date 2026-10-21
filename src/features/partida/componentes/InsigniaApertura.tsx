@@ -1,4 +1,4 @@
-import { nivelApertura, requisitoApertura } from '../../../dominio/apertura';
+import { nivelApertura, requisitoApertura, type ConfigApertura } from '../../../dominio/apertura';
 
 const ESTILOS_NIVEL = [
   'border-blue-200 bg-blue-50 text-azul',
@@ -8,14 +8,16 @@ const ESTILOS_NIVEL = [
 
 interface Props {
   puntosAcumulados: number;
+  /** Mínimos de la partida (cada partida puede tener los suyos). */
+  config: ConfigApertura;
   /** Variante compacta (una sola línea). */
   compacta?: boolean;
 }
 
 /** Cuánto hay que bajar para abrirse / levantar el pozo, calculado según el acumulado. */
-export function InsigniaApertura({ puntosAcumulados, compacta = false }: Props) {
-  const requisito = requisitoApertura(puntosAcumulados);
-  const nivel = Math.min(nivelApertura(puntosAcumulados), ESTILOS_NIVEL.length - 1);
+export function InsigniaApertura({ puntosAcumulados, config, compacta = false }: Props) {
+  const requisito = requisitoApertura(puntosAcumulados, config);
+  const nivel = Math.min(nivelApertura(puntosAcumulados, config), ESTILOS_NIVEL.length - 1);
 
   return (
     <div className={`rounded-xl border px-3 py-2 ${ESTILOS_NIVEL[nivel]}`}>

@@ -89,7 +89,7 @@ function IndiceEsquina({ rango, palo }: { rango: string; palo: Palo }) {
         textAnchor="middle"
         fontSize={tamanoLetra}
         fontWeight={800}
-        fontFamily="Georgia, 'Times New Roman', serif"
+        fontFamily="'Cinzel', Georgia, 'Times New Roman', serif"
         fill={color}
       >
         {rango}
@@ -108,10 +108,10 @@ function CartaJoker({ color }: { color: 'rojo' | 'negro' }) {
   }).join(' ');
   return (
     <g>
-      <text x={14} y={70} textAnchor="middle" fontSize={11} fontWeight={800} letterSpacing={2} fill={tinta} fontFamily="Georgia, serif" transform="rotate(-90 14 70)">
+      <text x={14} y={70} textAnchor="middle" fontSize={11} fontWeight={800} letterSpacing={2} fill={tinta} fontFamily="'Cinzel', Georgia, serif" transform="rotate(-90 14 70)">
         JOKER
       </text>
-      <text x={86} y={70} textAnchor="middle" fontSize={11} fontWeight={800} letterSpacing={2} fill={tinta} fontFamily="Georgia, serif" transform="rotate(90 86 70)">
+      <text x={86} y={70} textAnchor="middle" fontSize={11} fontWeight={800} letterSpacing={2} fill={tinta} fontFamily="'Cinzel', Georgia, serif" transform="rotate(90 86 70)">
         JOKER
       </text>
       <polygon points={puntas} fill={tinta} />
@@ -179,7 +179,7 @@ export function Naipe({ rango, palo, joker, tamano = 'md' }: Props) {
                   textAnchor="middle"
                   fontSize={44}
                   fontWeight={900}
-                  fontFamily="Georgia, 'Times New Roman', serif"
+                  fontFamily="'Cinzel', Georgia, 'Times New Roman', serif"
                   fill={color}
                 >
                   {rango}

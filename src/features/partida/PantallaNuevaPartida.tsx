@@ -1,21 +1,39 @@
 import { useState } from 'react';
-import { CONFIG_APERTURA, OPCIONES_OBJETIVO } from '../../constantes';
-import { tramosApertura } from '../../dominio/apertura';
+import { MAZOS_MAX, MAZOS_MIN, limitesMazo } from '../../constantes';
 import { useApp } from '../../estado/AppProvider';
+import { CampoNumero } from '../../ui/CampoNumero';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { Toggle } from '../../ui/Toggle';
 import type { ModoJuego } from '../../tipos';
+import { EditorApertura } from './componentes/EditorApertura';
 import { SelectorIndividual, SelectorParejas } from './componentes/SelectorJugadores';
+import type { ResultadoComenzar } from './usePartidaState';
 
 const MODOS: { id: ModoJuego; titulo: string; detalle: string; icono: string }[] = [
   { id: 'individual', titulo: 'Individual', detalle: 'Todos contra todos (o mano a mano)', icono: '🙋' },
   { id: 'parejas', titulo: 'Grupal (Parejas)', detalle: 'Equipos de 2 jugadores', icono: '🤝' },
 ];
 
+const TITULOS_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
+  jugadores_insuficientes: 'Faltan jugadores',
+  equipos_incompletos: 'Faltan jugadores',
+  mazos_invalidos: 'Cantidad de mazos',
+  objetivo_invalido: 'Puntaje para ganar',
+  apertura_invalida: 'Mínimos para abrirse',
+};
+
+const MENSAJES_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
+  jugadores_insuficientes: 'Seleccioná al menos 2 jugadores para comenzar la partida.',
+  equipos_incompletos: 'Cada equipo necesita exactamente 2 jugadores. Completá todos los casilleros (o quitá los equipos que sobren).',
+  mazos_invalidos: `La cantidad de mazos tiene que ser un número par entre ${MAZOS_MIN} y ${MAZOS_MAX} (2, 4, 6…).`,
+  objetivo_invalido: 'El puntaje para ganar tiene que ser mayor que cero (o dejalo vacío para jugar sin límite).',
+  apertura_invalida: 'En los mínimos para abrirse, los límites de puntaje tienen que ir de menor a mayor.',
+};
+
 export function PantallaNuevaPartida() {
   const { setPantallaActual, partida } = useApp();
   const { config, actualizarConfig, comenzarPartida } = partida;
-  const [aviso, setAviso] = useState<'jugadores_insuficientes' | 'equipos_incompletos' | null>(null);
+  const [aviso, setAviso] = useState<Exclude<ResultadoComenzar, 'ok'> | null>(null);
 
   const empezar = () => {
     const resultado = comenzarPartida();
@@ -63,24 +81,41 @@ export function PantallaNuevaPartida() {
 
       <section className="tarjeta p-4">
         <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">2. Puntaje para ganar</h3>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Puntaje objetivo">
-          {OPCIONES_OBJETIVO.map((opcion) => {
-            const activo = config.objetivo === opcion;
-            return (
-              <button
-                key={String(opcion)}
-                type="button"
-                role="radio"
-                aria-checked={activo}
-                onClick={() => actualizarConfig({ objetivo: opcion })}
-                className={`${activo ? 'btn-primario' : 'btn-claro'} px-3.5 py-2 text-sm`}
-              >
-                {opcion === null ? 'Sin límite' : opcion.toLocaleString('es-AR')}
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-xs text-slate-500">Cuando alguien llega a la meta, la app te ofrece cerrar la partida (o seguir jugando).</p>
+        <CampoNumero
+          valor={config.objetivo}
+          onCambiar={(objetivo) => actualizarConfig({ objetivo })}
+          etiqueta="Puntaje para ganar"
+          min={1}
+          step={500}
+          placeholder="Sin límite"
+          className="h-12 w-full text-2xl"
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Escribí a cuántos puntos se juega. Cuando alguien llega a la meta, la app te ofrece cerrar la partida (o seguir jugando). Dejalo vacío para jugar sin límite.
+        </p>
+      </section>
+
+      <section className="tarjeta p-4">
+        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">3. Cantidad de mazos</h3>
+        <CampoNumero
+          valor={config.mazos}
+          onCambiar={(mazos) => actualizarConfig({ mazos })}
+          etiqueta="Cantidad de mazos"
+          min={MAZOS_MIN}
+          max={MAZOS_MAX}
+          step={2}
+          placeholder="4"
+          className="h-12 w-full text-2xl"
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Siempre par ({MAZOS_MIN}, 4, 6…). Cada mazo suma 52 cartas + 2 Jokers.
+          {config.mazos !== null && config.mazos >= MAZOS_MIN && config.mazos % 2 === 0 && config.mazos <= MAZOS_MAX && (
+            <>
+              {' '}
+              Máximos al anotar: Tres Rojos y Negros {limitesMazo(config.mazos).tresRojos}, cartas de 5 → {limitesMazo(config.mazos).c5}, de 10 → {limitesMazo(config.mazos).c10}, Ases y 2 → {limitesMazo(config.mazos).c20}, Jokers → {limitesMazo(config.mazos).c50}.
+            </>
+          )}
+        </p>
       </section>
 
       <section className="tarjeta flex items-start justify-between gap-3 p-4">
@@ -94,22 +129,15 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta tarjeta-acento-azul p-4">
-        <h3 className="mb-2 text-sm font-black uppercase tracking-wider text-azul">🔓 Puntos mínimos para abrirse</h3>
-        <ul className="flex flex-col gap-1 text-sm text-slate-700">
-          {tramosApertura(CONFIG_APERTURA).map((tramo) => (
-            <li key={tramo.requisito} className="flex justify-between">
-              <span>
-                {tramo.desde === null
-                  ? `Menos de ${(tramo.hasta! + 1).toLocaleString('es-AR')} pts`
-                  : tramo.hasta === null
-                    ? `${tramo.desde.toLocaleString('es-AR')} pts o más`
-                    : `${tramo.desde.toLocaleString('es-AR')} a ${tramo.hasta.toLocaleString('es-AR')} pts`}
-              </span>
-              <strong className="text-azul">{tramo.requisito} pts</strong>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-xs text-slate-500">La app lo calcula sola en cada ronda, según el acumulado de cada jugador/equipo.</p>
+        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">🔓 Ajustes de reglas: mínimos para abrirse</h3>
+        <EditorApertura
+          umbrales={config.aperturaUmbrales}
+          requisitos={config.aperturaRequisitos}
+          onCambiar={(aperturaUmbrales, aperturaRequisitos) => actualizarConfig({ aperturaUmbrales, aperturaRequisitos })}
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Puntos mínimos que hay que bajar para abrirse / levantar el pozo, según el acumulado de cada jugador/equipo. La app lo calcula sola en cada ronda y podés cambiarlo después desde el menú de la partida.
+        </p>
       </section>
 
       <button type="button" onClick={empezar} className="btn-secundario w-full py-4 text-lg">
@@ -118,12 +146,8 @@ export function PantallaNuevaPartida() {
 
       <ModalAviso
         abierto={aviso !== null}
-        titulo={aviso === 'equipos_incompletos' ? 'Faltan jugadores' : 'Faltan jugadores'}
-        mensaje={
-          aviso === 'equipos_incompletos'
-            ? 'Cada equipo necesita exactamente 2 jugadores. Completá todos los casilleros (o quitá los equipos que sobren).'
-            : 'Seleccioná al menos 2 jugadores para comenzar la partida.'
-        }
+        titulo={TITULOS_AVISO[aviso ?? 'jugadores_insuficientes']}
+        mensaje={MENSAJES_AVISO[aviso ?? 'jugadores_insuficientes']}
         onCerrar={() => setAviso(null)}
       />
     </main>

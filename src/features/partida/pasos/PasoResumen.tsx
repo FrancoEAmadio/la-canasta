@@ -87,7 +87,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
               <div className="text-right">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Nuevo acumulado</span>
                 <span className="text-3xl font-black tabular-nums text-tinta">{formatearPuntos(acumulado)}</span>
-                <span className="block text-[11px] font-bold text-azul">Próximo mínimo para abrirse: {requisitoApertura(acumulado)} pts</span>
+                <span className="block text-[11px] font-bold text-azul">Próximo mínimo para abrirse: {requisitoApertura(acumulado, partida.reglas.apertura)} pts</span>
               </div>
             </div>
           </article>

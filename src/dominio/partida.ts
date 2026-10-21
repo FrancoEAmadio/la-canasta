@@ -116,8 +116,16 @@ export function quienMezclaYReparte(partida: Pick<Partida, 'ordenMesa'>, numeroR
   };
 }
 
+/** Nombre de un equipo armado con sus integrantes: "Franco y Sol". */
+export function nombreEquipo(integrantes: string[]): string {
+  return integrantes.join(' y ');
+}
+
+/** Solo las partidas viejas (con nombres como "Equipo 1") necesitan mostrar a los integrantes aparte. */
 export function subtituloParticipante(participante: Participante): string {
-  return participante.jugadoresIds.length > 1 ? participante.jugadoresNombres.join(' + ') : '';
+  if (participante.jugadoresIds.length <= 1) return '';
+  if (participante.nombre === nombreEquipo(participante.jugadoresNombres)) return '';
+  return participante.jugadoresNombres.join(' + ');
 }
 
 export function nombreCompletoParticipante(participante: Participante): string {

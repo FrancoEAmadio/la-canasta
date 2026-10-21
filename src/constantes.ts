@@ -23,6 +23,8 @@ export const CONFIG_PUNTAJE = {
   bonoCierre: 100,
   /** Índice = cantidad de Tres Rojos (0 a 4). */
   tresRojos: [0, 100, 200, 300, 500],
+  /** Cada Tres Rojo a partir del quinto (solo posible con 4 mazos o más) suma esto además de los +500 de los primeros 4. */
+  tresRojoExtra: 100,
   canastaEstandar: { pura: 500, impura: 300 },
   canastaAses: { pura: 1000, impura: 500 },
   canastaComodines: 2000,
@@ -34,9 +36,13 @@ export const CONFIG_PUNTAJE = {
   premioCanastaDeCanastas: { cantidad: 7, puntos: 2000 },
 } as const;
 
-/** Puntaje para ganar la partida por defecto (null = sin límite). Se puede cambiar al crear la partida. */
-export const PUNTAJE_OBJETIVO_DEFECTO: number | null = 5000;
-export const OPCIONES_OBJETIVO: (number | null)[] = [3000, 5000, 7500, 10000, null];
+/** Puntaje para ganar sugerido al crear la partida (se escribe a mano; vacío = sin límite). */
+export const PUNTAJE_OBJETIVO_DEFECTO: number | null = 15000;
+
+/** Cantidad de mazos sugerida al crear la partida (siempre par). */
+export const MAZOS_DEFECTO = 4;
+export const MAZOS_MIN = 2;
+export const MAZOS_MAX = 12;
 
 // ── Jugadores y equipos ─────────────────────────────────────────────────
 export const MIN_JUGADORES_INDIVIDUAL = 2;
@@ -45,15 +51,33 @@ export const JUGADORES_POR_EQUIPO = 2;
 export const MIN_EQUIPOS = 2;
 export const MAX_EQUIPOS = 3;
 
-// ── Límites físicos del mazo (2 mazos ingleses + 4 Jokers = 108 cartas) ──
-export const LIMITES_MAZO = {
-  tresRojos: 4,
-  tresNegros: 4,
-  c5: 32, // 4, 5, 6, 7 → 4 números × 8 cartas
-  c10: 48, // 8, 9, 10, J, Q, K → 6 números × 8 cartas
-  c20: 16, // 8 Ases + 8 doses
-  c50: 4, // 4 Jokers
+// ── Límites físicos del mazo ────────────────────────────────────────────
+/**
+ * Cada "mazo" es de 52 cartas + 2 Jokers. Los máximos de cada contador escalan con la cantidad de mazos (N):
+ * con 2 mazos (el valor clásico) dan 4 / 4 / 32 / 48 / 16 / 4.
+ */
+export const LIMITES_POR_MAZO = {
+  tresRojos: 2,
+  tresNegros: 2,
+  c5: 16, // 4, 5, 6, 7 → 4 números × 4 cartas
+  c10: 24, // 8, 9, 10, J, Q, K → 6 números × 4 cartas
+  c20: 8, // 4 Ases + 4 doses
+  c50: 2, // 2 Jokers
 } as const;
+
+export type LimitesMazo = { [clave in keyof typeof LIMITES_POR_MAZO]: number };
+
+export function limitesMazo(mazos: number): LimitesMazo {
+  const n = Math.max(1, Math.trunc(mazos));
+  return {
+    tresRojos: LIMITES_POR_MAZO.tresRojos * n,
+    tresNegros: LIMITES_POR_MAZO.tresNegros * n,
+    c5: LIMITES_POR_MAZO.c5 * n,
+    c10: LIMITES_POR_MAZO.c10 * n,
+    c20: LIMITES_POR_MAZO.c20 * n,
+    c50: LIMITES_POR_MAZO.c50 * n,
+  };
+}
 
 // ── Persistencia (localStorage) ─────────────────────────────────────────
 export const MAX_PARTIDAS_FINALIZADAS = 150;

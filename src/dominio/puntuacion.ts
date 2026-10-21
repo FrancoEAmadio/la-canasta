@@ -1,4 +1,5 @@
 import { CONFIG_PUNTAJE } from '../constantes.ts';
+import { reglasPorDefecto } from './reglas.ts';
 import type {
   CartasMesa,
   DesgloseRonda,
@@ -64,9 +65,16 @@ function sumar(lineas: LineaDesglose[]): number {
   return lineas.reduce((acumulado, linea) => acumulado + linea.puntos, 0);
 }
 
+/**
+ * 1 = +100, 2 = +200, 3 = +300, los 4 = +500. Con 4 mazos o más puede haber más de 4:
+ * cada Tres Rojo extra suma +100 encima de los +500 de los primeros 4.
+ */
 export function puntosTresRojos(cantidad: number): number {
-  const indice = Math.max(0, Math.min(CONFIG_PUNTAJE.tresRojos.length - 1, Math.trunc(cantidad)));
-  return CONFIG_PUNTAJE.tresRojos[indice]!;
+  const total = Math.max(0, Math.trunc(cantidad));
+  const base = CONFIG_PUNTAJE.tresRojos;
+  const tope = base.length - 1;
+  if (total <= tope) return base[total]!;
+  return base[tope]! + (total - tope) * CONFIG_PUNTAJE.tresRojoExtra;
 }
 
 /**
@@ -75,7 +83,7 @@ export function puntosTresRojos(cantidad: number): number {
  */
 export function calcularEntrada(
   entrada: EntradaRonda,
-  reglas: ReglasPartida = { premiosPorCantidad: false }
+  reglas: ReglasPartida = reglasPorDefecto()
 ): DesgloseRonda {
   const bonos: LineaDesglose[] = [];
   const canastas: LineaDesglose[] = [];
@@ -91,7 +99,7 @@ export function calcularEntrada(
   }
   if (entrada.tresRojos > 0) {
     bonos.push({
-      etiqueta: entrada.tresRojos === 4 ? 'Los 4 Tres Rojos' : 'Tres Rojos',
+      etiqueta: entrada.tresRojos === 4 ? 'Los 4 Tres Rojos' : entrada.tresRojos > 4 ? 'Tres Rojos (4 + extras)' : 'Tres Rojos',
       cantidad: entrada.tresRojos,
       puntos: puntosTresRojos(entrada.tresRojos),
     });

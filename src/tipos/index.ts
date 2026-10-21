@@ -36,9 +36,19 @@ export interface EntradaRonda {
   cartasMano: CartasMano;
 }
 
+/** Puntos mínimos para abrirse: `requisitos` siempre tiene un elemento más que `umbrales`. */
+export interface ConfigAperturaPartida {
+  umbrales: number[];
+  requisitos: number[];
+}
+
 export interface ReglasPartida {
   /** Premios opcionales: Canastrón (5 canastas) y Canasta de canastas (7). */
   premiosPorCantidad: boolean;
+  /** Cantidad de mazos con los que se juega (par, mínimo 2). Define el máximo de cartas de cada contador. */
+  mazos: number;
+  /** Puntos mínimos para abrirse / levantar el pozo según el puntaje acumulado. */
+  apertura: ConfigAperturaPartida;
 }
 
 export interface LineaDesglose {

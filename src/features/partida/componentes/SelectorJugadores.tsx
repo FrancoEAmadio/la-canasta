@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { JUGADORES_POR_EQUIPO, MAX_EQUIPOS, MAX_JUGADORES_INDIVIDUAL, MIN_EQUIPOS } from '../../../constantes';
+import { nombreEquipo } from '../../../dominio/partida';
 import { useApp } from '../../../estado/AppProvider';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
 import { ModalAviso } from '../../../ui/ModalAviso';
@@ -59,6 +60,13 @@ export function SelectorIndividual() {
   );
 }
 
+/** Nombre provisorio de un equipo mientras se arma: "Franco y Sol" (o "Franco y …" si falta uno). */
+function nombreProvisorio(integrantes: (string | undefined)[], indice: number): string {
+  const nombres = integrantes.filter((nombre): nombre is string => !!nombre);
+  if (nombres.length === 0) return `Pareja ${indice + 1}`;
+  return nombres.length < integrantes.length ? `${nombreEquipo(nombres)} y …` : nombreEquipo(nombres);
+}
+
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
   const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, mezclarEquipos } = partida;
@@ -74,7 +82,12 @@ export function SelectorParejas() {
       {config.equipos.map((equipo, indiceEquipo) => (
         <div key={indiceEquipo} className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-display text-base font-black text-azul">Equipo {indiceEquipo + 1}</span>
+            <span className="min-w-0 truncate font-display text-base font-black text-azul">
+              {nombreProvisorio(
+                equipo.map((id) => (id ? jugadores.find((candidato) => candidato.id === id)?.nombre : undefined)),
+                indiceEquipo
+              )}
+            </span>
             {config.equipos.length > MIN_EQUIPOS && (
               <button type="button" onClick={() => quitarEquipo(indiceEquipo)} className="text-xs font-bold text-rojo-osc">
                 Quitar equipo
@@ -131,7 +144,7 @@ export function SelectorParejas() {
       <ModalSeleccionJugadores
         abierto={casillero !== null}
         onCerrar={() => setCasillero(null)}
-        titulo={casillero ? `Equipo ${casillero.equipo + 1}` : 'Elegir jugador'}
+        titulo={casillero ? `Pareja ${casillero.equipo + 1}` : 'Elegir jugador'}
         seleccionados={ocupanteActual ? [ocupanteActual] : []}
         excluidos={asignados.filter((id) => id !== ocupanteActual)}
         unico

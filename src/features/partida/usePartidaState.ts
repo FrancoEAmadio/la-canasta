@@ -3,14 +3,18 @@ import {
   JUGADORES_POR_EQUIPO,
   MAX_EQUIPOS,
   MAX_JUGADORES_INDIVIDUAL,
+  MAZOS_DEFECTO,
   MIN_EQUIPOS,
   MIN_JUGADORES_INDIVIDUAL,
   PUNTAJE_OBJETIVO_DEFECTO,
 } from '../../constantes';
+import { aperturaPorDefecto, aperturaValida } from '../../dominio/apertura';
+import { mazosValidos } from '../../dominio/reglas';
 import {
   borradorDesdeRonda,
   calcularRanking,
   crearPartida,
+  nombreEquipo,
   nuevoBorrador,
   objetivoAlcanzado,
   ordenarPartidas,
@@ -39,8 +43,14 @@ export interface ConfigNuevaPartida {
   idsIndividual: string[];
   /** Cada equipo tiene exactamente 2 casilleros; null = casillero vacío. */
   equipos: (string | null)[][];
+  /** null = sin límite de puntos (campo vacío). */
   objetivo: number | null;
   premiosPorCantidad: boolean;
+  /** null mientras el campo está vacío; se valida al empezar (par, mínimo 2). */
+  mazos: number | null;
+  /** Un valor por tramo; null = campo vacío (se usa el valor por defecto al empezar). */
+  aperturaUmbrales: (number | null)[];
+  aperturaRequisitos: (number | null)[];
 }
 
 function crearConfigInicial(): ConfigNuevaPartida {
@@ -50,10 +60,19 @@ function crearConfigInicial(): ConfigNuevaPartida {
     equipos: Array.from({ length: MIN_EQUIPOS }, () => Array<string | null>(JUGADORES_POR_EQUIPO).fill(null)),
     objetivo: PUNTAJE_OBJETIVO_DEFECTO,
     premiosPorCantidad: false,
+    mazos: MAZOS_DEFECTO,
+    aperturaUmbrales: [...aperturaPorDefecto().umbrales],
+    aperturaRequisitos: [...aperturaPorDefecto().requisitos],
   };
 }
 
-export type ResultadoComenzar = 'ok' | 'jugadores_insuficientes' | 'equipos_incompletos';
+export type ResultadoComenzar =
+  | 'ok'
+  | 'jugadores_insuficientes'
+  | 'equipos_incompletos'
+  | 'mazos_invalidos'
+  | 'objetivo_invalido'
+  | 'apertura_invalida';
 
 interface Parametros {
   setPantallaActual: (pantalla: PantallaId) => void;
@@ -170,6 +189,15 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
   }, []);
 
   const comenzarPartida = useCallback((): ResultadoComenzar => {
+    if (!mazosValidos(config.mazos)) return 'mazos_invalidos';
+    if (config.objetivo !== null && !(config.objetivo > 0)) return 'objetivo_invalido';
+    const porDefecto = aperturaPorDefecto();
+    const apertura = {
+      umbrales: config.aperturaUmbrales.map((valor, indice) => valor ?? porDefecto.umbrales[indice]!),
+      requisitos: config.aperturaRequisitos.map((valor, indice) => valor ?? porDefecto.requisitos[indice]!),
+    };
+    if (!aperturaValida(apertura)) return 'apertura_invalida';
+
     const jugadores = obtenerJugadores();
     const buscar = (id: string) => jugadores.find((jugador) => jugador.id === id);
     let participantes: Participante[] = [];
@@ -190,7 +218,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
         const miembros = equipo.map((id) => buscar(id!)!);
         return {
           id: `equipo_${indice + 1}`,
-          nombre: `Equipo ${indice + 1}`,
+          nombre: nombreEquipo(miembros.map((jugador) => jugador.nombre)),
           jugadoresIds: miembros.map((jugador) => jugador.id),
           jugadoresNombres: miembros.map((jugador) => jugador.nombre),
         };
@@ -201,7 +229,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
       modo: config.modo,
       participantes,
       objetivo: config.objetivo,
-      reglas: { premiosPorCantidad: config.premiosPorCantidad },
+      reglas: { premiosPorCantidad: config.premiosPorCantidad, mazos: config.mazos, apertura },
     });
     guardarEstado([...partidasRef.current, nueva]);
     setActivaId(nueva.id);
@@ -356,6 +384,15 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     [activaId, guardarEstado, obtenerJugadores, reemplazarJugadores]
   );
 
+  /** Cambia los puntos mínimos para abrirse de la partida en juego. */
+  const actualizarApertura = useCallback(
+    (apertura: Partida['reglas']['apertura']) => {
+      if (!activaId) return;
+      mutarPartida(activaId, (partida) => ({ ...partida, reglas: { ...partida.reglas, apertura } }));
+    },
+    [activaId, mutarPartida]
+  );
+
   const soltarPartidaActiva = useCallback(() => setActivaId(null), []);
 
   // ───────────────────────── Datos derivados para la pantalla ─────────────────────────
@@ -394,7 +431,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
       totalesFinales,
       meta: objetivoAlcanzado(partidaActiva.objetivo, totalesFinales),
       metaYaAlcanzadaCerrada: objetivoAlcanzado(partidaActiva.objetivo, totalesCerrados) && partidaActiva.rondas.length > 0,
-      advertencias: advertenciasRonda(partidaActiva.participantes, borrador.entradas),
+      advertencias: advertenciasRonda(partidaActiva.participantes, borrador.entradas, partidaActiva.reglas.mazos),
       quienReparte: quienMezclaYReparte(partidaActiva, borrador.numero),
       rankingCerrado: calcularRanking(partidaActiva, totalesCerrados),
     };
@@ -433,6 +470,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     eliminarUltimaRonda,
     confirmarRonda,
     finalizarPartida,
+    actualizarApertura,
   };
 }
 

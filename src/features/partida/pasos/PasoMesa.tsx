@@ -49,7 +49,7 @@ export function PasoMesa({ partida, vista }: PropsPaso) {
                 </div>
               )}
 
-              <InsigniaApertura puntosAcumulados={acumulado} />
+              <InsigniaApertura puntosAcumulados={acumulado} config={partida.reglas.apertura} />
             </article>
           );
         })}

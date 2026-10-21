@@ -5,6 +5,18 @@ export interface ConfigApertura {
   readonly requisitos: readonly number[];
 }
 
+/** Copia editable de la configuración de apertura por defecto. */
+export function aperturaPorDefecto(): { umbrales: number[]; requisitos: number[] } {
+  return { umbrales: [...CONFIG_APERTURA.umbrales], requisitos: [...CONFIG_APERTURA.requisitos] };
+}
+
+/** Válida si hay un requisito por tramo y los umbrales son positivos y estrictamente crecientes. */
+export function aperturaValida(config: ConfigApertura): boolean {
+  if (config.requisitos.length !== config.umbrales.length + 1) return false;
+  if (!config.requisitos.every((valor) => Number.isFinite(valor) && valor >= 0)) return false;
+  return config.umbrales.every((valor, indice) => Number.isFinite(valor) && valor > 0 && (indice === 0 || valor > config.umbrales[indice - 1]!));
+}
+
 /** Índice del tramo (0, 1, 2…) al que pertenece el puntaje acumulado. */
 export function nivelApertura(puntosAcumulados: number, config: ConfigApertura = CONFIG_APERTURA): number {
   let nivel = 0;

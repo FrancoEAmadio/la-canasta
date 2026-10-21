@@ -23,7 +23,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       {
         titulo: '🃏 El mazo',
         texto:
-          'COMPOSICIÓN\nSe juega con 2 mazos ingleses de póker completos (52 cartas cada uno, del As al Rey) más 4 Jokers: 108 cartas en total.\n\nLas figuras J y Q ocupan el lugar del 11 y el 12, así que no existen cartas con esos números.\n\nJUGADORES\nSe puede jugar de forma individual (todos contra todos, o mano a mano) o en parejas. La app admite hasta 6 jugadores en individual y equipos estrictamente de 2 jugadores.',
+          'COMPOSICIÓN\nSe juega con 2 mazos ingleses de póker completos (52 cartas cada uno, del As al Rey) más 4 Jokers: 108 cartas en total. La app permite elegir otra cantidad de mazos (siempre par) al crear la partida y ajusta sola los máximos de cada contador.\n\nLas figuras J y Q ocupan el lugar del 11 y el 12, así que no existen cartas con esos números.\n\nJUGADORES\nSe puede jugar de forma individual (todos contra todos, o mano a mano) o en parejas. La app admite hasta 6 jugadores en individual y equipos estrictamente de 2 jugadores.',
       },
       {
         titulo: '✂️ Mezcla, corte y reparto',
@@ -62,7 +62,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       },
       {
         titulo: '📊 Puntaje mínimo para abrirse',
-        texto: `El mínimo depende del puntaje acumulado del jugador o equipo al INICIO de la ronda:\n\n${textoTramos}\n\nLa app lo calcula automáticamente y lo muestra debajo del nombre de cada jugador/equipo en cada ronda.\n\n(Estos umbrales se pueden cambiar en el archivo src/constantes.ts, objeto CONFIG_APERTURA.)`,
+        texto: `El mínimo depende del puntaje acumulado del jugador o equipo al INICIO de la ronda:\n\n${textoTramos}\n\nLa app lo calcula automáticamente y lo muestra debajo del nombre de cada jugador/equipo en cada ronda.\n\nEstos son los valores sugeridos: al crear la partida (o desde el menú de partida) los podés cambiar a mano.`,
       },
     ],
   },
@@ -76,7 +76,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       },
       {
         titulo: '🔴 Los Tres Rojos',
-        texto: `Son cartas de bonificación y no sirven para formar canastas. Se bajan apenas se tienen y se reemplazan robando del mazo.\n\n• 1 Tres Rojo: +${tresRojos[1]}\n• 2 Tres Rojos: +${tresRojos[2]}\n• 3 Tres Rojos: +${tresRojos[3]}\n• Los 4 Tres Rojos: +${tresRojos[4]}`,
+        texto: `Son cartas de bonificación y no sirven para formar canastas. Se bajan apenas se tienen y se reemplazan robando del mazo.\n\n• 1 Tres Rojo: +${tresRojos[1]}\n• 2 Tres Rojos: +${tresRojos[2]}\n• 3 Tres Rojos: +${tresRojos[3]}\n• Los 4 Tres Rojos: +${tresRojos[4]}\n\nSi jugás con 4 mazos o más puede haber más de 4: cada Tres Rojo extra suma +${CONFIG_PUNTAJE.tresRojoExtra} a los +${tresRojos[4]}.`,
       },
       {
         titulo: '🏁 Cerrar la ronda',

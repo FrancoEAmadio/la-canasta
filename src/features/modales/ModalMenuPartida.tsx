@@ -3,11 +3,13 @@ import { useApp } from '../../estado/AppProvider';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
+import { ModalReglasPartida } from './ModalReglasPartida';
 
 export function ModalMenuPartida() {
   const { menuPartidaAbierto, setMenuPartidaAbierto, setPantallaActual, setRondasAbiertas, setAjustesAbiertos, abrirPodio, partida: estado } = useApp();
   const [accion, setAccion] = useState<'terminar' | 'descartar' | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [reglasAbiertas, setReglasAbiertas] = useState(false);
   const partida = estado.partidaActiva;
 
   if (!partida) return null;
@@ -49,6 +51,9 @@ export function ModalMenuPartida() {
             <button type="button" onClick={() => void compartirTabla()} className="btn-claro justify-start px-3 py-2.5 text-sm">
               📤 Compartir tabla
             </button>
+            <button type="button" onClick={() => { cerrarMenu(); setReglasAbiertas(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
+              🔓 Mínimos para abrirse
+            </button>
             <button type="button" onClick={() => { cerrarMenu(); setAjustesAbiertos(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
               ⚙️ Ajustes
             </button>
@@ -85,6 +90,7 @@ export function ModalMenuPartida() {
           setPantallaActual('inicio');
         }}
       />
+      {reglasAbiertas && <ModalReglasPartida partida={partida} onGuardar={estado.actualizarApertura} onCerrar={() => setReglasAbiertas(false)} />}
       <ModalAviso abierto={aviso !== null} titulo="Aviso" mensaje={aviso} onCerrar={() => setAviso(null)} textoBoton="OK" />
     </>
   );
