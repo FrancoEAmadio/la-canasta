@@ -1,24 +1,20 @@
 import { useState } from 'react';
-import { JUGADORES_POR_EQUIPO, MAX_EQUIPOS, MAX_JUGADORES_INDIVIDUAL, MIN_EQUIPOS } from '../../../constantes';
+import { JUGADORES_POR_EQUIPO, MIN_EQUIPOS } from '../../../constantes';
 import { nombreEquipo } from '../../../dominio/partida';
 import { useApp } from '../../../estado/AppProvider';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
-import { ModalAviso } from '../../../ui/ModalAviso';
 import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
 export function SelectorIndividual() {
   const { jugadores, partida } = useApp();
   const { config, alternarSeleccionJugador } = partida;
   const [abierto, setAbierto] = useState(false);
-  const [limite, setLimite] = useState(false);
 
-  const elegir = (id: string) => {
-    if (alternarSeleccionJugador(id) === 'limite_alcanzado') setLimite(true);
-  };
+  const elegir = alternarSeleccionJugador;
 
   return (
     <section className="tarjeta flex flex-col gap-3 p-4">
-      <h3 className="text-sm font-black uppercase tracking-wider text-azul">Jugadores ({config.idsIndividual.length}/{MAX_JUGADORES_INDIVIDUAL})</h3>
+      <h3 className="text-sm font-black uppercase tracking-wider text-azul">Jugadores ({config.idsIndividual.length})</h3>
       {config.idsIndividual.length > 0 && (
         <ol className="flex flex-col gap-2">
           {config.idsIndividual.map((id, indice) => {
@@ -46,15 +42,7 @@ export function SelectorIndividual() {
         onCerrar={() => setAbierto(false)}
         titulo="Seleccionar jugadores"
         seleccionados={config.idsIndividual}
-        maximo={MAX_JUGADORES_INDIVIDUAL}
         onElegir={elegir}
-      />
-      <ModalAviso
-        abierto={limite}
-        titulo="Límite alcanzado"
-        mensaje={`En modo individual pueden jugar hasta ${MAX_JUGADORES_INDIVIDUAL} personas.`}
-        textoBoton="OK"
-        onCerrar={() => setLimite(false)}
       />
     </section>
   );
@@ -133,7 +121,7 @@ export function SelectorParejas() {
       ))}
 
       <div className="grid grid-cols-2 gap-2">
-        <button type="button" onClick={agregarEquipo} disabled={config.equipos.length >= MAX_EQUIPOS} className="btn-claro py-2.5 text-xs">
+        <button type="button" onClick={agregarEquipo} className="btn-claro py-2.5 text-xs">
           + Agregar equipo
         </button>
         <button type="button" onClick={mezclarEquipos} disabled={asignados.length < 2} className="btn-claro py-2.5 text-xs">

@@ -6,15 +6,16 @@
  * Puntaje mínimo que hay que bajar en la primera apertura (abrirse / levantar el pozo).
  * Se calcula según el puntaje ACUMULADO al inicio de la ronda:
  *
- *   puntos < umbrales[0]                    → requisitos[0]   (por defecto: menos de 500  → 50)
- *   umbrales[0] ≤ puntos < umbrales[1]      → requisitos[1]   (por defecto: 500 a 999     → 90)
- *   puntos ≥ umbrales[1]                    → requisitos[2]   (por defecto: 1000 o más    → 120)
+ *   puntos < umbrales[0]                    → requisitos[0]   (por defecto: negativo (menos de 0)  → 15)
+ *   umbrales[0] ≤ puntos < umbrales[1]      → requisitos[1]   (por defecto: de 0 a 1.499          → 50)
+ *   umbrales[1] ≤ puntos < umbrales[2]      → requisitos[2]   (por defecto: de 1.500 a 2.999      → 90)
+ *   puntos ≥ umbrales[2]                    → requisitos[3]   (por defecto: 3.000 o más           → 120)
  *
  * `requisitos` siempre debe tener un elemento más que `umbrales`.
  */
 export const CONFIG_APERTURA = {
-  umbrales: [500, 1000],
-  requisitos: [50, 90, 120],
+  umbrales: [0, 1500, 3000],
+  requisitos: [15, 50, 90, 120],
 } as const;
 
 /** Valores de puntuación de cada ronda. Todo lo que suma o resta puntos vive acá. */
@@ -46,10 +47,8 @@ export const MAZOS_MAX = 12;
 
 // ── Jugadores y equipos ─────────────────────────────────────────────────
 export const MIN_JUGADORES_INDIVIDUAL = 2;
-export const MAX_JUGADORES_INDIVIDUAL = 6;
 export const JUGADORES_POR_EQUIPO = 2;
 export const MIN_EQUIPOS = 2;
-export const MAX_EQUIPOS = 3;
 
 // ── Límites físicos del mazo ────────────────────────────────────────────
 /**

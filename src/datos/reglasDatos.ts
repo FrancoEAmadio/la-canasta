@@ -23,7 +23,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       {
         titulo: '🃏 El mazo',
         texto:
-          'COMPOSICIÓN\nSe juega con 2 mazos ingleses de póker completos (52 cartas cada uno, del As al Rey) más 4 Jokers: 108 cartas en total. La app permite elegir otra cantidad de mazos (siempre par) al crear la partida y ajusta sola los máximos de cada contador.\n\nLas figuras J y Q ocupan el lugar del 11 y el 12, así que no existen cartas con esos números.\n\nJUGADORES\nSe puede jugar de forma individual (todos contra todos, o mano a mano) o en parejas. La app admite hasta 6 jugadores en individual y equipos estrictamente de 2 jugadores.',
+          'COMPOSICIÓN\nSe juega con 2 mazos ingleses de póker completos (52 cartas cada uno, del As al Rey) más 4 Jokers: 108 cartas en total. Si en tu mesa se juega con más mazos, podés elegir la cantidad (siempre par) al crear la partida.\n\nLas figuras J y Q ocupan el lugar del 11 y el 12, así que no existen cartas con esos números.\n\nJUGADORES\nSe puede jugar de forma individual (todos contra todos, o mano a mano) o en parejas (equipos de 2 jugadores). No hay un máximo de jugadores ni de equipos: juegan todos los que se sienten a la mesa.',
       },
       {
         titulo: '✂️ Mezcla, corte y reparto',
@@ -62,7 +62,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
       },
       {
         titulo: '📊 Puntaje mínimo para abrirse',
-        texto: `El mínimo depende del puntaje acumulado del jugador o equipo al INICIO de la ronda:\n\n${textoTramos}\n\nLa app lo calcula automáticamente y lo muestra debajo del nombre de cada jugador/equipo en cada ronda.\n\nEstos son los valores sugeridos: al crear la partida (o desde el menú de partida) los podés cambiar a mano.`,
+        texto: `El mínimo depende del puntaje acumulado del jugador o equipo al INICIO de la ronda:\n\n${textoTramos}\n\nLa app lo calcula automáticamente y lo muestra debajo del nombre de cada jugador/equipo en cada ronda.\n\nSi en tu mesa se juega con otros mínimos, los podés cambiar al crear la partida o durante el juego.`,
       },
     ],
   },
@@ -104,7 +104,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
     items: [
       {
         titulo: '🌎 La Canasta tiene muchas versiones',
-        texto: `El juego nació en Uruguay y se popularizó por toda América con pequeñas diferencias entre mesas. Esta app sigue las reglas de tu mesa. Otras fuentes (por ejemplo, el manual de Fournier) describen:\n\n• Meta de 5.000 puntos.\n• El pozo arranca con una sola carta boca arriba tras repartir 11 cartas por jugador.\n• Los 4 Tres Rojos valen 800 y los Tres Negros penalizan distinto.\n• Mínimos de apertura de 50 / 90 / 150 puntos (y 15 si el puntaje es negativo).\n• Premios por cantidad de canastas: Canastrón (5 canastas) +${CONFIG_PUNTAJE.premioCanastron.puntos} y Canasta de canastas (7) +${pts(CONFIG_PUNTAJE.premioCanastaDeCanastas.puntos)}.\n\nTodos los valores de la app viven en src/constantes.ts para que los ajustes a tu gusto. Los premios por cantidad de canastas se pueden activar al crear cada partida.`,
+        texto: `El juego nació en Uruguay y se popularizó por toda América con pequeñas diferencias entre mesas. Esta app sigue las reglas de tu mesa. Otras fuentes (por ejemplo, el manual de Fournier) describen:\n\n• Meta de 5.000 puntos.\n• El pozo arranca con una sola carta boca arriba tras repartir 11 cartas por jugador.\n• Los 4 Tres Rojos valen 800 y los Tres Negros penalizan distinto.\n• Mínimos de apertura de 50 / 90 / 150 puntos (y 15 si el puntaje es negativo).\n• Premios por cantidad de canastas: Canastrón (5 canastas) +${CONFIG_PUNTAJE.premioCanastron.puntos} y Canasta de canastas (7) +${pts(CONFIG_PUNTAJE.premioCanastaDeCanastas.puntos)}.\n\nLos premios por cantidad de canastas son opcionales y se activan al crear cada partida.`,
       },
     ],
   },

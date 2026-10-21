@@ -1,6 +1,7 @@
 import { nivelApertura, requisitoApertura, type ConfigApertura } from '../../../dominio/apertura';
 
 const ESTILOS_NIVEL = [
+  'border-slate-300 bg-slate-100 text-slate-700',
   'border-blue-200 bg-blue-50 text-azul',
   'border-amber-300 bg-amber-50 text-amber-800',
   'border-red-300 bg-red-50 text-rojo-osc',
@@ -17,7 +18,9 @@ interface Props {
 /** Cuánto hay que bajar para abrirse / levantar el pozo, calculado según el acumulado. */
 export function InsigniaApertura({ puntosAcumulados, config, compacta = false }: Props) {
   const requisito = requisitoApertura(puntosAcumulados, config);
-  const nivel = Math.min(nivelApertura(puntosAcumulados, config), ESTILOS_NIVEL.length - 1);
+  // Las partidas viejas tienen menos escalones: se saltea el estilo de "puntaje negativo".
+  const desfase = Math.max(0, ESTILOS_NIVEL.length - config.requisitos.length);
+  const nivel = Math.min(nivelApertura(puntosAcumulados, config) + desfase, ESTILOS_NIVEL.length - 1);
 
   return (
     <div className={`rounded-xl border px-3 py-2 ${ESTILOS_NIVEL[nivel]}`}>

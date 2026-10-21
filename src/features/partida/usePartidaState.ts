@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   JUGADORES_POR_EQUIPO,
-  MAX_EQUIPOS,
-  MAX_JUGADORES_INDIVIDUAL,
   MAZOS_DEFECTO,
   MIN_EQUIPOS,
   MIN_JUGADORES_INDIVIDUAL,
@@ -135,19 +133,12 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     setConfig((actual) => ({ ...actual, ...parcial }));
   }, []);
 
-  const alternarSeleccionJugador = useCallback((id: string): 'ok' | 'limite_alcanzado' => {
-    let resultado: 'ok' | 'limite_alcanzado' = 'ok';
-    setConfig((actual) => {
-      if (actual.idsIndividual.includes(id)) {
-        return { ...actual, idsIndividual: actual.idsIndividual.filter((existente) => existente !== id) };
-      }
-      if (actual.idsIndividual.length >= MAX_JUGADORES_INDIVIDUAL) {
-        resultado = 'limite_alcanzado';
-        return actual;
-      }
-      return { ...actual, idsIndividual: [...actual.idsIndividual, id] };
-    });
-    return resultado;
+  const alternarSeleccionJugador = useCallback((id: string) => {
+    setConfig((actual) =>
+      actual.idsIndividual.includes(id)
+        ? { ...actual, idsIndividual: actual.idsIndividual.filter((existente) => existente !== id) }
+        : { ...actual, idsIndividual: [...actual.idsIndividual, id] }
+    );
   }, []);
 
   const asignarEnEquipo = useCallback((equipoIdx: number, casillero: number, jugadorId: string | null) => {
@@ -161,11 +152,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
   }, []);
 
   const agregarEquipo = useCallback(() => {
-    setConfig((actual) =>
-      actual.equipos.length >= MAX_EQUIPOS
-        ? actual
-        : { ...actual, equipos: [...actual.equipos, Array<string | null>(JUGADORES_POR_EQUIPO).fill(null)] }
-    );
+    setConfig((actual) => ({ ...actual, equipos: [...actual.equipos, Array<string | null>(JUGADORES_POR_EQUIPO).fill(null)] }));
   }, []);
 
   const quitarEquipo = useCallback((equipoIdx: number) => {

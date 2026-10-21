@@ -19,15 +19,16 @@ import type { Participante } from '../src/tipos/index.ts';
 const jugadores = (...nombres: string[]): Participante[] =>
   nombres.map((nombre) => ({ id: nombre, nombre, jugadoresIds: [nombre], jugadoresNombres: [nombre] }));
 
-test('requisito de apertura por tramos (50 / 90 / 120)', () => {
-  assert.equal(requisitoApertura(-300), 50);
+test('requisito de apertura por escalones (15 / 50 / 90 / 120)', () => {
+  assert.equal(requisitoApertura(-300), 15);
+  assert.equal(requisitoApertura(-1), 15);
   assert.equal(requisitoApertura(0), 50);
-  assert.equal(requisitoApertura(499), 50);
-  assert.equal(requisitoApertura(500), 90);
-  assert.equal(requisitoApertura(999), 90);
-  assert.equal(requisitoApertura(1000), 120);
+  assert.equal(requisitoApertura(1499), 50);
+  assert.equal(requisitoApertura(1500), 90);
+  assert.equal(requisitoApertura(2999), 90);
+  assert.equal(requisitoApertura(3000), 120);
   assert.equal(requisitoApertura(4800), 120);
-  assert.deepEqual(tramosApertura().map((t) => t.requisito), [50, 90, 120]);
+  assert.deepEqual(tramosApertura().map((t) => t.requisito), [15, 50, 90, 120]);
 });
 
 test('Tres Rojos: 1=100, 2=200, 3=300, 4=500, 5=1000', () => {

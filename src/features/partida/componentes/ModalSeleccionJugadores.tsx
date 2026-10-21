@@ -12,7 +12,6 @@ interface Props {
   titulo: string;
   /** IDs elegidos, en orden de selección. */
   seleccionados: string[];
-  maximo?: number;
   /** Jugadores que no se pueden tocar (ya están en otro casillero). */
   excluidos?: string[];
   /** Modo "elegir uno": al tocar un jugador se elige y se cierra. */
@@ -28,7 +27,7 @@ function normalizar(texto: string): string {
     .trim();
 }
 
-export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionados, maximo, excluidos = [], unico = false, onElegir }: Props) {
+export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionados, excluidos = [], unico = false, onElegir }: Props) {
   const { jugadores, crearJugador } = useApp();
   const [busqueda, setBusqueda] = useState('');
   const [nombreNuevo, setNombreNuevo] = useState('');
@@ -68,7 +67,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
     <Modal abierto={abierto} onCerrar={cerrar} ancho="max-w-md" etiqueta={titulo} cerrarAlHacerClickAfuera>
       <EncabezadoModal
         titulo={titulo}
-        subtitulo={unico ? 'Tocá una tarjeta para elegirla' : `${seleccionados.length}${maximo ? ` de ${maximo}` : ''} seleccionados`}
+        subtitulo={unico ? 'Tocá una tarjeta para elegirla' : `${seleccionados.length} seleccionados`}
         onCerrar={cerrar}
       />
 
@@ -114,12 +113,11 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
               const posicion = seleccionados.indexOf(jugador.id);
               const elegido = posicion >= 0;
               const bloqueado = excluidos.includes(jugador.id);
-              const lleno = !unico && !elegido && maximo !== undefined && seleccionados.length >= maximo;
               return (
                 <button
                   key={jugador.id}
                   type="button"
-                  disabled={bloqueado || lleno}
+                  disabled={bloqueado}
                   aria-pressed={elegido}
                   onClick={() => tocar(jugador.id)}
                   className={`flex items-center gap-3 rounded-2xl border-2 p-3 text-left disabled:opacity-40 ${

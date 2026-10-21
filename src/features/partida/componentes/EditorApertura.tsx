@@ -35,22 +35,27 @@ function FilaCampo({ etiqueta, valor, onCambiar, ariaLabel, min, separada = fals
 
 /** Edita cuántos puntos mínimos hay que bajar para abrirse en cada escalón de puntaje acumulado. */
 export function EditorApertura({ umbrales, requisitos, onCambiar }: Props) {
+  /** Con el primer límite en 0, el escalón inicial es el de puntajes negativos y la numeración arranca en 0. */
+  const conNegativos = umbrales[0] === 0;
+  const primero = conNegativos ? 0 : 1;
   return (
     <div className="flex flex-col gap-3">
       {requisitos.map((requisito, indice) => {
         const esUltimo = indice === requisitos.length - 1;
         return (
           <div key={indice} className="flex flex-col gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-azul">Escalón {indice + 1}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-azul">Escalón {indice + primero}{indice === 0 && conNegativos ? ' · puntajes negativos' : ''}</span>
 
             {esUltimo ? (
               <p className="text-sm font-bold text-slate-700">Desde {mostrar(umbrales[indice - 1]!)} pts acumulados o más</p>
+            ) : indice === 0 && conNegativos ? (
+              <p className="text-sm font-bold text-slate-700">Menos de 0 pts (puntos negativos)</p>
             ) : (
               <FilaCampo
                 etiqueta={indice === 0 ? 'Menos de (acumulados):' : `Desde ${mostrar(umbrales[indice - 1]!)} hasta menos de:`}
                 valor={umbrales[indice]!}
                 onCambiar={(nuevo) => onCambiar(reemplazar(umbrales, indice, nuevo), requisitos)}
-                ariaLabel={`Puntaje donde termina el escalón ${indice + 1}`}
+                ariaLabel={`Puntaje donde termina el escalón ${indice + primero}`}
                 min={1}
               />
             )}
@@ -60,7 +65,7 @@ export function EditorApertura({ umbrales, requisitos, onCambiar }: Props) {
               etiqueta="Mínimo para abrirse:"
               valor={requisito}
               onCambiar={(nuevo) => onCambiar(umbrales, reemplazar(requisitos, indice, nuevo))}
-              ariaLabel={`Puntos mínimos para abrirse en el escalón ${indice + 1}`}
+              ariaLabel={`Puntos mínimos para abrirse en el escalón ${indice + primero}`}
               min={0}
             />
           </div>
