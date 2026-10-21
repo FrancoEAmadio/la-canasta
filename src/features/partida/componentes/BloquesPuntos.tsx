@@ -179,7 +179,7 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
   const filas = [
     { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7', unitario: v.c5 },
     { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y 2', unitario: v.c20 },
+    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los 2', unitario: v.c20 },
     { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50', unitario: v.c50 },
   ] as const;
 
@@ -210,7 +210,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
   const filas = [
     { clave: 'c5', titulo: 'Cartas de 5 en mano', ejemplo: '4 al 7', unitario: v.c5 },
     { clave: 'c10', titulo: 'Cartas de 10 en mano', ejemplo: '8 al K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 en mano', ejemplo: 'A y 2', unitario: v.c20 },
+    { clave: 'c20', titulo: 'Cartas de 20 en mano', ejemplo: 'Ases y los 2', unitario: v.c20 },
     { clave: 'c50', titulo: 'Jokers en mano', ejemplo: 'Comodines de 50', unitario: v.c50 },
   ] as const;
 

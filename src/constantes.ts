@@ -61,7 +61,7 @@ export const LIMITES_POR_MAZO = {
   tresNegros: 2,
   c5: 16, // 4, 5, 6, 7 → 4 números × 4 cartas
   c10: 24, // 8, 9, 10, J, Q, K → 6 números × 4 cartas
-  c20: 8, // 4 Ases + 4 doses
+  c20: 8, // 4 Ases + 4 de los 2
   c50: 2, // 2 Jokers
 } as const;
 

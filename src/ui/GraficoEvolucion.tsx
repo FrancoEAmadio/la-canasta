@@ -56,8 +56,8 @@ export function GraficoEvolucion({ series }: { series: SerieGrafico[] }) {
       </svg>
       <figcaption className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
         {series.map((serie, indice) => (
-          <span key={serie.nombre} className="flex items-center gap-1 text-[11px] font-bold text-slate-600">
-            <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORES[indice % COLORES.length] }} />
+          <span key={serie.nombre} className="flex max-w-full items-start gap-1 text-[11px] font-bold leading-tight text-slate-600" style={{ overflowWrap: 'anywhere' }}>
+            <span className="mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: COLORES[indice % COLORES.length] }} />
             {serie.nombre}
           </span>
         ))}

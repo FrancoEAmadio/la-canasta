@@ -196,6 +196,52 @@ button:disabled {
 .campo::placeholder {
   color: #94a3b8;
 }
+/* Filas de puntaje: el nombre baja de línea si es largo y el número nunca se recorta. */
+.fila-puntaje {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  overflow: hidden;
+}
+.fila-puntaje-izq {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fila-puntaje-nombre {
+  display: block;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+.fila-puntaje-valor {
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Campos numéricos: sin flechitas y con números centrados. Se definen acá (no con utilidades de Tailwind)
+   porque .campo no está en una capa y le ganaría a cualquier utilidad de ancho, alto o tamaño de letra. */
+.campo-numero {
+  text-align: center;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.campo-numero::-webkit-outer-spin-button,
+.campo-numero::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.campo-grande {
+  min-height: 3rem;
+  font-size: 1.4rem;
+}
 .campo:focus {
   outline: none;
   border-color: var(--azul-vivo);

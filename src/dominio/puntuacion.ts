@@ -50,14 +50,14 @@ export function valorCanasta(figura: FiguraCanasta, tipo: TipoCanasta): number {
 const ETIQUETAS_MESA: { clave: keyof CartasMesa; etiqueta: string }[] = [
   { clave: 'c5', etiqueta: 'Cartas de 5 (4 al 7)' },
   { clave: 'c10', etiqueta: 'Cartas de 10 (8 al K)' },
-  { clave: 'c20', etiqueta: 'Cartas de 20 (A y 2)' },
+  { clave: 'c20', etiqueta: 'Cartas de 20 (Ases y los 2)' },
   { clave: 'c50', etiqueta: 'Jokers' },
 ];
 
 const ETIQUETAS_MANO: { clave: keyof CartasMesa; etiqueta: string }[] = [
   { clave: 'c5', etiqueta: 'En mano: cartas de 5' },
   { clave: 'c10', etiqueta: 'En mano: cartas de 10' },
-  { clave: 'c20', etiqueta: 'En mano: A y 2' },
+  { clave: 'c20', etiqueta: 'En mano: Ases y los 2' },
   { clave: 'c50', etiqueta: 'En mano: Jokers' },
 ];
 

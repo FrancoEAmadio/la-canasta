@@ -61,9 +61,9 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
         return (
           <article key={participante.id} className="tarjeta flex flex-col gap-3 p-4">
             <header className="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
-              <div className="min-w-0">
-                <h3 className="truncate font-display text-lg font-black text-azul">{participante.nombre}</h3>
-                {subtituloParticipante(participante) && <span className="block truncate text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
+              <div className="min-w-0 flex-1">
+                <h3 className="fila-puntaje-nombre font-display text-lg font-black text-azul">{participante.nombre}</h3>
+                {subtituloParticipante(participante) && <span className="fila-puntaje-nombre text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
               </div>
             </header>
 
@@ -79,14 +79,14 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
               {formatearPuntos(desglose.subtotalCanastas)} canastas + {formatearPuntos(desglose.subtotalCartas)} cartas + {formatearPuntos(desglose.subtotalBonos)} bonos − {formatearPuntos(Math.abs(desglose.subtotalPenalizaciones))} penalizaciones
             </p>
 
-            <div className="flex items-end justify-between border-t border-slate-200 pt-3">
-              <div>
+            <div className="fila-puntaje !items-end border-t border-slate-200 pt-3">
+              <div className="fila-puntaje-valor !text-left">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Puntaje de la ronda</span>
                 <span className={`text-2xl font-black tabular-nums ${desglose.total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(desglose.total, true)}</span>
               </div>
-              <div className="text-right">
+              <div className="min-w-0 flex-1 text-right">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Nuevo acumulado</span>
-                <span className="text-3xl font-black tabular-nums text-tinta">{formatearPuntos(acumulado)}</span>
+                <span className="whitespace-nowrap text-3xl font-black tabular-nums text-tinta">{formatearPuntos(acumulado)}</span>
                 <span className="block text-[11px] font-bold text-azul">Próximo mínimo para abrirse: {requisitoApertura(acumulado, partida.reglas.apertura)} pts</span>
               </div>
             </div>

@@ -41,7 +41,7 @@ export function PantallaNuevaPartida() {
   };
 
   return (
-    <main className="flex w-full flex-col gap-5 py-5">
+    <main className="flex w-full flex-col gap-5 pt-5 pb-[calc(90px+env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-between">
         <div>
           <span className="block text-[10px] font-black uppercase tracking-widest text-blue-200">Nueva partida</span>
@@ -88,7 +88,7 @@ export function PantallaNuevaPartida() {
           min={1}
           step={500}
           placeholder="Sin límite"
-          className="h-12 w-full text-2xl"
+          grande
         />
         <p className="mt-2 text-xs text-slate-500">
           Escribí a cuántos puntos se juega. Cuando alguien llega a la meta, la app te ofrece cerrar la partida (o seguir jugando). Dejalo vacío para jugar sin límite.
@@ -105,14 +105,14 @@ export function PantallaNuevaPartida() {
           max={MAZOS_MAX}
           step={2}
           placeholder="4"
-          className="h-12 w-full text-2xl"
+          grande
         />
         <p className="mt-2 text-xs text-slate-500">
           Siempre par ({MAZOS_MIN}, 4, 6…). Cada mazo suma 52 cartas + 2 Jokers.
           {config.mazos !== null && config.mazos >= MAZOS_MIN && config.mazos % 2 === 0 && config.mazos <= MAZOS_MAX && (
             <>
               {' '}
-              Máximos al anotar: Tres Rojos y Negros {limitesMazo(config.mazos).tresRojos}, cartas de 5 → {limitesMazo(config.mazos).c5}, de 10 → {limitesMazo(config.mazos).c10}, Ases y 2 → {limitesMazo(config.mazos).c20}, Jokers → {limitesMazo(config.mazos).c50}.
+              Máximos al anotar: Tres Rojos y Negros {limitesMazo(config.mazos).tresRojos}, cartas de 5 → {limitesMazo(config.mazos).c5}, de 10 → {limitesMazo(config.mazos).c10}, Ases y los 2 → {limitesMazo(config.mazos).c20}, Jokers → {limitesMazo(config.mazos).c50}.
             </>
           )}
         </p>

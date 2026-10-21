@@ -44,9 +44,9 @@ export function ModalRondas() {
                   const entrada = ronda.entradas[participante.id];
                   const total = entrada ? calcularEntrada(entrada, partida.reglas).total : 0;
                   return (
-                    <li key={participante.id} className="flex justify-between">
-                      <span className="truncate text-slate-700">{participante.nombre}</span>
-                      <strong className={total < 0 ? 'text-rojo-osc' : 'text-azul'}>{formatearPuntos(total, true)}</strong>
+                    <li key={participante.id} className="fila-puntaje !items-start">
+                      <span className="fila-puntaje-nombre min-w-0 flex-1 text-slate-700">{participante.nombre}</span>
+                      <strong className={`fila-puntaje-valor ${total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(total, true)}</strong>
                     </li>
                   );
                 })}

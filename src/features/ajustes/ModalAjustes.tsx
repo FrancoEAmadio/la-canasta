@@ -6,12 +6,14 @@ import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
 import { Toggle } from '../../ui/Toggle';
+import { ModalFeedback } from './ModalFeedback';
 
 export function ModalAjustes() {
   const { ajustesAbiertos, setAjustesAbiertos, ajustes, cambiarAjustes, jugadores, reemplazarJugadores, partida, setPantallaActual } = useApp();
   const archivoRef = useRef<HTMLInputElement>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [confirmarBorrado, setConfirmarBorrado] = useState(false);
+  const [feedbackAbierto, setFeedbackAbierto] = useState(false);
 
   const exportar = () => {
     const copia = crearCopiaSeguridad(jugadores, partida.partidas, ajustes);
@@ -82,12 +84,21 @@ export function ModalAjustes() {
             <input ref={archivoRef} type="file" accept="application/json,.json" className="hidden" onChange={(evento) => void importar(evento.target.files?.[0])} />
           </section>
 
+          <section className="rounded-2xl border border-slate-200 p-3">
+            <h4 className="text-sm font-black text-azul">Tu opinión</h4>
+            <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">¿Encontraste un error o tenés una idea para mejorar la app? Contanos.</p>
+            <button type="button" onClick={() => setFeedbackAbierto(true)} className="btn-claro w-full py-2.5 text-sm">
+              💬 Enviar comentarios o reportar error
+            </button>
+          </section>
+
           <button type="button" onClick={() => setConfirmarBorrado(true)} className="btn-secundario py-3 text-sm">
             🗑️ Borrar todos los datos
           </button>
         </div>
       </Modal>
 
+      <ModalFeedback abierto={feedbackAbierto} onCerrar={() => setFeedbackAbierto(false)} />
       <ModalConfirmacion
         abierto={confirmarBorrado}
         titulo="Borrar todos los datos"

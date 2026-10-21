@@ -49,21 +49,21 @@ export function ModalPodio() {
               key={fila.participante.id}
               type="button"
               onClick={() => verAuditoria(partida, fila.participante.id)}
-              className={`flex items-center justify-between rounded-xl border p-3 text-left ${
+              className={`fila-puntaje rounded-xl border p-3 text-left ${
                 fila.posicion === 1 ? 'border-azul bg-azul text-white' : 'border-slate-200 bg-slate-50 text-tinta'
               }`}
             >
-              <span className="flex items-center gap-3">
-                <span className="w-7 text-center text-xl font-black">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
-                <span className="min-w-0">
-                  <span className="block truncate font-black">{fila.participante.nombre}</span>
+              <span className="fila-puntaje-izq">
+                <span className="w-7 shrink-0 text-center text-xl font-black">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="fila-puntaje-nombre font-black">{fila.participante.nombre}</span>
                   {subtituloParticipante(fila.participante) && (
-                    <span className="block truncate text-[11px] font-semibold opacity-80">{subtituloParticipante(fila.participante)}</span>
+                    <span className="fila-puntaje-nombre text-[11px] font-semibold opacity-80">{subtituloParticipante(fila.participante)}</span>
                   )}
                   <span className="block text-[10px] opacity-70">🔍 Ver desglose</span>
                 </span>
               </span>
-              <span className="text-xl font-black">{formatearPuntos(fila.puntos)}</span>
+              <span className="fila-puntaje-valor text-xl font-black">{formatearPuntos(fila.puntos)}</span>
             </button>
           ))}
 

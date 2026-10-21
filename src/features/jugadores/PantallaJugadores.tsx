@@ -275,20 +275,22 @@ function VistaHistorial() {
                     key={fila.participante.id}
                     type="button"
                     onClick={() => verAuditoria(item, fila.participante.id)}
-                    className={`flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-bold ${
+                    className={`fila-puntaje rounded-xl px-3 py-2 text-left text-sm font-bold ${
                       fila.posicion === 1 && !enCurso ? 'bg-azul text-white' : 'bg-slate-100 text-tinta'
                     }`}
                   >
-                    <span className="min-w-0">
-                      <span className="block truncate">
-                        {['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`} {fila.participante.nombre}
+                    <span className="fila-puntaje-izq">
+                      <span className="min-w-0 flex-1">
+                        <span className="fila-puntaje-nombre">
+                          {['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`} {fila.participante.nombre}
+                        </span>
+                        {subtituloParticipante(fila.participante) && (
+                          <span className="fila-puntaje-nombre text-[11px] font-semibold opacity-75">{subtituloParticipante(fila.participante)}</span>
+                        )}
+                        <span className="block text-[10px] font-semibold opacity-70">🔍 Ver desglose por ronda</span>
                       </span>
-                      {subtituloParticipante(fila.participante) && (
-                        <span className="block truncate text-[11px] font-semibold opacity-75">{subtituloParticipante(fila.participante)}</span>
-                      )}
-                      <span className="block text-[10px] font-semibold opacity-70">🔍 Ver desglose por ronda</span>
                     </span>
-                    <span className="text-base font-black">{formatearPuntos(fila.puntos)} pts</span>
+                    <span className="fila-puntaje-valor text-base font-black">{formatearPuntos(fila.puntos)} pts</span>
                   </button>
                 ))}
               </div>

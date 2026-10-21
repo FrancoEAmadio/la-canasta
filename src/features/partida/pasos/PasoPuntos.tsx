@@ -55,15 +55,15 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       </div>
 
       <div className="tarjeta tarjeta-acento-azul flex flex-col gap-2.5 p-4">
-        <div className="flex items-end justify-between gap-3">
-          <div className="min-w-0">
+        <div className="fila-puntaje !items-end">
+          <div className="min-w-0 flex-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
               {indice + 1} de {participantes.length}
             </span>
-            <h3 className="truncate font-display text-xl font-black text-azul">{participante.nombre}</h3>
-            {subtituloParticipante(participante) && <span className="block truncate text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
+            <h3 className="fila-puntaje-nombre font-display text-xl font-black text-azul">{participante.nombre}</h3>
+            {subtituloParticipante(participante) && <span className="fila-puntaje-nombre text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
           </div>
-          <div className="text-right">
+          <div className="fila-puntaje-valor">
             <span className={`block text-3xl font-black leading-none tabular-nums ${(vista.desgloses[participante.id]?.total ?? 0) < 0 ? 'text-rojo-osc' : 'text-azul'}`}>
               {formatearPuntos(vista.desgloses[participante.id]?.total ?? 0, true)}
             </span>
