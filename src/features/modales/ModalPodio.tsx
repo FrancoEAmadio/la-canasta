@@ -70,8 +70,9 @@ export function ModalPodio() {
                 </span>
 
                 <span className="whitespace-nowrap text-right text-2xl font-black tabular-nums">{formatearPuntos(fila.puntos)}</span>
-                <span aria-hidden="true" className="text-xl font-black opacity-50">
-                  ›
+                <span aria-hidden="true" className="flex flex-col items-center text-[10px] font-bold uppercase leading-tight opacity-70">
+                  <span className="text-xl font-black leading-none">›</span>
+                  Desglose
                 </span>
               </button>
             );
@@ -79,7 +80,7 @@ export function ModalPodio() {
 
           <div className="mt-2 shrink-0 rounded-2xl border border-slate-200 p-4">
             <h4 className="mb-3 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
-            <EvolucionPartida partida={partida} />
+            <EvolucionPartida partida={partida} sinDesglose />
           </div>
         </div>
 

@@ -7,14 +7,14 @@
  * Se calcula según el puntaje ACUMULADO al inicio de la ronda:
  *
  *   puntos < umbrales[0]                    → requisitos[0]   (por defecto: negativo (menos de 0)  → 15)
- *   umbrales[0] ≤ puntos < umbrales[1]      → requisitos[1]   (por defecto: de 0 a 1.499          → 50)
- *   umbrales[1] ≤ puntos < umbrales[2]      → requisitos[2]   (por defecto: de 1.500 a 2.999      → 90)
- *   puntos ≥ umbrales[2]                    → requisitos[3]   (por defecto: 3.000 o más           → 120)
+ *   umbrales[0] ≤ puntos < umbrales[1]      → requisitos[1]   (por defecto: de 0 a 2.499          → 50)
+ *   umbrales[1] ≤ puntos < umbrales[2]      → requisitos[2]   (por defecto: de 2.500 a 4.999      → 90)
+ *   puntos ≥ umbrales[2]                    → requisitos[3]   (por defecto: 5.000 o más           → 120)
  *
  * `requisitos` siempre debe tener un elemento más que `umbrales`.
  */
 export const CONFIG_APERTURA = {
-  umbrales: [0, 1500, 3000],
+  umbrales: [0, 2500, 5000],
   requisitos: [15, 50, 90, 120],
 } as const;
 

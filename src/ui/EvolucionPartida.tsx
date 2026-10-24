@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { calcularEntrada, formatearPuntos } from '../dominio/puntuacion';
 import { useApp } from '../estado/AppProvider';
 import type { Partida } from '../tipos';
@@ -25,7 +25,11 @@ export function construirSeries(partida: Partida): SerieGrafico[] {
 }
 
 /** Selector "📊 Ver Gráfico" / "📋 Ver Tabla" con la evolución de todos los jugadores y rondas. */
-export function EvolucionPartida({ partida }: { partida: Partida }) {
+/**
+ * `sinDesglose`: se usa en el podio, donde el ranking de arriba ya muestra el total y abre el desglose;
+ * la tabla queda solo con los puntos de cada ronda, sin repetir ni el total ni el acceso al desglose.
+ */
+export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Partida; sinDesglose?: boolean }) {
   const { verAuditoria } = useApp();
   const [vista, setVista] = useState<Vista>('grafico');
 
@@ -68,25 +72,27 @@ export function EvolucionPartida({ partida }: { partida: Partida }) {
                     Ronda {ronda.numero}
                   </th>
                 ))}
-                <th className="whitespace-nowrap p-2">Total</th>
+                {!sinDesglose && <th className="whitespace-nowrap p-2">Total</th>}
               </tr>
             </thead>
             <tbody>
               {filas.map((fila) => (
                 <tr
                   key={fila.participante.id}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`Ver el desglose de ${fila.participante.nombre}`}
-                  onClick={() => verAuditoria(partida, fila.participante.id)}
-                  onKeyDown={(evento) => (evento.key === 'Enter' || evento.key === ' ') && verAuditoria(partida, fila.participante.id)}
-                  className="group cursor-pointer border-t border-slate-100 text-tinta"
+                  {...(!sinDesglose && {
+                    tabIndex: 0,
+                    role: 'button',
+                    'aria-label': `Ver el desglose de ${fila.participante.nombre}`,
+                    onClick: () => verAuditoria(partida, fila.participante.id),
+                    onKeyDown: (evento: KeyboardEvent) => (evento.key === 'Enter' || evento.key === ' ') && verAuditoria(partida, fila.participante.id),
+                  })}
+                  className={`group border-t border-slate-100 text-tinta ${sinDesglose ? '' : 'cursor-pointer'}`}
                 >
                   <th className="sticky left-0 z-10 min-w-28 max-w-36 bg-white p-2 text-left font-black group-active:bg-blue-50">
                     <span className="block text-[13px] leading-tight" style={{ overflowWrap: 'anywhere' }}>
                       {fila.participante.nombre}
                     </span>
-                    <span className="block text-[10px] font-semibold text-azul">🔍 Ver desglose</span>
+                    {!sinDesglose && <span className="block text-[10px] font-semibold text-azul">🔍 Ver desglose</span>}
                   </th>
                   {fila.rondas.map((ronda) => (
                     <td key={ronda.numero} className="whitespace-nowrap p-2 tabular-nums group-active:bg-blue-50">
@@ -94,7 +100,7 @@ export function EvolucionPartida({ partida }: { partida: Partida }) {
                       <span className="block text-[10px] font-semibold text-slate-400">acum. {formatearPuntos(ronda.acumulado)}</span>
                     </td>
                   ))}
-                  <td className="whitespace-nowrap p-2 text-base font-black tabular-nums text-azul group-active:bg-blue-50">{formatearPuntos(fila.total)}</td>
+                  {!sinDesglose && <td className="whitespace-nowrap p-2 text-base font-black tabular-nums text-azul group-active:bg-blue-50">{formatearPuntos(fila.total)}</td>}
                 </tr>
               ))}
             </tbody>

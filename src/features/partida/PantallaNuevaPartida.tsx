@@ -43,7 +43,7 @@ export function PantallaNuevaPartida() {
   };
 
   return (
-    <main className="flex w-full flex-col gap-5 pt-5 pb-[calc(90px+env(safe-area-inset-bottom))]">
+    <main className="flex w-full flex-col gap-5 pt-5 pb-1">
       <div className="flex items-center justify-between">
         <div>
           <span className="block text-[10px] font-black uppercase tracking-widest text-blue-200">Nueva partida</span>

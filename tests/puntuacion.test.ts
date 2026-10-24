@@ -23,11 +23,11 @@ test('requisito de apertura por escalones (15 / 50 / 90 / 120)', () => {
   assert.equal(requisitoApertura(-300), 15);
   assert.equal(requisitoApertura(-1), 15);
   assert.equal(requisitoApertura(0), 50);
-  assert.equal(requisitoApertura(1499), 50);
-  assert.equal(requisitoApertura(1500), 90);
-  assert.equal(requisitoApertura(2999), 90);
-  assert.equal(requisitoApertura(3000), 120);
-  assert.equal(requisitoApertura(4800), 120);
+  assert.equal(requisitoApertura(2499), 50);
+  assert.equal(requisitoApertura(2500), 90);
+  assert.equal(requisitoApertura(4999), 90);
+  assert.equal(requisitoApertura(5000), 120);
+  assert.equal(requisitoApertura(7000), 120);
   assert.deepEqual(tramosApertura().map((t) => t.requisito), [15, 50, 90, 120]);
 });
 
