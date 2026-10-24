@@ -225,7 +225,11 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  overflow: hidden;
+  /* Solo se recorta en horizontal: en vertical la fila siempre crece a su contenido. */
+  overflow-x: clip;
+  overflow-y: visible;
+  /* Dentro de una columna con scroll las filas no se achican hasta cortarse. */
+  flex-shrink: 0;
 }
 .fila-puntaje-izq {
   flex: 1;
@@ -247,23 +251,39 @@ button:disabled {
   text-align: right;
 }
 
-/* Campos numéricos: sin flechitas y con números centrados. Se definen acá (no con utilidades de Tailwind)
-   porque .campo no está en una capa y le ganaría a cualquier utilidad de ancho, alto o tamaño de letra. */
+/* Campos numéricos: texto centrado y cifras de ancho fijo. Se definen acá (no con utilidades de Tailwind)
+   porque .campo no está en una capa y le ganaría a cualquier utilidad de ancho, alto o padding. */
 .campo-numero {
   text-align: center;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 0 0.5rem;
+}
+.campo-numero::placeholder {
+  font-weight: 500;
+}
+
+/* Cantidad de cartas escrita a mano (reemplaza al contador − / +). */
+.campo-cantidad {
+  width: 88px;
+  min-height: 48px;
+  padding: 0 0.25rem;
+  text-align: center;
+  font-size: 1.35rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  -moz-appearance: textfield;
-  appearance: textfield;
+  color: var(--azul);
 }
-.campo-numero::-webkit-outer-spin-button,
-.campo-numero::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.campo-cantidad::placeholder {
+  color: #cbd5e1;
+  font-weight: 700;
 }
-.campo-grande {
-  min-height: 3rem;
-  font-size: 1.4rem;
+.campo-cantidad-rojo {
+  color: var(--rojo-osc);
+}
+.campo-cantidad:disabled {
+  opacity: 0.4;
+  background: #f1f5f9;
 }
 .campo:focus {
   outline: none;

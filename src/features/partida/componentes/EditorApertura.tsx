@@ -16,18 +16,17 @@ const mostrar = (valor: number | null) => (valor === null ? '…' : valor.toLoca
  */
 const GRILLA = 'grid items-center gap-2 [grid-template-columns:1fr_110px_28px]';
 
-function FilaCampo({ etiqueta, valor, onCambiar, ariaLabel, min, separada = false }: {
+function FilaCampo({ etiqueta, valor, onCambiar, ariaLabel, separada = false }: {
   etiqueta: ReactNode;
   valor: number | null;
   onCambiar: (nuevo: number | null) => void;
   ariaLabel: string;
-  min: number;
   separada?: boolean;
 }) {
   return (
     <div className={`${GRILLA} ${separada ? 'border-t border-slate-200 pt-2.5' : ''}`}>
       <span className="min-w-0 text-sm font-bold leading-tight text-slate-700">{etiqueta}</span>
-      <CampoNumero valor={valor} onCambiar={onCambiar} etiqueta={ariaLabel} min={min} ancho={110} alto={42} />
+      <CampoNumero valor={valor} onCambiar={onCambiar} etiqueta={ariaLabel} ancho={110} alto={42} />
       <span className="w-7 text-sm font-bold text-slate-600">pts</span>
     </div>
   );
@@ -56,7 +55,7 @@ export function EditorApertura({ umbrales, requisitos, onCambiar }: Props) {
                 valor={umbrales[indice]!}
                 onCambiar={(nuevo) => onCambiar(reemplazar(umbrales, indice, nuevo), requisitos)}
                 ariaLabel={`Puntaje donde termina el escalón ${indice + primero}`}
-                min={1}
+                
               />
             )}
 
@@ -66,7 +65,7 @@ export function EditorApertura({ umbrales, requisitos, onCambiar }: Props) {
               valor={requisito}
               onCambiar={(nuevo) => onCambiar(umbrales, reemplazar(requisitos, indice, nuevo))}
               ariaLabel={`Puntos mínimos para abrirse en el escalón ${indice + primero}`}
-              min={0}
+              
             />
           </div>
         );

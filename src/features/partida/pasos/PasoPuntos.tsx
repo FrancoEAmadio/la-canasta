@@ -36,33 +36,27 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       {/* Marca el inicio del panel: al cambiar de jugador se vuelve acá (la barra de abajo queda fija arriba). */}
       <div ref={inicioPanelRef} aria-hidden="true" className="-mb-4 h-0" />
 
-      <div className="sticky top-0 z-20 -mx-4 flex flex-col gap-2 bg-noche/95 px-4 pb-2.5 pt-[max(0.5rem,env(safe-area-inset-top))] shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)] backdrop-blur">
-      <div className="scroll-oculto -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Jugadores / equipos">
-        {participantes.map((candidato, posicion) => {
-          const activo = posicion === indice;
-          const total = vista.desgloses[candidato.id]?.total ?? 0;
-          return (
-            <button
-              key={candidato.id}
-              ref={activo ? chipActivoRef : undefined}
-              type="button"
-              role="tab"
-              aria-selected={activo}
-              onClick={() => irA(posicion)}
-              className={`${activo ? 'btn-primario border-white/50' : 'btn-fantasma'} shrink-0 flex-col gap-0 px-4 py-2`}
-            >
-              <span className="max-w-28 truncate text-sm">{candidato.nombre}</span>
-              <span className="text-[11px] font-bold tabular-nums opacity-85">{formatearPuntos(total, true)}</span>
-            </button>
-          );
-        })}
-        </div>
-        <div className="fila-puntaje rounded-xl bg-white/10 px-3 py-1.5 text-white" aria-live="polite">
-          <span className="fila-puntaje-nombre min-w-0 flex-1 text-sm font-bold">{participante.nombre}</span>
-          <span className="fila-puntaje-valor text-sm font-black">
-            <span className="mr-1.5 text-[10px] font-bold uppercase text-blue-200">Subtotal de la ronda</span>
-            {formatearPuntos(vista.desgloses[participante.id]?.total ?? 0, true)}
-          </span>
+      {/* Única barra fija: pestañas de jugadores con su subtotal en vivo. */}
+      <div className="sticky top-0 z-20 -mx-4 border-b border-white/10 bg-noche px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))]">
+        <div className="scroll-oculto -mx-1 flex gap-2 overflow-x-auto px-1" role="tablist" aria-label="Jugadores / equipos">
+          {participantes.map((candidato, posicion) => {
+            const activo = posicion === indice;
+            const total = vista.desgloses[candidato.id]?.total ?? 0;
+            return (
+              <button
+                key={candidato.id}
+                ref={activo ? chipActivoRef : undefined}
+                type="button"
+                role="tab"
+                aria-selected={activo}
+                onClick={() => irA(posicion)}
+                className={`${activo ? 'btn-primario border-white/50' : 'btn-fantasma'} shrink-0 flex-col gap-0 px-4 py-1.5`}
+              >
+                <span className="max-w-28 truncate text-sm">{candidato.nombre}</span>
+                <span className="text-[11px] font-bold tabular-nums opacity-85">{formatearPuntos(total, true)}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -90,7 +84,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       <BloqueCartasMesa partida={partida} participante={participante} entrada={entrada} />
       <BloqueCartasMano partida={partida} participante={participante} entrada={entrada} />
 
-      <div className="pie-seguro sticky bottom-0 -mx-4 grid grid-cols-[auto_1fr] gap-2 bg-gradient-to-t from-noche via-noche/95 to-transparent px-4 pt-6">
+      <div className="pie-seguro sticky bottom-0 z-20 -mx-4 grid grid-cols-[auto_1fr] gap-2 border-t border-white/10 bg-noche px-4 pt-3">
         <button type="button" onClick={() => irA(indice - 1)} disabled={indice === 0} className="btn-fantasma px-4 py-3.5 text-sm">
           ← Anterior
         </button>

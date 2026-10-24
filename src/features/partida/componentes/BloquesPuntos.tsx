@@ -3,8 +3,7 @@ import { CONFIG_PUNTAJE } from '../../../constantes';
 import { FIGURAS_ESTANDAR, formatearPuntos, puntosTresRojos, subtotalBloque1, subtotalBloque2, subtotalBloque3, subtotalBloque4, valorCanasta } from '../../../dominio/puntuacion';
 import { maxCartas, maxTresNegros, maxTresRojos } from '../../../dominio/validaciones';
 import { useApp } from '../../../estado/AppProvider';
-import { vibrar } from '../../../infra/vibracion';
-import { ContadorMasMenos } from '../../../ui/ContadorMasMenos';
+import { CampoCantidad } from '../../../ui/CampoCantidad';
 import { Toggle } from '../../../ui/Toggle';
 import type { EntradaRonda, FiguraCanasta, Participante, Partida, TipoCanasta } from '../../../tipos';
 
@@ -45,7 +44,7 @@ function FilaInterruptor({ titulo, detalle, activo, onCambiar, aviso }: { titulo
   );
 }
 
-function FilaContador({ titulo, ejemplo, unitario, valor, subtotal, max, tono = 'azul', deshabilitado, rapidos, onCambiar }: {
+function FilaContador({ titulo, ejemplo, unitario, valor, subtotal, max, tono = 'azul', deshabilitado, onCambiar }: {
   titulo: string;
   ejemplo: string;
   unitario: string;
@@ -54,41 +53,18 @@ function FilaContador({ titulo, ejemplo, unitario, valor, subtotal, max, tono = 
   max: number;
   tono?: 'azul' | 'rojo';
   deshabilitado?: boolean;
-  /** Botones de suma rápida (por ejemplo +5 y +10) debajo del contador. */
-  rapidos?: number[];
   onCambiar: (nuevo: number) => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3 last:border-none last:pb-0">
-      <div className="min-w-0">
+    <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3 last:border-none last:pb-0">
+      <div className="min-w-0 flex-1 pt-0.5">
         <span className="block text-sm font-black leading-tight text-tinta">{titulo}</span>
         <span className="block text-[11px] font-semibold text-slate-500">{ejemplo}</span>
         <span className={`mt-0.5 block text-xs font-black tabular-nums ${tono === 'rojo' ? 'text-rojo-osc' : 'text-azul'}`}>
           {unitario} · {formatearPuntos(subtotal, true)} pts
         </span>
       </div>
-      <div className="flex shrink-0 flex-col items-end gap-1.5">
-        <ContadorMasMenos valor={valor} onCambiar={onCambiar} max={max} tono={tono} etiqueta={titulo} deshabilitado={deshabilitado} />
-        {rapidos && (
-          <div className="flex gap-1.5">
-            {rapidos.map((suma) => (
-              <button
-                key={suma}
-                type="button"
-                disabled={deshabilitado || valor >= max}
-                aria-label={`Sumar ${suma} a ${titulo}`}
-                onClick={() => {
-                  vibrar();
-                  onCambiar(Math.min(max, valor + suma));
-                }}
-                className="btn-claro h-8 min-w-12 px-3 text-xs font-black"
-              >
-                +{suma}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <CampoCantidad valor={valor} onCambiar={onCambiar} max={max} tono={tono} etiqueta={titulo} deshabilitado={deshabilitado} />
     </div>
   );
 }
@@ -222,7 +198,6 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
           valor={entrada.cartasMesa[fila.clave]}
           subtotal={entrada.cartasMesa[fila.clave] * fila.unitario}
           max={maxCartas(entradas, participante.id, 'mesa', fila.clave, partida.reglas.mazos)}
-          rapidos={[5, 10]}
           onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { ...actual.cartasMesa, [fila.clave]: nuevo } }))}
         />
       ))}

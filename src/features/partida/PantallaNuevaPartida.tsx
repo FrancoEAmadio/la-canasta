@@ -83,15 +83,10 @@ export function PantallaNuevaPartida() {
 
       <section className="tarjeta p-4">
         <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">2. Puntaje para ganar</h3>
-        <CampoNumero
-          valor={config.objetivo}
-          onCambiar={(objetivo) => actualizarConfig({ objetivo })}
-          etiqueta="Puntaje para ganar"
-          min={1}
-          step={500}
-          placeholder="Sin límite"
-          grande
-        />
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-bold text-slate-700">Puntos para ganar</span>
+          <CampoNumero valor={config.objetivo} onCambiar={(objetivo) => actualizarConfig({ objetivo })} etiqueta="Puntaje para ganar" placeholder="Sin límite" ancho={140} alto={46} />
+        </div>
         <p className="mt-2 text-xs text-slate-500">
           Escribí a cuántos puntos se juega. Cuando alguien llega a la meta, la app te ofrece cerrar la partida (o seguir jugando). Dejalo vacío para jugar sin límite.
         </p>
@@ -99,16 +94,10 @@ export function PantallaNuevaPartida() {
 
       <section className="tarjeta p-4">
         <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">3. Cantidad de mazos</h3>
-        <CampoNumero
-          valor={config.mazos}
-          onCambiar={(mazos) => actualizarConfig({ mazos })}
-          etiqueta="Cantidad de mazos"
-          min={MAZOS_MIN}
-          max={MAZOS_MAX}
-          step={2}
-          placeholder="4"
-          grande
-        />
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-bold text-slate-700">Mazos</span>
+          <CampoNumero valor={config.mazos} onCambiar={(mazos) => actualizarConfig({ mazos })} etiqueta="Cantidad de mazos" placeholder="4" ancho={140} alto={46} />
+        </div>
         <p className="mt-2 text-xs text-slate-500">
           Siempre par ({MAZOS_MIN}, 4, 6…). Cada mazo suma 52 cartas + 2 Jokers.
           {config.mazos !== null && config.mazos >= MAZOS_MIN && config.mazos % 2 === 0 && config.mazos <= MAZOS_MAX && (

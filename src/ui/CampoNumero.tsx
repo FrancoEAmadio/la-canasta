@@ -2,38 +2,34 @@ interface Props {
   valor: number | null;
   onCambiar: (nuevo: number | null) => void;
   etiqueta: string;
-  min?: number;
-  max?: number;
-  step?: number;
   placeholder?: string;
   /** Ancho fijo en px; sin esto el campo ocupa todo el ancho disponible. */
   ancho?: number;
   /** Alto fijo en px (si se omite, el alto estándar del campo). */
   alto?: number;
-  grande?: boolean;
 }
 
-/** Campo numérico que acepta quedar vacío mientras se escribe (vacío = null). */
-export function CampoNumero({ valor, onCambiar, etiqueta, min = 0, max, step = 1, placeholder, ancho, alto, grande = false }: Props) {
+/**
+ * Campo numérico: teclado numérico puro, solo dígitos, sin seleccionar el texto al enfocar
+ * (queda el cursor para escribir). Vacío = null.
+ */
+export function CampoNumero({ valor, onCambiar, etiqueta, placeholder, ancho, alto }: Props) {
   return (
     <input
-      type="number"
+      type="text"
       inputMode="numeric"
-      min={min}
-      max={max}
-      step={step}
-      value={valor ?? ''}
+      pattern="[0-9]*"
+      enterKeyHint="done"
+      autoComplete="off"
+      value={valor === null ? '' : String(valor)}
       placeholder={placeholder}
       aria-label={etiqueta}
-      onFocus={(evento) => evento.currentTarget.select()}
       onChange={(evento) => {
-        const texto = evento.target.value;
-        if (texto === '') return onCambiar(null);
-        const numero = Number(texto);
-        onCambiar(Number.isFinite(numero) ? Math.trunc(numero) : null);
+        const digitos = evento.target.value.replace(/\D/g, '').slice(0, 9);
+        onCambiar(digitos === '' ? null : Number(digitos));
       }}
       style={ancho || alto ? { width: ancho, height: alto, minHeight: alto, flexShrink: 0 } : undefined}
-      className={`campo campo-numero ${grande ? 'campo-grande' : ''}`}
+      className="campo campo-numero"
     />
   );
 }

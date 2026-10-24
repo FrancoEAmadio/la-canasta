@@ -34,15 +34,22 @@ export function EvolucionPartida({ partida }: { partida: Partida }) {
   const filas = calcularFilas(partida);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-2" role="tablist" aria-label="Forma de ver la evolución">
+    <div className="flex flex-col gap-4">
+      <div className="inline-flex self-start rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Forma de ver la evolución">
         {(
           [
-            ['grafico', '📊 Ver Gráfico'],
-            ['tabla', '📋 Ver Tabla'],
+            ['grafico', '📊 Gráfico'],
+            ['tabla', '📋 Tabla'],
           ] as const
         ).map(([id, etiqueta]) => (
-          <button key={id} type="button" role="tab" aria-selected={vista === id} onClick={() => setVista(id)} className={`${vista === id ? 'btn-primario' : 'btn-claro'} py-2.5 text-xs`}>
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={vista === id}
+            onClick={() => setVista(id)}
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-black transition-colors ${vista === id ? 'bg-white text-azul shadow-sm' : 'text-slate-500'}`}
+          >
             {etiqueta}
           </button>
         ))}

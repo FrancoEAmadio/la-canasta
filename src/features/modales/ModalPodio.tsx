@@ -30,44 +30,55 @@ export function ModalPodio() {
         <EncabezadoModal titulo={finalizada ? '🏆 Resultado final' : '🏆 Tabla general'} subtitulo={`${partida.rondas.length} ronda${partida.rondas.length === 1 ? '' : 's'} jugada${partida.rondas.length === 1 ? '' : 's'}`} onCerrar={cerrarPodio} />
 
         <div className="scroll-oculto flex flex-1 flex-col gap-2 overflow-y-auto p-4">
-          {ranking.map((fila) => (
-            <button
-              key={fila.participante.id}
-              type="button"
-              onClick={() => verAuditoria(partida, fila.participante.id)}
-              className={`fila-puntaje rounded-xl border p-3 text-left ${
-                fila.posicion === 1 ? 'border-azul bg-azul text-white' : 'border-slate-200 bg-slate-50 text-tinta'
-              }`}
-            >
-              <span className="fila-puntaje-izq">
-                <span className="w-7 shrink-0 text-center text-xl font-black">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
-                <span className="min-w-0 flex-1">
-                  <span className="fila-puntaje-nombre font-black">{fila.participante.nombre}</span>
+          {ranking.map((fila) => {
+            const primero = fila.posicion === 1;
+            const avance = objetivo !== null ? Math.max(0, Math.min(100, (fila.puntos / objetivo) * 100)) : 0;
+            return (
+              <button
+                key={fila.participante.id}
+                type="button"
+                onClick={() => verAuditoria(partida, fila.participante.id)}
+                aria-label={`Ver el desglose de ${fila.participante.nombre}`}
+                className={`grid shrink-0 grid-cols-[auto_1fr_auto_auto] items-center gap-3 rounded-2xl border px-3.5 py-3.5 text-left ${
+                  primero ? 'border-azul bg-azul text-white' : 'border-slate-200 bg-slate-50 text-tinta'
+                }`}
+              >
+                <span className="w-8 text-center text-2xl font-black leading-none">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
+
+                <span className="flex min-w-0 flex-col gap-1.5">
+                  <span className="text-base font-black leading-tight" style={{ overflowWrap: 'anywhere' }}>
+                    {fila.participante.nombre}
+                  </span>
                   {subtituloParticipante(fila.participante) && (
-                    <span className="fila-puntaje-nombre text-[11px] font-semibold opacity-80">{subtituloParticipante(fila.participante)}</span>
+                    <span className="text-[11px] font-semibold leading-tight opacity-80" style={{ overflowWrap: 'anywhere' }}>
+                      {subtituloParticipante(fila.participante)}
+                    </span>
                   )}
                   {objetivo !== null && (
                     <span
-                      className={`mt-1 block h-1.5 overflow-hidden rounded-full ${fila.posicion === 1 ? 'bg-white/25' : 'bg-slate-200'}`}
+                      className={`block h-1.5 overflow-hidden rounded-full ${primero ? 'bg-white/25' : 'bg-slate-200'}`}
                       role="progressbar"
-                      aria-valuenow={Math.round(Math.max(0, Math.min(100, (fila.puntos / objetivo) * 100)))}
+                      aria-valuenow={Math.round(avance)}
                       aria-valuemin={0}
                       aria-valuemax={100}
                       aria-label={`Avance hacia ${objetivo} puntos`}
                     >
-                      <span className={`block h-full rounded-full ${fila.posicion === 1 ? 'bg-white' : 'bg-azul-vivo'}`} style={{ width: `${Math.max(0, Math.min(100, (fila.puntos / objetivo) * 100))}%` }} />
+                      <span className={`block h-full rounded-full ${primero ? 'bg-white' : 'bg-azul-vivo'}`} style={{ width: `${avance}%` }} />
                     </span>
                   )}
-                  {fila.puntos < lider && <span className="block text-[11px] font-semibold opacity-80">A {formatearPuntos(lider - fila.puntos)} pts del líder</span>}
-                  <span className="block text-[10px] opacity-70">🔍 Ver desglose</span>
+                  {fila.puntos < lider && <span className="text-xs font-semibold leading-tight opacity-75">A {formatearPuntos(lider - fila.puntos)} pts del líder</span>}
                 </span>
-              </span>
-              <span className="fila-puntaje-valor text-xl font-black">{formatearPuntos(fila.puntos)}</span>
-            </button>
-          ))}
 
-          <div className="mt-2 rounded-xl border border-slate-200 p-3">
-            <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
+                <span className="whitespace-nowrap text-right text-2xl font-black tabular-nums">{formatearPuntos(fila.puntos)}</span>
+                <span aria-hidden="true" className="text-xl font-black opacity-50">
+                  ›
+                </span>
+              </button>
+            );
+          })}
+
+          <div className="mt-2 shrink-0 rounded-2xl border border-slate-200 p-4">
+            <h4 className="mb-3 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
             <EvolucionPartida partida={partida} />
           </div>
         </div>
