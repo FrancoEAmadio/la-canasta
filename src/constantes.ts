@@ -22,6 +22,8 @@ export const CONFIG_APERTURA = {
 export const CONFIG_PUNTAJE = {
   bonoCorteExacto: 100,
   bonoCierre: 100,
+  /** "Espejito": en el pozo está dada vuelta la misma carta que se tiene en la mano al repartir. */
+  bonoEspejito: 100,
   /** Índice = cantidad de Tres Rojos (0 a 5). */
   tresRojos: [0, 100, 200, 300, 500, 1000],
   /** Cada Tres Rojo a partir del sexto (solo posible con 4 mazos o más) suma esto además de los +1000 de los primeros 5. */
@@ -32,10 +34,13 @@ export const CONFIG_PUNTAJE = {
   /** Valor por carta (a favor si está en la mesa, en contra si quedó en la mano). */
   valorCarta: { c5: 5, c10: 10, c20: 20, c50: 50 },
   penalidadTresNegro: 100,
-  /** Premios opcionales por cantidad de canastas en una misma ronda (se activan al crear la partida). */
+  /** Premios fijos de las partidas viejas (las nuevas usan el premio configurable). */
   premioCanastron: { cantidad: 5, puntos: 500 },
   premioCanastaDeCanastas: { cantidad: 7, puntos: 2000 },
 } as const;
+
+/** Premio por cantidad de canastas sugerido al crear la partida (arranca desactivado). */
+export const PREMIO_CANASTAS_DEFECTO = { activo: false, cantidad: 5, puntos: 500 } as const;
 
 /** Puntaje para ganar sugerido al crear la partida (se escribe a mano; vacío = sin límite). */
 export const PUNTAJE_OBJETIVO_DEFECTO: number | null = 15000;

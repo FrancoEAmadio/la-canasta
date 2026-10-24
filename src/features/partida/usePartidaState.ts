@@ -4,6 +4,7 @@ import {
   MAZOS_DEFECTO,
   MIN_EQUIPOS,
   MIN_JUGADORES_INDIVIDUAL,
+  PREMIO_CANASTAS_DEFECTO,
   PUNTAJE_OBJETIVO_DEFECTO,
 } from '../../constantes';
 import { aperturaPorDefecto, aperturaValida } from '../../dominio/apertura';
@@ -43,7 +44,10 @@ export interface ConfigNuevaPartida {
   equipos: (string | null)[][];
   /** null = sin límite de puntos (campo vacío). */
   objetivo: number | null;
-  premiosPorCantidad: boolean;
+  /** Premio por cantidad de canastas: se activa con el interruptor; los campos pueden quedar vacíos (null) mientras se escribe. */
+  premioActivo: boolean;
+  premioCantidad: number | null;
+  premioPuntos: number | null;
   /** null mientras el campo está vacío; se valida al empezar (par, mínimo 2). */
   mazos: number | null;
   /** Un valor por tramo; null = campo vacío (se usa el valor por defecto al empezar). */
@@ -57,7 +61,9 @@ function crearConfigInicial(): ConfigNuevaPartida {
     idsIndividual: [],
     equipos: Array.from({ length: MIN_EQUIPOS }, () => Array<string | null>(JUGADORES_POR_EQUIPO).fill(null)),
     objetivo: PUNTAJE_OBJETIVO_DEFECTO,
-    premiosPorCantidad: false,
+    premioActivo: PREMIO_CANASTAS_DEFECTO.activo,
+    premioCantidad: PREMIO_CANASTAS_DEFECTO.cantidad,
+    premioPuntos: PREMIO_CANASTAS_DEFECTO.puntos,
     mazos: MAZOS_DEFECTO,
     aperturaUmbrales: [...aperturaPorDefecto().umbrales],
     aperturaRequisitos: [...aperturaPorDefecto().requisitos],
@@ -70,7 +76,8 @@ export type ResultadoComenzar =
   | 'equipos_incompletos'
   | 'mazos_invalidos'
   | 'objetivo_invalido'
-  | 'apertura_invalida';
+  | 'apertura_invalida'
+  | 'premio_invalido';
 
 interface Parametros {
   setPantallaActual: (pantalla: PantallaId) => void;
@@ -185,6 +192,10 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     };
     if (!aperturaValida(apertura)) return 'apertura_invalida';
 
+    if (config.premioActivo && (config.premioCantidad === null || !(config.premioCantidad >= 1) || config.premioPuntos === null || config.premioPuntos < 0)) {
+      return 'premio_invalido';
+    }
+
     const jugadores = obtenerJugadores();
     const buscar = (id: string) => jugadores.find((jugador) => jugador.id === id);
     let participantes: Participante[] = [];
@@ -216,7 +227,15 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
       modo: config.modo,
       participantes,
       objetivo: config.objetivo,
-      reglas: { premiosPorCantidad: config.premiosPorCantidad, mazos: config.mazos, apertura },
+      reglas: {
+        premioCanastas: {
+          activo: config.premioActivo,
+          cantidad: config.premioCantidad ?? PREMIO_CANASTAS_DEFECTO.cantidad,
+          puntos: config.premioPuntos ?? PREMIO_CANASTAS_DEFECTO.puntos,
+        },
+        mazos: config.mazos,
+        apertura,
+      },
     });
     guardarEstado([...partidasRef.current, nueva]);
     setActivaId(nueva.id);
@@ -371,11 +390,11 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     [activaId, guardarEstado, obtenerJugadores, reemplazarJugadores]
   );
 
-  /** Cambia los puntos mínimos para abrirse de la partida en juego. */
-  const actualizarApertura = useCallback(
-    (apertura: Partida['reglas']['apertura']) => {
+  /** Cambia reglas de la partida en juego (mínimos para abrirse y/o premio por canastas). */
+  const actualizarReglas = useCallback(
+    (cambios: Partial<Pick<Partida['reglas'], 'apertura' | 'premioCanastas'>>) => {
       if (!activaId) return;
-      mutarPartida(activaId, (partida) => ({ ...partida, reglas: { ...partida.reglas, apertura } }));
+      mutarPartida(activaId, (partida) => ({ ...partida, reglas: { ...partida.reglas, ...cambios } }));
     },
     [activaId, mutarPartida]
   );
@@ -457,7 +476,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     eliminarUltimaRonda,
     confirmarRonda,
     finalizarPartida,
-    actualizarApertura,
+    actualizarReglas,
   };
 }
 

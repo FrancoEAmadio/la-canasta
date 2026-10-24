@@ -4,6 +4,7 @@ import {
   CLAVE_LS_PARTIDAS_EN_CURSO,
   CLAVE_LS_PARTIDAS_FINALIZADAS,
   CLAVE_LS_VERSION,
+  PREMIO_CANASTAS_DEFECTO,
   VERSION_ESQUEMA,
 } from '../constantes.ts';
 import { crearEstadisticasVacias } from '../dominio/estadisticas.ts';
@@ -75,6 +76,7 @@ function compactarEntrada(entrada: EntradaRonda): EntradaCompacta {
   const compacta: EntradaCompacta = {};
   if (entrada.corteExacto) compacta.ce = 1;
   if (entrada.cerro) compacta.ci = 1;
+  if (entrada.espejito) compacta.es = 1;
   if (entrada.tresRojos) compacta.tr = entrada.tresRojos;
   const canastas = Object.entries(entrada.canastas).filter(([, tipo]) => tipo !== 'ninguna');
   if (canastas.length) compacta.ca = Object.fromEntries(canastas);
@@ -104,6 +106,7 @@ function hidratarEntrada(cruda: unknown): EntradaRonda {
   return {
     corteExacto: c.ce === 1,
     cerro: c.ci === 1,
+    espejito: c.es === 1,
     tresRojos: typeof c.tr === 'number' ? c.tr : 0,
     canastas: { ...base.canastas, ...((c.ca as Partial<EntradaRonda['canastas']>) ?? {}) },
     canastaComodines: c.cc === 1,
@@ -142,8 +145,13 @@ function esPartidaValida(crudo: unknown): crudo is Partida {
 
 function hidratarReglas(cruda: Partial<Partida['reglas']> | undefined): Partida['reglas'] {
   const apertura = cruda?.apertura;
+  const premio = cruda?.premioCanastas;
+  const premioValido = !!premio && typeof premio.cantidad === 'number' && premio.cantidad >= 1 && typeof premio.puntos === 'number';
+  // Partidas viejas: tenían un único interruptor "premiosPorCantidad" con premios fijos.
+  const heredado = cruda?.premiosHeredados === true || (!premioValido && (cruda as { premiosPorCantidad?: boolean } | undefined)?.premiosPorCantidad === true);
   return {
-    premiosPorCantidad: cruda?.premiosPorCantidad ?? false,
+    premioCanastas: premioValido ? { activo: premio!.activo === true, cantidad: premio!.cantidad, puntos: premio!.puntos } : { ...PREMIO_CANASTAS_DEFECTO },
+    ...(heredado ? { premiosHeredados: true } : {}),
     // Las partidas anteriores a esta opción se jugaron con 2 mazos.
     mazos: mazosValidos(cruda?.mazos ?? null) ? cruda!.mazos! : 2,
     apertura:

@@ -33,7 +33,11 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
 
   return (
     <section className="flex flex-col gap-4" onTouchStart={iniciarTouch} onTouchEnd={finalizarTouch}>
-      <div ref={inicioPanelRef} className="scroll-oculto -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Jugadores / equipos">
+      {/* Marca el inicio del panel: al cambiar de jugador se vuelve acá (la barra de abajo queda fija arriba). */}
+      <div ref={inicioPanelRef} aria-hidden="true" className="-mb-4 h-0" />
+
+      <div className="sticky top-0 z-20 -mx-4 flex flex-col gap-2 bg-noche/95 px-4 pb-2.5 pt-[max(0.5rem,env(safe-area-inset-top))] shadow-[0_8px_16px_-8px_rgba(0,0,0,0.6)] backdrop-blur">
+      <div className="scroll-oculto -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Jugadores / equipos">
         {participantes.map((candidato, posicion) => {
           const activo = posicion === indice;
           const total = vista.desgloses[candidato.id]?.total ?? 0;
@@ -52,6 +56,14 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
             </button>
           );
         })}
+        </div>
+        <div className="fila-puntaje rounded-xl bg-white/10 px-3 py-1.5 text-white" aria-live="polite">
+          <span className="fila-puntaje-nombre min-w-0 flex-1 text-sm font-bold">{participante.nombre}</span>
+          <span className="fila-puntaje-valor text-sm font-black">
+            <span className="mr-1.5 text-[10px] font-bold uppercase text-blue-200">Subtotal de la ronda</span>
+            {formatearPuntos(vista.desgloses[participante.id]?.total ?? 0, true)}
+          </span>
+        </div>
       </div>
 
       <div className="tarjeta tarjeta-acento-azul flex flex-col gap-2.5 p-4">

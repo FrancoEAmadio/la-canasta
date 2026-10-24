@@ -3,7 +3,7 @@ import { tramosApertura } from '../dominio/apertura';
 import type { CategoriaRegla } from '../tipos';
 
 const pts = (valor: number) => valor.toLocaleString('es-AR');
-const { canastaEstandar, canastaAses, canastaComodines, tresRojos, bonoCierre, bonoCorteExacto, penalidadTresNegro } = CONFIG_PUNTAJE;
+const { canastaEstandar, canastaAses, canastaComodines, tresRojos, bonoCierre, bonoCorteExacto, penalidadTresNegro, bonoEspejito } = CONFIG_PUNTAJE;
 
 const textoTramos = tramosApertura(CONFIG_APERTURA)
   .map((tramo) => {
@@ -79,6 +79,14 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
         texto: `Son cartas de bonificación y no sirven para formar canastas. Se bajan apenas se tienen y se reemplazan robando del mazo.\n\n• 1 Tres Rojo: +${tresRojos[1]}\n• 2 Tres Rojos: +${tresRojos[2]}\n• 3 Tres Rojos: +${tresRojos[3]}\n• 4 Tres Rojos: +${tresRojos[4]}\n• 5 Tres Rojos: +${pts(tresRojos[5])}\n• Más de 5 (con 4 mazos o más): +${pts(tresRojos[5])} por los primeros 5, más +${CONFIG_PUNTAJE.tresRojoExtra} por cada Tres Rojo adicional (6 = +${pts(tresRojos[5] + CONFIG_PUNTAJE.tresRojoExtra)}, 7 = +${pts(tresRojos[5] + 2 * CONFIG_PUNTAJE.tresRojoExtra)}, 8 = +${pts(tresRojos[5] + 3 * CONFIG_PUNTAJE.tresRojoExtra)}…).`,
       },
       {
+        titulo: '🪞 El espejito',
+        texto: `Si al momento de repartir la carta que se da vuelta en el pozo es la misma que tenés en tu mano, tenés espejito y sumás un bono de +${bonoEspejito} puntos.\n\nEn la app se marca con el interruptor "¿Tenés espejito?" en las bonificaciones de cada jugador o equipo, y aparece en el resumen de la ronda y en el historial.`,
+      },
+      {
+        titulo: '🧺 Premio por cantidad de canastas',
+        texto: 'Es un premio opcional que se configura al crear la partida (y se puede cambiar durante el juego). Elegís cuántas canastas hay que alcanzar o superar en una misma ronda y cuántos puntos extra suma ese premio.\n\nSi un jugador o equipo llega a esa cantidad, el premio se suma una sola vez en esa ronda y aparece en sus bonos.',
+      },
+      {
         titulo: '🏁 Cerrar la ronda',
         texto: `Quien se queda sin cartas en la mano cierra la ronda y suma un bono de +${bonoCierre} puntos (distinto del bono del corte exacto al repartir). Solo un jugador o equipo puede cerrar cada ronda.\n\nLos demás restan los puntos de las cartas que les quedaron en la mano.`,
       },
@@ -90,7 +98,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
     items: [
       {
         titulo: '📱 Los 4 bloques de carga',
-        texto: `Al terminar la ronda, cada jugador/equipo carga:\n\n1. BONIFICACIONES: corte exacto (+${bonoCorteExacto}), cierre (+${bonoCierre}) y Tres Rojos.\n2. CANASTAS: pura / impura por figura, Ases y Comodines.\n3. CARTAS EN MESA (a favor): cantidad de cartas de 5, 10, 20 y Jokers; la app multiplica por vos.\n4. CARTAS EN MANO (en contra): Tres Negros y cartas que quedaron sin bajar.\n\nPuntaje de la ronda = Canastas + Cartas + Bonos − Penalizaciones.`,
+        texto: `Al terminar la ronda, cada jugador/equipo carga:\n\n1. BONIFICACIONES: corte exacto (+${bonoCorteExacto}), cierre (+${bonoCierre}), espejito (+${bonoEspejito}) y Tres Rojos.\n2. CANASTAS: pura / impura por figura, Ases y Comodines.\n3. CARTAS EN MESA (a favor): cantidad de cartas de 5, 10, 20 y Jokers; la app multiplica por vos.\n4. CARTAS EN MANO (en contra): Tres Negros y cartas que quedaron sin bajar.\n\nPuntaje de la ronda = Canastas + Cartas + Bonos − Penalizaciones.`,
       },
       {
         titulo: '🏆 Cómo se gana',
@@ -104,7 +112,7 @@ export const CATEGORIAS_REGLAS: CategoriaRegla[] = [
     items: [
       {
         titulo: '🌎 La Canasta tiene muchas versiones',
-        texto: `El juego nació en Uruguay y se popularizó por toda América con pequeñas diferencias entre mesas. Esta app sigue las reglas de tu mesa. Otras fuentes (por ejemplo, el manual de Fournier) describen:\n\n• Meta de 5.000 puntos.\n• El pozo arranca con una sola carta boca arriba tras repartir 11 cartas por jugador.\n• Los 4 Tres Rojos valen 800 y los Tres Negros penalizan distinto.\n• Mínimos de apertura de 50 / 90 / 150 puntos (y 15 si el puntaje es negativo).\n• Premios por cantidad de canastas: Canastrón (5 canastas) +${CONFIG_PUNTAJE.premioCanastron.puntos} y Canasta de canastas (7) +${pts(CONFIG_PUNTAJE.premioCanastaDeCanastas.puntos)}.\n\nLos premios por cantidad de canastas son opcionales y se activan al crear cada partida.`,
+        texto: `El juego nació en Uruguay y se popularizó por toda América con pequeñas diferencias entre mesas. Esta app sigue las reglas de tu mesa. Otras fuentes (por ejemplo, el manual de Fournier) describen:\n\n• Meta de 5.000 puntos.\n• El pozo arranca con una sola carta boca arriba tras repartir 11 cartas por jugador.\n• Los 4 Tres Rojos valen 800 y los Tres Negros penalizan distinto.\n• Mínimos de apertura de 50 / 90 / 150 puntos (y 15 si el puntaje es negativo).\n• Premios por cantidad de canastas: Canastrón (5 canastas) +${CONFIG_PUNTAJE.premioCanastron.puntos} y Canasta de canastas (7) +${pts(CONFIG_PUNTAJE.premioCanastaDeCanastas.puntos)}.\n\nEl premio por cantidad de canastas es opcional: al crear la partida elegís a cuántas canastas se llega y cuántos puntos extra suma.`,
       },
     ],
   },

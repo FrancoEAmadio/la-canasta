@@ -1,9 +1,9 @@
-import { MAZOS_DEFECTO, MAZOS_MAX, MAZOS_MIN } from '../constantes.ts';
+import { MAZOS_DEFECTO, MAZOS_MAX, MAZOS_MIN, PREMIO_CANASTAS_DEFECTO } from '../constantes.ts';
 import type { ReglasPartida } from '../tipos/index.ts';
 import { aperturaPorDefecto } from './apertura.ts';
 
 export function reglasPorDefecto(): ReglasPartida {
-  return { premiosPorCantidad: false, mazos: MAZOS_DEFECTO, apertura: aperturaPorDefecto() };
+  return { premioCanastas: { ...PREMIO_CANASTAS_DEFECTO }, mazos: MAZOS_DEFECTO, apertura: aperturaPorDefecto() };
 }
 
 /** La cantidad de mazos tiene que ser un número par entre el mínimo y el máximo. */

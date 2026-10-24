@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApp } from '../../estado/AppProvider';
 import { calcularEntrada, formatearPuntos } from '../../dominio/puntuacion';
+import { EvolucionPartida } from '../../ui/EvolucionPartida';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
 
@@ -23,6 +24,12 @@ export function ModalRondas() {
               Para corregir una ronda volvé primero al paso «1. Mesa» (o terminá la carga actual).
             </p>
           )}
+          {partida.rondas.length > 0 && (
+            <div className="rounded-xl border border-slate-200 p-3">
+              <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Evolución de la partida</h4>
+              <EvolucionPartida partida={partida} />
+            </div>
+          )}
           {partida.rondas.map((ronda, indice) => (
             <div key={ronda.numero} className="rounded-xl border border-slate-200 p-3">
               <div className="mb-2 flex items-center justify-between">
@@ -42,10 +49,23 @@ export function ModalRondas() {
               <ul className="flex flex-col gap-0.5 text-sm">
                 {partida.participantes.map((participante) => {
                   const entrada = ronda.entradas[participante.id];
-                  const total = entrada ? calcularEntrada(entrada, partida.reglas).total : 0;
+                  const desglose = entrada ? calcularEntrada(entrada, partida.reglas) : null;
+                  const total = desglose?.total ?? 0;
+                  const destacados = desglose?.bonos.filter((linea) => linea.clave) ?? [];
                   return (
                     <li key={participante.id} className="fila-puntaje !items-start">
-                      <span className="fila-puntaje-nombre min-w-0 flex-1 text-slate-700">{participante.nombre}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="fila-puntaje-nombre text-slate-700">{participante.nombre}</span>
+                        {destacados.length > 0 && (
+                          <span className="mt-0.5 flex flex-wrap gap-1">
+                            {destacados.map((linea) => (
+                              <span key={linea.clave} className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-azul">
+                                {linea.clave === 'espejito' ? '🪞' : '🧺'} {linea.etiqueta} {formatearPuntos(linea.puntos, true)}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                      </span>
                       <strong className={`fila-puntaje-valor ${total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(total, true)}</strong>
                     </li>
                   );

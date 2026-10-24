@@ -52,7 +52,7 @@ export function ModalMenuPartida() {
               📤 Compartir tabla
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setReglasAbiertas(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              🔓 Mínimos para abrirse
+              ⚙️ Reglas de la partida
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setAjustesAbiertos(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
               ⚙️ Ajustes
@@ -90,7 +90,7 @@ export function ModalMenuPartida() {
           setPantallaActual('inicio');
         }}
       />
-      {reglasAbiertas && <ModalReglasPartida partida={partida} onGuardar={estado.actualizarApertura} onCerrar={() => setReglasAbiertas(false)} />}
+      {reglasAbiertas && <ModalReglasPartida partida={partida} onGuardar={estado.actualizarReglas} onCerrar={() => setReglasAbiertas(false)} />}
       <ModalAviso abierto={aviso !== null} titulo="Aviso" mensaje={aviso} onCerrar={() => setAviso(null)} textoBoton="OK" />
     </>
   );

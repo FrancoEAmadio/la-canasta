@@ -29,6 +29,8 @@ export interface CartasMano extends CartasMesa {
 export interface EntradaRonda {
   corteExacto: boolean;
   cerro: boolean;
+  /** "Espejito": al repartir, en el pozo está dada vuelta la misma carta que tiene en la mano. */
+  espejito: boolean;
   tresRojos: number;
   canastas: Record<FiguraCanasta, TipoCanasta>;
   canastaComodines: boolean;
@@ -42,9 +44,20 @@ export interface ConfigAperturaPartida {
   requisitos: number[];
 }
 
+/** Premio extra opcional por llegar a cierta cantidad de canastas en una misma ronda. */
+export interface PremioCanastas {
+  activo: boolean;
+  /** Cantidad de canastas que hay que alcanzar o superar. */
+  cantidad: number;
+  /** Puntos extra que se suman (una sola vez por ronda). */
+  puntos: number;
+}
+
 export interface ReglasPartida {
-  /** Premios opcionales: Canastrón (5 canastas) y Canasta de canastas (7). */
-  premiosPorCantidad: boolean;
+  /** Premio por cantidad de canastas, configurable al crear la partida. */
+  premioCanastas: PremioCanastas;
+  /** Solo partidas viejas: tenían los premios fijos Canastrón (5) y Canasta de canastas (7). */
+  premiosHeredados?: boolean;
   /** Cantidad de mazos con los que se juega (par, mínimo 2). Define el máximo de cartas de cada contador. */
   mazos: number;
   /** Puntos mínimos para abrirse / levantar el pozo según el puntaje acumulado. */
@@ -52,6 +65,8 @@ export interface ReglasPartida {
 }
 
 export interface LineaDesglose {
+  /** Identifica bonos que se muestran destacados en el historial. */
+  clave?: 'espejito' | 'premio_canastas';
   etiqueta: string;
   cantidad?: number;
   puntos: number;

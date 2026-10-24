@@ -1,26 +1,11 @@
 import { useState } from 'react';
 import { useApp } from '../../estado/AppProvider';
 import { calcularRanking, subtituloParticipante } from '../../dominio/partida';
-import { calcularEntrada, formatearPuntos } from '../../dominio/puntuacion';
+import { formatearPuntos } from '../../dominio/puntuacion';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
-import { GraficoEvolucion } from '../../ui/GraficoEvolucion';
-import type { SerieGrafico } from '../../ui/GraficoEvolucion';
+import { EvolucionPartida } from '../../ui/EvolucionPartida';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalAviso } from '../../ui/ModalAviso';
-import type { Partida } from '../../tipos';
-
-function construirSeries(partida: Partida): SerieGrafico[] {
-  return partida.participantes.map((participante) => {
-    let acumulado = 0;
-    const puntos = [0];
-    for (const ronda of partida.rondas) {
-      const entrada = ronda.entradas[participante.id];
-      if (entrada) acumulado += calcularEntrada(entrada, partida.reglas).total;
-      puntos.push(acumulado);
-    }
-    return { nombre: participante.nombre, puntos };
-  });
-}
 
 export function ModalPodio() {
   const { podioPartidaId, cerrarPodio, partida: estado, verAuditoria } = useApp();
@@ -30,7 +15,8 @@ export function ModalPodio() {
   if (!partida) return null;
   const finalizada = partida.estado === 'finalizada';
   const ranking = calcularRanking(partida);
-  const series = construirSeries(partida);
+  const lider = ranking[0]?.puntos ?? 0;
+  const { objetivo } = partida;
 
   const compartir = async () => {
     const resultado = await compartirTexto('La Canasta', textoResultado(partida));
@@ -60,6 +46,19 @@ export function ModalPodio() {
                   {subtituloParticipante(fila.participante) && (
                     <span className="fila-puntaje-nombre text-[11px] font-semibold opacity-80">{subtituloParticipante(fila.participante)}</span>
                   )}
+                  {objetivo !== null && (
+                    <span
+                      className={`mt-1 block h-1.5 overflow-hidden rounded-full ${fila.posicion === 1 ? 'bg-white/25' : 'bg-slate-200'}`}
+                      role="progressbar"
+                      aria-valuenow={Math.round(Math.max(0, Math.min(100, (fila.puntos / objetivo) * 100)))}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label={`Avance hacia ${objetivo} puntos`}
+                    >
+                      <span className={`block h-full rounded-full ${fila.posicion === 1 ? 'bg-white' : 'bg-azul-vivo'}`} style={{ width: `${Math.max(0, Math.min(100, (fila.puntos / objetivo) * 100))}%` }} />
+                    </span>
+                  )}
+                  {fila.puntos < lider && <span className="block text-[11px] font-semibold opacity-80">A {formatearPuntos(lider - fila.puntos)} pts del líder</span>}
                   <span className="block text-[10px] opacity-70">🔍 Ver desglose</span>
                 </span>
               </span>
@@ -69,7 +68,7 @@ export function ModalPodio() {
 
           <div className="mt-2 rounded-xl border border-slate-200 p-3">
             <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
-            {partida.rondas.length >= 1 ? <GraficoEvolucion series={series} /> : <p className="text-xs text-slate-500">Todavía no hay rondas cerradas.</p>}
+            <EvolucionPartida partida={partida} />
           </div>
         </div>
 

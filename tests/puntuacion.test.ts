@@ -79,16 +79,39 @@ test('ejemplo completo: canastas + cartas + bonos − penalizaciones', () => {
   assert.deepEqual(desglose.conteo, { puras: 1, impuras: 1, comodines: 0 });
 });
 
-test('premios opcionales por cantidad de canastas (Canastrón / Canasta de canastas)', () => {
+test('espejito suma +100 como bonificación', () => {
+  const entrada = crearEntradaVacia();
+  entrada.espejito = true;
+  const desglose = calcularEntrada(entrada);
+  assert.equal(desglose.total, 100);
+  assert.equal(subtotalBloque1(entrada), 100);
+  assert.deepEqual(desglose.bonos.map((linea) => linea.clave), ['espejito']);
+});
+
+test('premio por cantidad de canastas configurable (alcanzar o superar)', () => {
+  const entrada = crearEntradaVacia();
+  for (const figura of ['4', '5', '6'] as const) entrada.canastas[figura] = 'impura'; // 3 canastas
+  const reglas = { ...reglasPorDefecto(), premioCanastas: { activo: true, cantidad: 3, puntos: 700 } };
+  const base = calcularEntrada(entrada, reglasPorDefecto()).total;
+  assert.equal(calcularEntrada(entrada, reglas).total - base, 700); // alcanza
+  entrada.canastas['7'] = 'impura'; // 4 canastas: supera, el premio se suma una sola vez
+  assert.equal(calcularEntrada(entrada, reglas).total - calcularEntrada(entrada, reglasPorDefecto()).total, 700);
+  const exigente = { ...reglas, premioCanastas: { activo: true, cantidad: 5, puntos: 700 } };
+  assert.equal(calcularEntrada(entrada, exigente).total, calcularEntrada(entrada, reglasPorDefecto()).total); // no llega
+  const desactivado = { ...reglas, premioCanastas: { activo: false, cantidad: 3, puntos: 700 } };
+  assert.equal(calcularEntrada(entrada, desactivado).total, calcularEntrada(entrada, reglasPorDefecto()).total);
+  const conPremio = calcularEntrada(entrada, reglas);
+  assert.equal(conPremio.bonos.find((linea) => linea.clave === 'premio_canastas')?.puntos, 700);
+});
+
+test('partidas viejas conservan los premios fijos (Canastrón 5 / Canasta de canastas 7)', () => {
   const entrada = crearEntradaVacia();
   for (const figura of ['4', '5', '6', '7', '8'] as const) entrada.canastas[figura] = 'impura';
-  const sinPremio = calcularEntrada(entrada, { premiosPorCantidad: false }).total;
-  const conPremio = calcularEntrada(entrada, { premiosPorCantidad: true }).total;
-  assert.equal(conPremio - sinPremio, 500);
+  const heredadas = { ...reglasPorDefecto(), premiosHeredados: true };
+  assert.equal(calcularEntrada(entrada, heredadas).total - calcularEntrada(entrada).total, 500);
   entrada.canastas['9'] = 'impura';
   entrada.canastaComodines = true; // 7 canastas
-  const siete = calcularEntrada(entrada, { premiosPorCantidad: true }).total - calcularEntrada(entrada).total;
-  assert.equal(siete, 2000);
+  assert.equal(calcularEntrada(entrada, heredadas).total - calcularEntrada(entrada).total, 2000);
 });
 
 test('formato de puntos', () => {

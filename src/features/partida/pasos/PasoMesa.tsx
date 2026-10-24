@@ -2,6 +2,7 @@ import { CONFIG_PUNTAJE } from '../../../constantes';
 import { subtituloParticipante } from '../../../dominio/partida';
 import { formatearPuntos } from '../../../dominio/puntuacion';
 import { useApp } from '../../../estado/AppProvider';
+import { EvolucionPartida } from '../../../ui/EvolucionPartida';
 import { InsigniaApertura } from '../componentes/InsigniaApertura';
 import type { PropsPaso } from './tiposPaso';
 
@@ -9,6 +10,7 @@ export function PasoMesa({ partida, vista }: PropsPaso) {
   const { partida: estado, abrirPodio } = useApp();
   const { objetivo } = partida;
   const v = CONFIG_PUNTAJE.valorCarta;
+  const lider = Math.max(...partida.participantes.map((participante) => vista.totalesInicioRonda[participante.id] ?? 0));
 
   const terminarPartida = () => {
     if (estado.finalizarPartida(false)) abrirPodio(partida.id);
@@ -44,16 +46,31 @@ export function PasoMesa({ partida, vista }: PropsPaso) {
               </div>
 
               {objetivo !== null && (
+                <div className="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400">
+                  <span>Meta {objetivo.toLocaleString('es-AR')} pts</span>
+                  <span>{Math.round(avance)}%</span>
+                </div>
+              )}
+              {objetivo !== null && (
                 <div className="h-1.5 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-valuenow={Math.round(avance)} aria-valuemin={0} aria-valuemax={100} aria-label={`Avance hacia ${objetivo} puntos`}>
                   <div className="h-full rounded-full bg-azul-vivo transition-all" style={{ width: `${avance}%` }} />
                 </div>
               )}
+
+              {acumulado < lider && <span className="-mt-1 text-xs font-semibold text-slate-500">A {formatearPuntos(lider - acumulado)} pts del líder</span>}
 
               <InsigniaApertura puntosAcumulados={acumulado} config={partida.reglas.apertura} />
             </article>
           );
         })}
       </div>
+
+      {partida.rondas.length > 0 && (
+        <section className="tarjeta p-4">
+          <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">Evolución de la partida</h3>
+          <EvolucionPartida partida={partida} />
+        </section>
+      )}
 
       <details className="tarjeta p-4">
         <summary className="cursor-pointer text-sm font-black text-azul">📌 Referencia rápida de puntos</summary>
@@ -62,9 +79,9 @@ export function PasoMesa({ partida, vista }: PropsPaso) {
           <li>Canasta estándar: pura <strong>{CONFIG_PUNTAJE.canastaEstandar.pura}</strong> / impura <strong>{CONFIG_PUNTAJE.canastaEstandar.impura}</strong></li>
           <li>Canasta de Ases: pura <strong>{CONFIG_PUNTAJE.canastaAses.pura}</strong> / impura <strong>{CONFIG_PUNTAJE.canastaAses.impura}</strong></li>
           <li>Canasta de Comodines: <strong>{CONFIG_PUNTAJE.canastaComodines}</strong></li>
-          <li>Tres Rojos: <strong>100</strong> c/u · los 4: <strong>{CONFIG_PUNTAJE.tresRojos[4]}</strong></li>
+          <li>Tres Rojos: <strong>100</strong> c/u · 4: <strong>{CONFIG_PUNTAJE.tresRojos[4]}</strong> · 5: <strong>{CONFIG_PUNTAJE.tresRojos[5].toLocaleString('es-AR')}</strong></li>
           <li>Tres Negros en mano: <strong>−{CONFIG_PUNTAJE.penalidadTresNegro}</strong> c/u</li>
-          <li>Corte exacto: <strong>+{CONFIG_PUNTAJE.bonoCorteExacto}</strong> · Cerrar la ronda: <strong>+{CONFIG_PUNTAJE.bonoCierre}</strong></li>
+          <li>Corte exacto: <strong>+{CONFIG_PUNTAJE.bonoCorteExacto}</strong> · Cerrar la ronda: <strong>+{CONFIG_PUNTAJE.bonoCierre}</strong> · Espejito: <strong>+{CONFIG_PUNTAJE.bonoEspejito}</strong></li>
         </ul>
       </details>
 

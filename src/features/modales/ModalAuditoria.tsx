@@ -53,6 +53,28 @@ export function ModalAuditoria() {
             </tbody>
           </table>
         )}
+        {filas.some((fila) => (fila.desglose?.bonos.length ?? 0) > 0) && (
+          <section className="mt-4 rounded-xl border border-slate-200 p-3">
+            <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Detalle de bonos por ronda</h4>
+            <ul className="flex flex-col gap-1.5 text-xs text-tinta">
+              {filas
+                .filter((fila) => (fila.desglose?.bonos.length ?? 0) > 0)
+                .map((fila) => (
+                  <li key={fila.numero} className="flex gap-2">
+                    <strong className="w-8 shrink-0 text-azul">R{fila.numero}</strong>
+                    <span className="min-w-0 flex-1" style={{ overflowWrap: 'anywhere' }}>
+                      {fila.desglose!.bonos.map((linea, indice) => (
+                        <span key={indice} className="mr-2 inline-block whitespace-nowrap">
+                          {linea.clave === 'espejito' ? '🪞 ' : linea.clave === 'premio_canastas' ? '🧺 ' : ''}
+                          {linea.etiqueta} <strong>{formatearPuntos(linea.puntos, true)}</strong>
+                        </span>
+                      ))}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
       </div>
     </Modal>
   );

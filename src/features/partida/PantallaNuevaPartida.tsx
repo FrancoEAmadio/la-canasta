@@ -3,9 +3,9 @@ import { MAZOS_MAX, MAZOS_MIN, limitesMazo } from '../../constantes';
 import { useApp } from '../../estado/AppProvider';
 import { CampoNumero } from '../../ui/CampoNumero';
 import { ModalAviso } from '../../ui/ModalAviso';
-import { Toggle } from '../../ui/Toggle';
 import type { ModoJuego } from '../../tipos';
 import { EditorApertura } from './componentes/EditorApertura';
+import { EditorPremioCanastas } from './componentes/EditorPremioCanastas';
 import { SelectorIndividual, SelectorParejas } from './componentes/SelectorJugadores';
 import type { ResultadoComenzar } from './usePartidaState';
 
@@ -20,6 +20,7 @@ const TITULOS_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
   mazos_invalidos: 'Cantidad de mazos',
   objetivo_invalido: 'Puntaje para ganar',
   apertura_invalida: 'Mínimos para abrirse',
+  premio_invalido: 'Premio por canastas',
 };
 
 const MENSAJES_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
@@ -28,6 +29,7 @@ const MENSAJES_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
   mazos_invalidos: `La cantidad de mazos tiene que ser un número par entre ${MAZOS_MIN} y ${MAZOS_MAX} (2, 4, 6…).`,
   objetivo_invalido: 'El puntaje para ganar tiene que ser mayor que cero (o dejalo vacío para jugar sin límite).',
   apertura_invalida: 'En los mínimos para abrirse, los límites de puntaje tienen que ir de menor a mayor.',
+  premio_invalido: 'Completá la cantidad de canastas (1 o más) y los puntos del premio, o desactivá el premio.',
 };
 
 export function PantallaNuevaPartida() {
@@ -118,14 +120,20 @@ export function PantallaNuevaPartida() {
         </p>
       </section>
 
-      <section className="tarjeta flex items-start justify-between gap-3 p-4">
-        <div>
-          <h3 className="text-sm font-black text-tinta">Premios por cantidad de canastas</h3>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">
-            Opcional. Canastrón (5 canastas en una ronda): +500. Canasta de canastas (7): +2.000.
-          </p>
-        </div>
-        <Toggle etiqueta="Premios por cantidad de canastas" checked={config.premiosPorCantidad} onChange={(valor) => actualizarConfig({ premiosPorCantidad: valor })} />
+      <section className="tarjeta p-4">
+        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h3>
+        <EditorPremioCanastas
+          activo={config.premioActivo}
+          cantidad={config.premioCantidad}
+          puntos={config.premioPuntos}
+          onCambiar={(cambios) =>
+            actualizarConfig({
+              ...(cambios.activo !== undefined && { premioActivo: cambios.activo }),
+              ...(cambios.cantidad !== undefined && { premioCantidad: cambios.cantidad }),
+              ...(cambios.puntos !== undefined && { premioPuntos: cambios.puntos }),
+            })
+          }
+        />
       </section>
 
       <section className="tarjeta tarjeta-acento-azul p-4">

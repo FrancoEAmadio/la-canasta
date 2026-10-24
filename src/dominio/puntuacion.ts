@@ -24,6 +24,7 @@ export function crearEntradaVacia(): EntradaRonda {
   return {
     corteExacto: false,
     cerro: false,
+    espejito: false,
     tresRojos: 0,
     canastas: crearCanastasVacias(),
     canastaComodines: false,
@@ -97,6 +98,9 @@ export function calcularEntrada(
   if (entrada.cerro) {
     bonos.push({ etiqueta: 'Cerró / cortó la ronda', puntos: CONFIG_PUNTAJE.bonoCierre });
   }
+  if (entrada.espejito) {
+    bonos.push({ clave: 'espejito', etiqueta: 'Espejito', puntos: CONFIG_PUNTAJE.bonoEspejito });
+  }
   if (entrada.tresRojos > 0) {
     bonos.push({
       etiqueta: entrada.tresRojos === 4 ? 'Los 4 Tres Rojos' : entrada.tresRojos === 5 ? 'Los 5 Tres Rojos' : entrada.tresRojos > 5 ? 'Tres Rojos (5 + extras)' : 'Tres Rojos',
@@ -124,14 +128,24 @@ export function calcularEntrada(
     canastas.push({ etiqueta: 'Canasta de Comodines', puntos: CONFIG_PUNTAJE.canastaComodines });
   }
 
-  // Premios opcionales por cantidad de canastas
-  if (reglas.premiosPorCantidad) {
-    const total = puras + impuras + comodines;
+  // Premio por cantidad de canastas (configurable al crear la partida)
+  const totalCanastas = puras + impuras + comodines;
+  const premio = reglas.premioCanastas;
+  if (premio.activo) {
+    if (totalCanastas >= premio.cantidad && premio.puntos !== 0) {
+      bonos.push({
+        clave: 'premio_canastas',
+        etiqueta: `Premio por canastas (${totalCanastas} de ${premio.cantidad})`,
+        cantidad: totalCanastas,
+        puntos: premio.puntos,
+      });
+    }
+  } else if (reglas.premiosHeredados) {
     const { premioCanastaDeCanastas, premioCanastron } = CONFIG_PUNTAJE;
-    if (total >= premioCanastaDeCanastas.cantidad) {
-      bonos.push({ etiqueta: `Canasta de canastas (${premioCanastaDeCanastas.cantidad}+)`, puntos: premioCanastaDeCanastas.puntos });
-    } else if (total >= premioCanastron.cantidad) {
-      bonos.push({ etiqueta: `Canastrón (${premioCanastron.cantidad}+)`, puntos: premioCanastron.puntos });
+    if (totalCanastas >= premioCanastaDeCanastas.cantidad) {
+      bonos.push({ clave: 'premio_canastas', etiqueta: `Canasta de canastas (${premioCanastaDeCanastas.cantidad}+)`, puntos: premioCanastaDeCanastas.puntos });
+    } else if (totalCanastas >= premioCanastron.cantidad) {
+      bonos.push({ clave: 'premio_canastas', etiqueta: `Canastrón (${premioCanastron.cantidad}+)`, puntos: premioCanastron.puntos });
     }
   }
 
@@ -183,6 +197,7 @@ export function subtotalBloque1(entrada: EntradaRonda): number {
   return (
     (entrada.corteExacto ? CONFIG_PUNTAJE.bonoCorteExacto : 0) +
     (entrada.cerro ? CONFIG_PUNTAJE.bonoCierre : 0) +
+    (entrada.espejito ? CONFIG_PUNTAJE.bonoEspejito : 0) +
     puntosTresRojos(entrada.tresRojos)
   );
 }
