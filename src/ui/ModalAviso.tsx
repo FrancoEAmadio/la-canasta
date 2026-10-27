@@ -12,7 +12,7 @@ interface Props {
 
 export function ModalAviso({ abierto, titulo, mensaje, onCerrar, textoBoton = 'Entendido', zIndex = 'z-[70]' }: Props) {
   return (
-    <Modal abierto={abierto} onCerrar={onCerrar} ancho="max-w-xs" zIndex={zIndex} etiqueta={titulo} cerrarAlHacerClickAfuera>
+    <Modal abierto={abierto} onCerrar={onCerrar} ancho="max-w-xs" zIndex={zIndex} etiqueta={titulo} cerrarAlHacerClickAfuera desenfocarFondo={false}>
       <EncabezadoModal titulo={titulo} onCerrar={onCerrar} />
       <div className="p-5 text-center text-sm leading-relaxed text-slate-700">{mensaje}</div>
       <div className="border-t border-slate-200 p-4">

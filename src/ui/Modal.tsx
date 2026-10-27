@@ -8,6 +8,8 @@ interface Props {
   zIndex?: string;
   cerrarAlHacerClickAfuera?: boolean;
   etiqueta?: string;
+  /** Desenfoca lo que hay detrás. Se apaga en modales que se abren encima de otro (el desenfoque apilado se ve con bandas negras en algunos celulares). */
+  desenfocarFondo?: boolean;
 }
 
 export function Modal({
@@ -18,6 +20,7 @@ export function Modal({
   zIndex = 'z-50',
   cerrarAlHacerClickAfuera = false,
   etiqueta,
+  desenfocarFondo = true,
 }: Props) {
   if (!abierto) return null;
 
@@ -28,7 +31,7 @@ export function Modal({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm ${zIndex}`}
+      className={`fixed inset-0 flex items-center justify-center bg-black/70 p-3 ${desenfocarFondo ? 'backdrop-blur-sm' : ''} ${zIndex}`}
       onClick={alTocarFondo}
       role="dialog"
       aria-modal="true"

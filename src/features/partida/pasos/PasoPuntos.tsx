@@ -17,8 +17,9 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
   const totalActivo = vista.desgloses[participante.id]?.total ?? 0;
   const { mezcla, reparte } = vista.quienReparte;
   /** La barra muestra como máximo 3 pestañas enteras, con la del jugador activo en el medio (o en el borde si es el primero o el último). */
-  const desde = Math.max(0, Math.min(indice - 1, participantes.length - 3));
-  const visibles = participantes.slice(desde, desde + 3);
+  const cantidad = participantes.length;
+  const ventana = Math.min(3, cantidad);
+  const desde = Math.max(0, Math.min(indice - 1, cantidad - 3));
   const inicioPanelRef = useRef<HTMLDivElement | null>(null);
 
   const terminarPartida = () => {
@@ -60,28 +61,32 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       {/* Barra fija: solo las pestañas de jugadores (todas del mismo ancho) con sus puntos. */}
       <div className="sticky top-0 z-20 -mx-4 px-4 pb-1 pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="rounded-2xl bg-noche-2/90 p-1 shadow-lg shadow-black/30 ring-1 ring-white/15 backdrop-blur">
-          <div role="tablist" aria-label="Jugadores / equipos" className="selector-jugadores">
-            {visibles.map((candidato, desfase) => {
-              const posicion = desde + desfase;
-              const activo = posicion === indice;
-              const total = vista.desgloses[candidato.id]?.total ?? 0;
-              return (
-                <button
-                  key={candidato.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={activo}
-                  title={candidato.nombre}
-                  onClick={() => irA(posicion)}
-                  className={`selector-jugador ${activo ? 'bg-white text-azul shadow-sm' : 'text-white/80 active:bg-white/10'}`}
-                >
-                  <span className="selector-jugador-nombre text-xs font-black">{candidato.nombre}</span>
-                  <span className={`selector-jugador-total text-[11px] font-bold tabular-nums ${activo ? (total < 0 ? 'text-rojo-osc' : 'text-azul-vivo') : 'opacity-75'}`}>
-                    {formatearPuntos(total, true)}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="selector-ventana">
+            <div role="tablist" aria-label="Jugadores / equipos" className="selector-pista" style={{ width: `${(cantidad / ventana) * 100}%`, transform: `translateX(-${(desde / cantidad) * 100}%)` }}>
+              <span aria-hidden="true" className="selector-indicador" style={{ width: `${100 / cantidad}%`, transform: `translateX(${indice * 100}%)` }}>
+                <span />
+              </span>
+              {participantes.map((candidato, posicion) => {
+                const activo = posicion === indice;
+                const total = vista.desgloses[candidato.id]?.total ?? 0;
+                return (
+                  <button
+                    key={candidato.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activo}
+                    title={candidato.nombre}
+                    onClick={() => irA(posicion)}
+                    className={`selector-jugador ${activo ? 'text-azul' : 'text-white/80 active:bg-white/10'}`}
+                  >
+                    <span className="selector-jugador-nombre text-xs font-black">{candidato.nombre}</span>
+                    <span className={`selector-jugador-total text-[11px] font-bold tabular-nums ${activo ? (total < 0 ? 'text-rojo-osc' : 'text-azul-vivo') : 'opacity-75'}`}>
+                      {formatearPuntos(total, true)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

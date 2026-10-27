@@ -28,7 +28,7 @@ export function ModalConfirmacion({
   zIndex = 'z-[70]',
 }: Props) {
   return (
-    <Modal abierto={abierto} onCerrar={onCancelar} ancho="max-w-sm" zIndex={zIndex} etiqueta={titulo} cerrarAlHacerClickAfuera>
+    <Modal abierto={abierto} onCerrar={onCancelar} ancho="max-w-sm" zIndex={zIndex} etiqueta={titulo} cerrarAlHacerClickAfuera desenfocarFondo={false}>
       <EncabezadoModal titulo={titulo} onCerrar={onCancelar} tono={tono === 'peligro' ? 'rojo' : 'azul'} />
       <div className="flex flex-col gap-3 p-5">
         <div className="text-base font-bold text-slate-900">{descripcion}</div>

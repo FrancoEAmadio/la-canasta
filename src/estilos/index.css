@@ -251,12 +251,36 @@ button:disabled {
   text-align: right;
 }
 
-/* Selector fijo de jugadores: todas las pestañas miden exactamente lo mismo, sin importar el largo del nombre. */
-.selector-jugadores {
+/* Selector fijo de jugadores: muestra 3 pestañas enteras del mismo ancho. Al cambiar de jugador,
+   la pista se desliza y el indicador blanco se mueve hasta la pestaña elegida. */
+.selector-ventana {
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+.selector-pista {
+  position: relative;
   display: flex;
-  gap: 4px;
+  transition: transform 0.3s ease;
+}
+.selector-indicador {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 2px;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+.selector-indicador > span {
+  display: block;
+  height: 100%;
+  border-radius: 0.625rem;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .selector-jugador {
+  position: relative;
+  z-index: 1;
   flex: 1 1 0%;
   min-width: 0;
   height: 2.75rem;
@@ -266,7 +290,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  transition: background-color 0.15s, color 0.15s;
+  transition: color 0.3s ease;
 }
 .selector-jugador-nombre,
 .selector-jugador-total {
@@ -276,6 +300,12 @@ button:disabled {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .selector-pista,
+  .selector-indicador {
+    transition: none;
+  }
 }
 
 /* Campos numéricos: texto centrado y cifras de ancho fijo. Se definen acá (no con utilidades de Tailwind)
