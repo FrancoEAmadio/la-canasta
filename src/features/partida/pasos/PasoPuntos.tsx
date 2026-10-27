@@ -67,7 +67,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       {/* Marca el inicio del panel: al cambiar de jugador se vuelve acá (el selector queda fijo arriba). */}
       <div ref={inicioPanelRef} aria-hidden="true" className="-mb-4 h-0" />
 
-      {/* Cabecera fija: pestañas de igual tamaño + mínimo para abrirse + subtotal de la ronda en vivo. */}
+      {/* Barra fija: solo las pestañas de jugadores (todas del mismo ancho) con sus puntos. */}
       <div className="sticky top-0 z-20 -mx-4 px-4 pb-1 pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="rounded-2xl bg-noche-2/90 p-1 shadow-lg shadow-black/30 ring-1 ring-white/15 backdrop-blur">
           <div role="tablist" aria-label="Jugadores / equipos" className={`selector-jugadores ${repartidos ? '' : 'selector-jugadores-scroll scroll-oculto'}`}>
@@ -93,26 +93,24 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
               );
             })}
           </div>
-
-          <div className="mt-1 flex items-center justify-between gap-2 rounded-xl bg-black/20 px-2 py-1.5">
-            <div className="min-w-0 flex-1">
-              <InsigniaApertura puntosAcumulados={vista.totalesInicioRonda[participante.id] ?? 0} config={partida.reglas.apertura} enLinea />
-            </div>
-            <div className="flex shrink-0 items-baseline gap-1.5">
-              <span className="text-[10px] font-bold uppercase text-blue-200">Ronda</span>
-              <span className={`text-xl font-black leading-none tabular-nums ${totalActivo < 0 ? 'text-red-300' : 'text-white'}`}>{formatearPuntos(totalActivo, true)}</span>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Quién está cargando: nombre completo y, en parejas, sus integrantes. */}
-      <div className="px-1">
-        <span className="text-[10px] font-black uppercase tracking-widest text-blue-200">
-          {indice + 1} de {participantes.length}
-        </span>
-        <h3 className="fila-puntaje-nombre font-display text-xl font-black text-white">{participante.nombre}</h3>
-        {subtituloParticipante(participante) && <span className="fila-puntaje-nombre text-xs font-semibold text-blue-200">{subtituloParticipante(participante)}</span>}
+      <div className="tarjeta tarjeta-acento-azul flex flex-col gap-2.5 p-4">
+        <div className="fila-puntaje !items-end">
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              {indice + 1} de {participantes.length}
+            </span>
+            <h3 className="fila-puntaje-nombre font-display text-xl font-black text-azul">{participante.nombre}</h3>
+            {subtituloParticipante(participante) && <span className="fila-puntaje-nombre text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
+          </div>
+          <div className="fila-puntaje-valor">
+            <span className={`block text-3xl font-black leading-none tabular-nums ${totalActivo < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(totalActivo, true)}</span>
+            <span className="text-[10px] font-bold uppercase text-slate-400">esta ronda</span>
+          </div>
+        </div>
+        <InsigniaApertura puntosAcumulados={vista.totalesInicioRonda[participante.id] ?? 0} config={partida.reglas.apertura} compacta />
       </div>
 
       <BloqueBonificaciones partida={partida} participante={participante} entrada={entrada} />
