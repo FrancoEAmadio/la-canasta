@@ -256,9 +256,6 @@ button:disabled {
   display: flex;
   gap: 4px;
 }
-.selector-jugadores-scroll {
-  overflow-x: auto;
-}
 .selector-jugador {
   flex: 1 1 0%;
   min-width: 0;
@@ -270,9 +267,6 @@ button:disabled {
   justify-content: center;
   border-radius: 0.75rem;
   transition: background-color 0.15s, color 0.15s;
-}
-.selector-jugadores-scroll .selector-jugador {
-  flex: 0 0 5.5rem;
 }
 .selector-jugador-nombre,
 .selector-jugador-total {

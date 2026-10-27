@@ -6,6 +6,7 @@ import { compartirTexto, textoResultado } from '../../infra/compartir';
 import { EvolucionPartida } from '../../ui/EvolucionPartida';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalAviso } from '../../ui/ModalAviso';
+import { HistorialRondas } from './HistorialRondas';
 
 export function ModalPodio() {
   const { podioPartidaId, cerrarPodio, partida: estado, verAuditoria } = useApp();
@@ -82,6 +83,9 @@ export function ModalPodio() {
             <h4 className="mb-3 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
             <EvolucionPartida partida={partida} sinDesglose />
           </div>
+
+          {/* Corregir / deshacer rondas: solo en la partida que se está jugando. */}
+          {!finalizada && estado.partidaActiva?.id === partida.id && <HistorialRondas alCambiarRonda={cerrarPodio} />}
         </div>
 
         <div className="grid gap-2 border-t border-slate-200 p-4">

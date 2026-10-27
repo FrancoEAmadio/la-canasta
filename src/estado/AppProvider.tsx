@@ -31,8 +31,6 @@ interface ContextoApp {
   menuPartidaAbierto: boolean;
   setMenuPartidaAbierto: (abierto: boolean) => void;
 
-  rondasAbiertas: boolean;
-  setRondasAbiertas: (abierto: boolean) => void;
 
   ajustesAbiertos: boolean;
   setAjustesAbiertos: (abierto: boolean) => void;
@@ -56,7 +54,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [ajustes, setAjustes] = useState<Ajustes>(cargarAjustes);
   const [podioPartidaId, setPodioPartidaId] = useState<string | null>(null);
   const [menuPartidaAbierto, setMenuPartidaAbierto] = useState(false);
-  const [rondasAbiertas, setRondasAbiertas] = useState(false);
   const [ajustesAbiertos, setAjustesAbiertos] = useState(false);
   const [auditoria, setAuditoria] = useState<{ partida: Partida; participanteId: string } | null>(null);
   const [jugadorViendoStats, setJugadorViendoStats] = useState<JugadorPermanente | null>(null);
@@ -123,8 +120,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cerrarPodio,
       menuPartidaAbierto,
       setMenuPartidaAbierto,
-      rondasAbiertas,
-      setRondasAbiertas,
       ajustesAbiertos,
       setAjustesAbiertos,
       auditoria,
@@ -150,7 +145,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       abrirPodio,
       cerrarPodio,
       menuPartidaAbierto,
-      rondasAbiertas,
       ajustesAbiertos,
       auditoria,
       jugadorViendoStats,

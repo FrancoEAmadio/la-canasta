@@ -7,7 +7,6 @@ import { ModalAuditoria } from './features/modales/ModalAuditoria';
 import { ModalEstadisticasJugador } from './features/modales/ModalEstadisticasJugador';
 import { ModalMenuPartida } from './features/modales/ModalMenuPartida';
 import { ModalPodio } from './features/modales/ModalPodio';
-import { ModalRondas } from './features/modales/ModalRondas';
 import { PantallaNuevaPartida } from './features/partida/PantallaNuevaPartida';
 import { PantallaPartida } from './features/partida/PantallaPartida';
 import { PantallaReglas } from './features/wiki/PantallaReglas';
@@ -47,7 +46,6 @@ function ContenidoApp() {
       <ModalAuditoria />
       <ModalEstadisticasJugador />
       <ModalMenuPartida />
-      <ModalRondas />
       <ModalAjustes />
     </div>
   );

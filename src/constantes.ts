@@ -94,8 +94,4 @@ export const CLAVE_LS_PARTIDAS_FINALIZADAS = 'lacanasta_partidas_finalizadas';
 export const CLAVE_LS_AJUSTES = 'lacanasta_ajustes';
 export const CLAVE_LS_VERSION = 'lacanasta_version';
 
-// ── Gestos ──────────────────────────────────────────────────────────────
-export const UMBRAL_SWIPE_PX = 45;
-export const RATIO_PREDOMINIO_HORIZONTAL = 1.35;
-
 export const TEXTO_FOOTER = 'Desarrollado por Franco Ezequiel Amadio';

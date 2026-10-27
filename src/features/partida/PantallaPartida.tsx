@@ -12,7 +12,7 @@ const PASOS: [PasoPartida, string][] = [
 const ORDEN: PasoPartida[] = ['puntos', 'resumen'];
 
 export function PantallaPartida() {
-  const { partida: estado, setMenuPartidaAbierto, setRondasAbiertas, abrirPodio, setPantallaActual } = useApp();
+  const { partida: estado, setMenuPartidaAbierto, abrirPodio, setPantallaActual } = useApp();
   const { partidaActiva: partida, vista } = estado;
 
   // Si no hay partida activa (por ejemplo, tras descartarla), se vuelve al inicio.
@@ -50,14 +50,9 @@ export function PantallaPartida() {
               </h2>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setRondasAbiertas(true)} className="btn-claro px-3.5 py-2.5 text-xs">
-              📋 Tabla
-            </button>
-            <button type="button" onClick={() => abrirPodio(partida.id)} className="btn-claro px-3.5 py-2.5 text-xs">
-              🏆 Podio
-            </button>
-          </div>
+          <button type="button" onClick={() => abrirPodio(partida.id)} className="btn-claro px-3.5 py-2.5 text-xs">
+            🏆 Tabla
+          </button>
         </div>
 
         <nav className="flex items-center gap-2" aria-label="Pasos de la ronda">

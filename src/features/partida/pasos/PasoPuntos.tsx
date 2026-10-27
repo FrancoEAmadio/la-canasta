@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { subtituloParticipante } from '../../../dominio/partida';
 import { formatearPuntos } from '../../../dominio/puntuacion';
 import { useApp } from '../../../estado/AppProvider';
-import { useSwipeHorizontal } from '../../../ui/useSwipeHorizontal';
 import { InsigniaApertura } from '../componentes/InsigniaApertura';
 import { BloqueBonificaciones, BloqueCanastas, BloqueCartasMano, BloqueCartasMesa } from '../componentes/BloquesPuntos';
 import type { PropsPaso } from './tiposPaso';
@@ -17,9 +16,9 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
   const editando = borrador.editandoIdx !== null;
   const totalActivo = vista.desgloses[participante.id]?.total ?? 0;
   const { mezcla, reparte } = vista.quienReparte;
-  /** Hasta 4 participantes se reparten en columnas iguales; con más, el selector se desliza. */
-  const repartidos = participantes.length <= 4;
-  const chipActivoRef = useRef<HTMLButtonElement | null>(null);
+  /** La barra muestra como máximo 3 pestañas enteras, con la del jugador activo en el medio (o en el borde si es el primero o el último). */
+  const desde = Math.max(0, Math.min(indice - 1, participantes.length - 3));
+  const visibles = participantes.slice(desde, desde + 3);
   const inicioPanelRef = useRef<HTMLDivElement | null>(null);
 
   const terminarPartida = () => {
@@ -31,17 +30,8 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
     inicioPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const { iniciarTouch, finalizarTouch } = useSwipeHorizontal({
-    onSwipeIzquierda: () => indice < participantes.length - 1 && irA(indice + 1),
-    onSwipeDerecha: () => indice > 0 && irA(indice - 1),
-  });
-
-  useEffect(() => {
-    chipActivoRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }, [indice]);
-
   return (
-    <section className="flex flex-col gap-4" onTouchStart={iniciarTouch} onTouchEnd={finalizarTouch}>
+    <section className="flex flex-col gap-4">
       {/* Aviso compacto de quién mezcla y corta, y quién reparte, en esta mano. */}
       {!editando && (
         <div className="flex items-center justify-between gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-[11px] text-blue-100">
@@ -70,14 +60,14 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       {/* Barra fija: solo las pestañas de jugadores (todas del mismo ancho) con sus puntos. */}
       <div className="sticky top-0 z-20 -mx-4 px-4 pb-1 pt-[max(0.5rem,env(safe-area-inset-top))]">
         <div className="rounded-2xl bg-noche-2/90 p-1 shadow-lg shadow-black/30 ring-1 ring-white/15 backdrop-blur">
-          <div role="tablist" aria-label="Jugadores / equipos" className={`selector-jugadores ${repartidos ? '' : 'selector-jugadores-scroll scroll-oculto'}`}>
-            {participantes.map((candidato, posicion) => {
+          <div role="tablist" aria-label="Jugadores / equipos" className="selector-jugadores">
+            {visibles.map((candidato, desfase) => {
+              const posicion = desde + desfase;
               const activo = posicion === indice;
               const total = vista.desgloses[candidato.id]?.total ?? 0;
               return (
                 <button
                   key={candidato.id}
-                  ref={activo ? chipActivoRef : undefined}
                   type="button"
                   role="tab"
                   aria-selected={activo}

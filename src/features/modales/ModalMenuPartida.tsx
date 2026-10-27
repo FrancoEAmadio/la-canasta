@@ -6,7 +6,7 @@ import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
 import { ModalReglasPartida } from './ModalReglasPartida';
 
 export function ModalMenuPartida() {
-  const { menuPartidaAbierto, setMenuPartidaAbierto, setPantallaActual, setRondasAbiertas, setAjustesAbiertos, abrirPodio, partida: estado } = useApp();
+  const { menuPartidaAbierto, setMenuPartidaAbierto, setPantallaActual, setAjustesAbiertos, abrirPodio, partida: estado } = useApp();
   const [accion, setAccion] = useState<'terminar' | 'descartar' | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [reglasAbiertas, setReglasAbiertas] = useState(false);
@@ -45,8 +45,8 @@ export function ModalMenuPartida() {
             <button type="button" onClick={() => { cerrarMenu(); setPantallaActual('inicio'); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
               🏠 Volver al inicio (se guarda)
             </button>
-            <button type="button" onClick={() => { cerrarMenu(); setRondasAbiertas(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              📋 Tabla general / Rondas
+            <button type="button" onClick={() => { cerrarMenu(); abrirPodio(partida.id); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
+              🏆 Tabla general / Rondas
             </button>
             <button type="button" onClick={() => void compartirTabla()} className="btn-claro justify-start px-3 py-2.5 text-sm">
               📤 Compartir tabla
