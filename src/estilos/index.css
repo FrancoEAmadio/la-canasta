@@ -404,7 +404,8 @@ button:disabled {
   }
 }
 .entrar {
-  animation: entrar 0.22s ease-out both;
+  /* `backwards` (no `both`): al terminar no queda ningún transform activo que atrape a los hijos con position: fixed. */
+  animation: entrar 0.22s ease-out backwards;
 }
 
 @keyframes latir {

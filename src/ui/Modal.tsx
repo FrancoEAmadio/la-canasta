@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   abierto: boolean;
@@ -29,7 +30,9 @@ export function Modal({
     if (evento.target === evento.currentTarget) onCerrar();
   };
 
-  return (
+  // Se dibuja directo en <body>: si quedara dentro de una pantalla con `transform` (animación .entrar),
+  // el fondo `fixed` se recortaría al tamaño de esa pantalla y se vería un cuadrado negro.
+  return createPortal(
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black/70 p-3 ${desenfocarFondo ? 'backdrop-blur-sm' : ''} ${zIndex}`}
       onClick={alTocarFondo}
@@ -38,7 +41,8 @@ export function Modal({
       aria-label={etiqueta}
     >
       <div className={`tarjeta entrar flex max-h-[90dvh] w-full ${ancho} flex-col overflow-hidden`}>{children}</div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
