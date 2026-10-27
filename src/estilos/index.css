@@ -251,6 +251,39 @@ button:disabled {
   text-align: right;
 }
 
+/* Selector fijo de jugadores: todas las pestañas miden exactamente lo mismo, sin importar el largo del nombre. */
+.selector-jugadores {
+  display: flex;
+  gap: 4px;
+}
+.selector-jugadores-scroll {
+  overflow-x: auto;
+}
+.selector-jugador {
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 2.75rem;
+  padding: 0 0.375rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s, color 0.15s;
+}
+.selector-jugadores-scroll .selector-jugador {
+  flex: 0 0 5.5rem;
+}
+.selector-jugador-nombre,
+.selector-jugador-total {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
 /* Campos numéricos: texto centrado y cifras de ancho fijo. Se definen acá (no con utilidades de Tailwind)
    porque .campo no está en una capa y le ganaría a cualquier utilidad de ancho, alto o padding. */
 .campo-numero {

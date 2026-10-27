@@ -17,7 +17,7 @@ export function generarId(prefijo: string): string {
 export function nuevoBorrador(numero: number, participantes: Participante[]): BorradorRonda {
   const entradas: BorradorRonda['entradas'] = {};
   for (const participante of participantes) entradas[participante.id] = crearEntradaVacia();
-  return { numero, entradas, paso: 'mesa', seleccionIdx: 0, editandoIdx: null };
+  return { numero, entradas, paso: 'puntos', seleccionIdx: 0, editandoIdx: null };
 }
 
 /** Borrador cargado con los datos de una ronda ya cerrada (para corregirla). */

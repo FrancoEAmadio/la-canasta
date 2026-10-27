@@ -1,6 +1,6 @@
 export type PantallaId = 'inicio' | 'nueva_partida' | 'partida' | 'jugadores' | 'reglas';
 
-export type PasoPartida = 'mesa' | 'puntos' | 'resumen';
+export type PasoPartida = 'puntos' | 'resumen';
 
 export type ModoJuego = 'individual' | 'parejas';
 

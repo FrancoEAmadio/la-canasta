@@ -2,19 +2,17 @@ import { useEffect } from 'react';
 import { useApp } from '../../estado/AppProvider';
 import { formatearPuntos } from '../../dominio/puntuacion';
 import type { PasoPartida } from '../../tipos';
-import { PasoMesa } from './pasos/PasoMesa';
 import { PasoPuntos } from './pasos/PasoPuntos';
 import { PasoResumen } from './pasos/PasoResumen';
 
 const PASOS: [PasoPartida, string][] = [
-  ['mesa', '1. Mesa'],
-  ['puntos', '2. Puntos'],
-  ['resumen', '3. Resumen'],
+  ['puntos', '1. Puntos'],
+  ['resumen', '2. Resumen'],
 ];
-const ORDEN: PasoPartida[] = ['mesa', 'puntos', 'resumen'];
+const ORDEN: PasoPartida[] = ['puntos', 'resumen'];
 
 export function PantallaPartida() {
-  const { partida: estado, setMenuPartidaAbierto, abrirPodio, setPantallaActual } = useApp();
+  const { partida: estado, setMenuPartidaAbierto, setRondasAbiertas, abrirPodio, setPantallaActual } = useApp();
   const { partidaActiva: partida, vista } = estado;
 
   // Si no hay partida activa (por ejemplo, tras descartarla), se vuelve al inicio.
@@ -27,7 +25,6 @@ export function PantallaPartida() {
   const { borrador } = partida;
   const pasoActual = ORDEN.indexOf(borrador.paso);
   const editando = borrador.editandoIdx !== null;
-  const mezclaYReparte = vista.quienReparte;
 
   return (
     <main className="flex w-full flex-1 flex-col gap-4 py-4">
@@ -53,21 +50,15 @@ export function PantallaPartida() {
               </h2>
             </div>
           </div>
-          <button type="button" onClick={() => abrirPodio(partida.id)} className="btn-claro px-3.5 py-2.5 text-xs">
-            🏆 Podio
-          </button>
-        </div>
-
-        {borrador.paso === 'mesa' && !editando && (
-          <div className="flex items-center justify-between rounded-2xl bg-white/10 px-3.5 py-2.5 text-xs text-blue-100">
-            <span>
-              ✂️ Mezcla y corta: <strong className="text-white">{mezclaYReparte.mezcla}</strong>
-            </span>
-            <span>
-              🃏 Reparte: <strong className="text-white">{mezclaYReparte.reparte}</strong>
-            </span>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setRondasAbiertas(true)} className="btn-claro px-3.5 py-2.5 text-xs">
+              📋 Tabla
+            </button>
+            <button type="button" onClick={() => abrirPodio(partida.id)} className="btn-claro px-3.5 py-2.5 text-xs">
+              🏆 Podio
+            </button>
           </div>
-        )}
+        </div>
 
         <nav className="flex items-center gap-2" aria-label="Pasos de la ronda">
           {PASOS.map(([paso, etiqueta], indice) => {
@@ -99,7 +90,6 @@ export function PantallaPartida() {
         )}
       </header>
 
-      {borrador.paso === 'mesa' && <PasoMesa partida={partida} vista={vista} />}
       {borrador.paso === 'puntos' && <PasoPuntos partida={partida} vista={vista} />}
       {borrador.paso === 'resumen' && <PasoResumen partida={partida} vista={vista} />}
     </main>

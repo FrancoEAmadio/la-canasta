@@ -13,14 +13,27 @@ interface Props {
   config: ConfigApertura;
   /** Variante compacta (una sola línea). */
   compacta?: boolean;
+  /** Variante mínima tipo chip, para barras y cabeceras con poco espacio. */
+  enLinea?: boolean;
 }
 
 /** Cuánto hay que bajar para abrirse / levantar el pozo, calculado según el acumulado. */
-export function InsigniaApertura({ puntosAcumulados, config, compacta = false }: Props) {
+export function InsigniaApertura({ puntosAcumulados, config, compacta = false, enLinea = false }: Props) {
   const requisito = requisitoApertura(puntosAcumulados, config);
   // Las partidas viejas tienen menos escalones: se saltea el estilo de "puntaje negativo".
   const desfase = Math.max(0, ESTILOS_NIVEL.length - config.requisitos.length);
   const nivel = Math.min(nivelApertura(puntosAcumulados, config) + desfase, ESTILOS_NIVEL.length - 1);
+
+  if (enLinea) {
+    return (
+      <div className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2 py-1 text-xs font-black ${ESTILOS_NIVEL[nivel]}`}>
+        <span aria-hidden="true">🔓</span>
+        <span className="truncate">
+          Para abrirte: mín. <span className="text-sm tabular-nums">{requisito}</span> pts
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className={`rounded-xl border px-3 py-2 ${ESTILOS_NIVEL[nivel]}`}>

@@ -46,7 +46,7 @@ export function ModalMenuPartida() {
               🏠 Volver al inicio (se guarda)
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setRondasAbiertas(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              📋 Rondas y correcciones
+              📋 Tabla general / Rondas
             </button>
             <button type="button" onClick={() => void compartirTabla()} className="btn-claro justify-start px-3 py-2.5 text-sm">
               📤 Compartir tabla

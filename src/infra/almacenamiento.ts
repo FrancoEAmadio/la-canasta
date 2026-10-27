@@ -173,6 +173,8 @@ function hidratarPartida(partida: Partida): Partida {
     })),
     borrador: {
       ...partida.borrador,
+      // El antiguo paso "mesa" ya no existe: las partidas guardadas con él abren directo en "puntos".
+      paso: (partida.borrador.paso as string) === 'resumen' ? 'resumen' : 'puntos',
       editandoIdx: partida.borrador.editandoIdx ?? null,
       seleccionIdx: partida.borrador.seleccionIdx ?? 0,
       entradas: mapearEntradas(partida.borrador.entradas, hidratarEntrada) as Record<string, EntradaRonda>,
