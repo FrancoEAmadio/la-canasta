@@ -83,6 +83,7 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
       <div className="grid grid-cols-2 gap-2.5 pt-1">
         <ChipBono
           titulo="Cerró la ronda"
+          tono="verde"
           puntos={`+${CONFIG_PUNTAJE.bonoCierre} pts`}
           cantidad={entrada.cerro ? 1 : 0}
           maximo={1}
@@ -92,6 +93,7 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
         />
         <ChipBono
           titulo="Corte exacto"
+          tono="amarillo"
           puntos={`+${CONFIG_PUNTAJE.bonoCorteExacto} pts`}
           cantidad={entrada.corteExacto ? 1 : 0}
           maximo={1}
@@ -117,10 +119,6 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
           onBorrar={() => cambiarRojos(0)}
         />
       </div>
-      <p className="text-[11px] font-semibold leading-snug text-slate-500">
-        Gris = no. Tres Rojos suma uno por toque y, pasado el máximo, vuelve a 0 (1 = +100 · 2 = +200 · 3 = +300 · 4 = +500 · 5 = +1.000{partida.reglas.mazos > 2 ? ` · extra +${CONFIG_PUNTAJE.tresRojoExtra}` : ''}).
-        Espejito: al repartir, en el pozo quedó la misma carta que tenés en la mano.
-      </p>
     </Bloque>
   );
 }
@@ -180,7 +178,7 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
           className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? ESTILO_TIPO.pura : ESTILO_TIPO.ninguna}`}
         >
           <span className={`font-display text-xl font-bold leading-none ${entrada.canastaComodines ? '' : 'text-azul'}`}>🃏</span>
-          <span className="text-[10px] font-bold uppercase leading-tight">{entrada.canastaComodines ? 'Canasta' : '—'}</span>
+          <span className="text-[10px] font-bold uppercase leading-tight">{entrada.canastaComodines ? 'Comodín' : '—'}</span>
           {entrada.canastaComodines && <span className="text-[10px] font-bold tabular-nums leading-tight">+{CONFIG_PUNTAJE.canastaComodines.toLocaleString('es-AR')}</span>}
         </button>
         {figuras.slice(1).map((figura) => (
@@ -262,19 +260,17 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
           {AYUDA_CONTEO}
         </p>
       )}
-      {!sinCartas && (<>
-      <div>
-        <ChipBono
-          titulo="Tres Negros en mano (3♠ 3♣)"
-          tono="rojo"
-          puntos={entrada.cartasMano.tresNegros > 0 ? `−${(entrada.cartasMano.tresNegros * CONFIG_PUNTAJE.penalidadTresNegro).toLocaleString('es-AR')} pts` : `−${CONFIG_PUNTAJE.penalidadTresNegro} cada uno`}
-          cantidad={entrada.cartasMano.tresNegros}
-          maximo={sinCartas ? 0 : maxNegros}
-          onMas={() => cambiarNegros(entrada.cartasMano.tresNegros + 1)}
-          onBorrar={() => cambiarNegros(0)}
-        />
-      </div>
       <div className="flex flex-col gap-3">
+        <FilaCantidad
+          titulo="Tres Negros en mano (3♠ 3♣)"
+          ejemplo="Sanción por no descartarlos"
+          valorCarta={CONFIG_PUNTAJE.penalidadTresNegro}
+          valor={entrada.cartasMano.tresNegros}
+          max={maxNegros}
+          tono="rojo"
+          deshabilitado={sinCartas}
+          onCambiar={cambiarNegros}
+        />
         {FILAS_CARTAS.map((fila) => (
           <FilaCantidad
             key={fila.clave}
@@ -289,7 +285,6 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
           />
         ))}
       </div>
-      </>)}
       <BotonLimpiar
         visible={hayCartas && !sinCartas}
         texto="Limpiar cartas de la mano"

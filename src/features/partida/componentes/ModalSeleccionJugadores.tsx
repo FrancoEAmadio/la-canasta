@@ -78,7 +78,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
           value={busqueda}
           onChange={(evento) => setBusqueda(evento.target.value)}
           type="search"
-          placeholder="🔍 Buscar jugador..."
+          placeholder="Buscar jugador..."
           aria-label="Buscar jugador por nombre"
           className="campo"
         />

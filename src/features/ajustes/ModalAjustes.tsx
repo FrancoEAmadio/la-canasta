@@ -49,7 +49,7 @@ export function ModalAjustes() {
   return (
     <>
       <Modal abierto={ajustesAbiertos} onCerrar={() => setAjustesAbiertos(false)} ancho="max-w-md" zIndex="z-[60]" etiqueta="Ajustes" cerrarAlHacerClickAfuera>
-        <EncabezadoModal titulo="⚙️ Ajustes" subtitulo="Preferencias y copia de seguridad" onCerrar={() => setAjustesAbiertos(false)} />
+        <EncabezadoModal titulo="Ajustes" subtitulo="Preferencias y copia de seguridad" onCerrar={() => setAjustesAbiertos(false)} />
         <div className="scroll-oculto flex flex-1 flex-col gap-4 overflow-y-auto p-4">
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
@@ -69,16 +69,16 @@ export function ModalAjustes() {
           </section>
 
           <section className="rounded-2xl border border-slate-200 p-3">
-            <h4 className="text-sm font-bold text-azul">💾 Copia de seguridad</h4>
+            <h4 className="text-sm font-bold text-azul">Copia de seguridad</h4>
             <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">
               Tus datos viven en este dispositivo (sin servidor ni cuenta). Exportá un archivo para guardarlos o pasarlos a otro celular.
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button type="button" onClick={exportar} className="btn-primario py-2.5 text-sm">
-                ⬇ Exportar
+                Exportar
               </button>
               <button type="button" onClick={() => archivoRef.current?.click()} className="btn-claro py-2.5 text-sm">
-                ⬆ Importar
+                Importar
               </button>
             </div>
             <input ref={archivoRef} type="file" accept="application/json,.json" className="hidden" onChange={(evento) => void importar(evento.target.files?.[0])} />
@@ -88,12 +88,12 @@ export function ModalAjustes() {
             <h4 className="text-sm font-bold text-azul">Tu opinión</h4>
             <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">¿Encontraste un error o tenés una idea para mejorar la app? Contanos.</p>
             <button type="button" onClick={() => setFeedbackAbierto(true)} className="btn-claro w-full py-2.5 text-sm">
-              💬 Enviar comentarios o reportar error
+              Enviar comentarios o reportar error
             </button>
           </section>
 
-          <button type="button" onClick={() => setConfirmarBorrado(true)} className="btn-secundario py-3 text-sm">
-            🗑️ Borrar todos los datos
+          <button type="button" onClick={() => setConfirmarBorrado(true)} className="btn-peligro py-3 text-sm">
+            Borrar todos los datos
           </button>
         </div>
       </Modal>

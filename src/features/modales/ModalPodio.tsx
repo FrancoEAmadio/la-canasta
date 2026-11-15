@@ -28,7 +28,7 @@ export function ModalPodio() {
   return (
     <>
       <Modal abierto onCerrar={cerrarPodio} ancho="max-w-sm" zIndex="z-[55]" etiqueta="Tabla general de puntos" cerrarAlHacerClickAfuera={!finalizada}>
-        <EncabezadoModal titulo={finalizada ? '🏆 Resultado final' : '🏆 Tabla general'} subtitulo={`${partida.rondas.length} ronda${partida.rondas.length === 1 ? '' : 's'} jugada${partida.rondas.length === 1 ? '' : 's'}`} onCerrar={cerrarPodio} />
+        <EncabezadoModal titulo={finalizada ? 'Resultado final' : 'Tabla general'} subtitulo={`${partida.rondas.length} ronda${partida.rondas.length === 1 ? '' : 's'} jugada${partida.rondas.length === 1 ? '' : 's'}`} onCerrar={cerrarPodio} />
 
         <div className="scroll-oculto flex flex-1 flex-col gap-2 overflow-y-auto p-4">
           {ranking.map((fila) => {
@@ -44,7 +44,7 @@ export function ModalPodio() {
                   primero ? 'border-azul bg-azul text-white' : 'border-slate-200 bg-slate-50 text-tinta'
                 }`}
               >
-                <span className="w-8 text-center text-2xl font-bold leading-none">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
+                <span className="w-9 text-center text-xl font-bold leading-none">{fila.posicion}.º</span>
 
                 <span className="flex min-w-0 flex-col gap-1.5">
                   <span className="text-base font-bold leading-tight" style={{ overflowWrap: 'anywhere' }}>
@@ -90,10 +90,10 @@ export function ModalPodio() {
 
         <div className="grid gap-2 border-t border-slate-200 p-4">
           <button type="button" onClick={() => void compartir()} className="btn-claro py-3 text-sm">
-            📤 Compartir resultado
+            Compartir resultado
           </button>
           <button type="button" onClick={cerrarPodio} className="btn-primario py-3.5 text-base">
-            {finalizada ? '🏁 Finalizar y guardar' : '← Volver'}
+            {finalizada ? 'Finalizar y guardar' : '← Volver'}
           </button>
         </div>
       </Modal>

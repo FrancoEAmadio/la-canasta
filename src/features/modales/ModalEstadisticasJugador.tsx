@@ -50,7 +50,7 @@ export function ModalEstadisticasJugador() {
               <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-azul">Por modo de juego</h4>
               {(['individual', 'parejas'] as const).map((modo) => (
                 <div key={modo} className="flex items-center justify-between border-b border-slate-100 py-1.5 text-sm last:border-none">
-                  <span className="font-bold text-tinta">{modo === 'individual' ? '🙋 Individual' : '🤝 Parejas'}</span>
+                  <span className="font-bold text-tinta">{modo === 'individual' ? 'Individual' : 'Parejas'}</span>
                   <span className="text-slate-600">
                     {jugador.estadisticas.porModo[modo].victorias}/{jugador.estadisticas.porModo[modo].jugadas} ·{' '}
                     <strong className="text-azul">{calcularPorcentajeVictoriasModo(jugador, modo)}%</strong>
@@ -67,7 +67,7 @@ export function ModalEstadisticasJugador() {
                     <li key={`${entrada.fecha}-${indice}`} className="flex items-center justify-between text-xs">
                       <span className="text-slate-500">{formatearFecha(entrada.fecha)}</span>
                       <span className="font-bold text-tinta">
-                        {['🥇', '🥈', '🥉'][entrada.posicion - 1] ?? `${entrada.posicion}º`} · {formatearPuntos(entrada.puntos)} pts
+                        {entrada.posicion}.º · {formatearPuntos(entrada.puntos)} pts
                       </span>
                     </li>
                   ))}
