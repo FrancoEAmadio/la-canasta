@@ -96,12 +96,12 @@ export function ModalFeedback({ abierto, onCerrar }: Props) {
             </div>
 
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-black uppercase tracking-wider text-slate-500">Tu nombre (opcional)</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Tu nombre (opcional)</span>
               <input value={nombre} onChange={(evento) => setNombre(evento.target.value)} type="text" maxLength={60} disabled={enviando} placeholder="Tu nombre (opcional)" className="campo" />
             </label>
 
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-black uppercase tracking-wider text-slate-500">Mensaje</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Mensaje</span>
               <textarea
                 value={mensaje}
                 onChange={(evento) => setMensaje(evento.target.value)}

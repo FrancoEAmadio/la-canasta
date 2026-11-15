@@ -11,8 +11,8 @@ function Grupo({ titulo, lineas, subtotal, negativo = false }: { titulo: string;
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
-        <span className={`text-[11px] font-black uppercase tracking-wider ${negativo ? 'text-rojo-osc' : 'text-azul'}`}>{titulo}</span>
-        <span className={`text-sm font-black tabular-nums ${negativo ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(subtotal, true)}</span>
+        <span className={`text-[11px] font-bold uppercase tracking-wider ${negativo ? 'text-rojo-osc' : 'text-azul'}`}>{titulo}</span>
+        <span className={`text-sm font-bold tabular-nums ${negativo ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(subtotal, true)}</span>
       </div>
       {lineas.map((linea, indice) => (
         <div key={`${linea.etiqueta}-${indice}`} className={`flex justify-between rounded-lg px-2.5 py-1 text-xs ${negativo ? 'bg-red-50 text-red-800' : 'bg-blue-50 text-slate-700'}`}>
@@ -38,7 +38,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
   return (
     <section className="entrar flex flex-col gap-4">
       <div className="tarjeta tarjeta-acento-azul p-4">
-        <span className="block text-xs font-black uppercase text-azul">Resumen de la ronda {vista.numeroRonda}</span>
+        <span className="block text-xs font-bold uppercase text-azul">Resumen de la ronda {vista.numeroRonda}</span>
         <span className="mt-0.5 block text-xs text-slate-500">
           {editando ? 'Estás corrigiendo una ronda anterior: revisá y guardá los cambios.' : 'Revisá los puntos antes de confirmar. Podés volver a corregir cualquier dato.'}
         </span>
@@ -46,7 +46,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
 
       {vista.advertencias.length > 0 && (
         <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4">
-          <span className="mb-1 block text-sm font-black text-amber-900">⚠️ Revisá estos puntos</span>
+          <span className="mb-1 block text-sm font-bold text-amber-900">⚠️ Revisá estos puntos</span>
           <ul className="flex list-disc flex-col gap-1 pl-5 text-xs text-amber-900">
             {vista.advertencias.map((texto) => (
               <li key={texto}>{texto}</li>
@@ -62,7 +62,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
           <article key={participante.id} className="tarjeta flex flex-col gap-3 p-4">
             <header className="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
               <div className="min-w-0 flex-1">
-                <h3 className="fila-puntaje-nombre font-display text-lg font-black text-azul">{participante.nombre}</h3>
+                <h3 className="fila-puntaje-nombre font-display text-lg font-bold text-azul">{participante.nombre}</h3>
                 {subtituloParticipante(participante) && <span className="fila-puntaje-nombre text-xs font-semibold text-slate-500">{subtituloParticipante(participante)}</span>}
               </div>
             </header>
@@ -82,11 +82,11 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
             <div className="fila-puntaje !items-end border-t border-slate-200 pt-3">
               <div className="fila-puntaje-valor !text-left">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Puntaje de la ronda</span>
-                <span className={`text-2xl font-black tabular-nums ${desglose.total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(desglose.total, true)}</span>
+                <span className={`text-2xl font-bold tabular-nums ${desglose.total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(desglose.total, true)}</span>
               </div>
               <div className="min-w-0 flex-1 text-right">
                 <span className="block text-[10px] font-bold uppercase text-slate-400">Nuevo acumulado</span>
-                <span className="whitespace-nowrap text-3xl font-black tabular-nums text-tinta">{formatearPuntos(acumulado)}</span>
+                <span className="whitespace-nowrap text-3xl font-bold tabular-nums text-tinta">{formatearPuntos(acumulado)}</span>
                 <span className="block text-[11px] font-bold text-azul">Próximo mínimo para abrirse: {requisitoApertura(acumulado, partida.reglas.apertura)} pts</span>
               </div>
             </div>

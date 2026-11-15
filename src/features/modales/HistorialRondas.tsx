@@ -24,7 +24,7 @@ export function HistorialRondas({ alCambiarRonda }: Props) {
   return (
     <>
       <div className="mt-2 flex shrink-0 flex-col gap-2.5 rounded-2xl border border-slate-200 p-4">
-        <h4 className="text-xs font-black uppercase tracking-wider text-azul">Rondas jugadas</h4>
+        <h4 className="text-xs font-bold uppercase tracking-wider text-azul">Rondas jugadas</h4>
         {!puedeEditar && (
           <p className="rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800">
             Para corregir una ronda, primero terminá la carga de la ronda actual (o borrá lo que cargaste).
@@ -33,7 +33,7 @@ export function HistorialRondas({ alCambiarRonda }: Props) {
         {partida.rondas.map((ronda, indice) => (
           <div key={ronda.numero} className="rounded-xl border border-slate-200 p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="font-display text-base font-black text-azul">Ronda {ronda.numero}</span>
+              <span className="font-display text-base font-bold text-azul">Ronda {ronda.numero}</span>
               <button
                 type="button"
                 disabled={!puedeEditar}

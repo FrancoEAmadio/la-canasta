@@ -8,7 +8,7 @@ import { EncabezadoModal, Modal } from '../../ui/Modal';
 function Dato({ valor, etiqueta, destacado = false }: { valor: string | number; etiqueta: string; destacado?: boolean }) {
   return (
     <div className={`rounded-xl border p-3 text-center ${destacado ? 'border-blue-200 bg-blue-50' : 'border-slate-200 bg-white'}`}>
-      <span className={`block text-2xl font-black ${destacado ? 'text-azul' : 'text-tinta'}`}>{valor}</span>
+      <span className={`block text-2xl font-bold ${destacado ? 'text-azul' : 'text-tinta'}`}>{valor}</span>
       <span className="block text-[10px] font-bold uppercase leading-tight text-slate-500">{etiqueta}</span>
     </div>
   );
@@ -28,7 +28,7 @@ export function ModalEstadisticasJugador() {
             <div className="flex items-center gap-3">
               <AvatarJugador palo={jugador.palo} tamano="lg" />
               <div>
-                <span className="block text-3xl font-black text-azul">{calcularPorcentajeVictorias(jugador)}%</span>
+                <span className="block text-3xl font-bold text-azul">{calcularPorcentajeVictorias(jugador)}%</span>
                 <span className="text-[11px] font-bold uppercase text-slate-500">Win rate general</span>
               </div>
             </div>
@@ -47,7 +47,7 @@ export function ModalEstadisticasJugador() {
             </div>
 
             <div className="rounded-xl border border-slate-200 p-3">
-              <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Por modo de juego</h4>
+              <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-azul">Por modo de juego</h4>
               {(['individual', 'parejas'] as const).map((modo) => (
                 <div key={modo} className="flex items-center justify-between border-b border-slate-100 py-1.5 text-sm last:border-none">
                   <span className="font-bold text-tinta">{modo === 'individual' ? '🙋 Individual' : '🤝 Parejas'}</span>
@@ -61,7 +61,7 @@ export function ModalEstadisticasJugador() {
 
             {jugador.evolucion.length > 0 && (
               <div className="rounded-xl border border-slate-200 p-3">
-                <h4 className="mb-2 text-xs font-black uppercase tracking-wider text-azul">Últimas partidas</h4>
+                <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-azul">Últimas partidas</h4>
                 <ul className="flex flex-col gap-1">
                   {[...jugador.evolucion].reverse().slice(0, 8).map((entrada, indice) => (
                     <li key={`${entrada.fecha}-${indice}`} className="flex items-center justify-between text-xs">

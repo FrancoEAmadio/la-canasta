@@ -44,10 +44,10 @@ export function ModalPodio() {
                   primero ? 'border-azul bg-azul text-white' : 'border-slate-200 bg-slate-50 text-tinta'
                 }`}
               >
-                <span className="w-8 text-center text-2xl font-black leading-none">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
+                <span className="w-8 text-center text-2xl font-bold leading-none">{['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`}</span>
 
                 <span className="flex min-w-0 flex-col gap-1.5">
-                  <span className="text-base font-black leading-tight" style={{ overflowWrap: 'anywhere' }}>
+                  <span className="text-base font-bold leading-tight" style={{ overflowWrap: 'anywhere' }}>
                     {fila.participante.nombre}
                   </span>
                   {subtituloParticipante(fila.participante) && (
@@ -70,9 +70,9 @@ export function ModalPodio() {
                   {fila.puntos < lider && <span className="text-xs font-semibold leading-tight opacity-75">A {formatearPuntos(lider - fila.puntos)} pts del líder</span>}
                 </span>
 
-                <span className="whitespace-nowrap text-right text-2xl font-black tabular-nums">{formatearPuntos(fila.puntos)}</span>
+                <span className="whitespace-nowrap text-right text-2xl font-bold tabular-nums">{formatearPuntos(fila.puntos)}</span>
                 <span aria-hidden="true" className="flex flex-col items-center text-[10px] font-bold uppercase leading-tight opacity-70">
-                  <span className="text-xl font-black leading-none">›</span>
+                  <span className="text-xl font-bold leading-none">›</span>
                   Desglose
                 </span>
               </button>
@@ -80,7 +80,7 @@ export function ModalPodio() {
           })}
 
           <div className="mt-2 shrink-0 rounded-2xl border border-slate-200 p-4">
-            <h4 className="mb-3 text-xs font-black uppercase tracking-wider text-azul">Evolución por ronda</h4>
+            <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-azul">Evolución por ronda</h4>
             <EvolucionPartida partida={partida} sinDesglose />
           </div>
 

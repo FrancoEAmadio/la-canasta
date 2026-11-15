@@ -32,7 +32,7 @@ export function PantallaJugadores() {
       <button type="button" onClick={() => setPantallaActual('inicio')} className="btn-fantasma self-start px-3 py-2 text-sm">
         ← Volver al menú
       </button>
-      <h2 className="font-display text-2xl font-black text-white">Jugadores, Estadísticas e Historial</h2>
+      <h2 className="font-display text-2xl font-bold text-white">Jugadores, Estadísticas e Historial</h2>
 
       <div className="grid grid-cols-3 gap-2" role="tablist">
         {PESTANAS.map(([id, etiqueta]) => (
@@ -95,7 +95,7 @@ function VistaGestor() {
           crear();
         }}
       >
-        <span className="text-[11px] font-black uppercase tracking-wider text-azul">Nueva tarjeta de jugador</span>
+        <span className="text-[11px] font-bold uppercase tracking-wider text-azul">Nueva tarjeta de jugador</span>
         <div className="flex gap-2">
           <input
             value={nombreNuevo}
@@ -146,7 +146,7 @@ function VistaGestor() {
                 <button type="button" onClick={() => verEstadisticasJugador(jugador)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
                   <AvatarJugador palo={jugador.palo} />
                   <span className="min-w-0">
-                    <span className="block truncate text-base font-black text-tinta">{jugador.nombre}</span>
+                    <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">
                       {jugador.estadisticas.partidasJugadas} partida{jugador.estadisticas.partidasJugadas === 1 ? '' : 's'} · 🏆 {jugador.estadisticas.victorias} · {calcularPorcentajeVictorias(jugador)}%
                     </span>
@@ -199,17 +199,17 @@ function VistaEstadisticas() {
     <div className="flex flex-col gap-3">
       {ordenados.map((jugador, indice) => (
         <button key={jugador.id} type="button" onClick={() => verEstadisticasJugador(jugador)} className="tarjeta flex items-center gap-3 p-3.5 text-left">
-          <span className="w-6 text-center font-display text-lg font-black text-slate-400">{indice + 1}</span>
+          <span className="w-6 text-center font-display text-lg font-bold text-slate-400">{indice + 1}</span>
           <AvatarJugador palo={jugador.palo} />
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-base font-black text-tinta">{jugador.nombre}</span>
+            <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
             <span className="block text-[11px] font-semibold text-slate-500">
               {jugador.estadisticas.partidasJugadas} jugadas · 🏆 {jugador.estadisticas.victorias} · récord{' '}
               {jugador.estadisticas.mejorPartida === null ? '—' : formatearPuntos(jugador.estadisticas.mejorPartida)}
             </span>
           </span>
           <span className="text-right">
-            <span className="block text-xl font-black text-azul">{calcularPorcentajeVictorias(jugador)}%</span>
+            <span className="block text-xl font-bold text-azul">{calcularPorcentajeVictorias(jugador)}%</span>
             <span className="block text-[9px] font-bold uppercase text-slate-400">victorias</span>
           </span>
         </button>
@@ -254,10 +254,10 @@ function VistaHistorial() {
             <article key={item.id} className="tarjeta flex flex-col gap-3 p-4">
               <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${enCurso ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-azul'}`}>
+                  <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${enCurso ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-azul'}`}>
                     {enCurso ? '⏳ En curso' : '🏁 Finalizada'}
                   </span>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase text-slate-600">
                     {item.modo === 'parejas' ? '🤝 Parejas' : '🙋 Individual'}
                   </span>
                 </div>
@@ -290,7 +290,7 @@ function VistaHistorial() {
                         <span className="block text-[10px] font-semibold opacity-70">🔍 Ver desglose por ronda</span>
                       </span>
                     </span>
-                    <span className="fila-puntaje-valor text-base font-black">{formatearPuntos(fila.puntos)} pts</span>
+                    <span className="fila-puntaje-valor text-base font-bold">{formatearPuntos(fila.puntos)} pts</span>
                   </button>
                 ))}
               </div>

@@ -58,7 +58,7 @@ export function EncabezadoModal({ titulo, subtitulo, onCerrar, tono = 'azul' }: 
   return (
     <div className={`flex shrink-0 items-center justify-between gap-3 px-4 py-3 text-white ${fondo}`}>
       <div className="min-w-0">
-        <h3 className="truncate text-lg font-black leading-tight">{titulo}</h3>
+        <h3 className="truncate text-lg font-bold leading-tight">{titulo}</h3>
         {subtitulo && <span className="block text-[11px] font-semibold uppercase tracking-wider text-white/75">{subtitulo}</span>}
       </div>
       <button

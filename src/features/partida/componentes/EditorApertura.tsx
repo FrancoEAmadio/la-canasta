@@ -43,7 +43,7 @@ export function EditorApertura({ umbrales, requisitos, onCambiar }: Props) {
         const esUltimo = indice === requisitos.length - 1;
         return (
           <div key={indice} className="flex flex-col gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-azul">Escalón {indice + primero}{indice === 0 && conNegativos ? ' · puntajes negativos' : ''}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-azul">Escalón {indice + primero}{indice === 0 && conNegativos ? ' · puntajes negativos' : ''}</span>
 
             {esUltimo ? (
               <p className="text-sm font-bold text-slate-700">Desde {mostrar(umbrales[indice - 1]!)} pts acumulados o más</p>

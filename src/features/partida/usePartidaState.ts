@@ -148,6 +148,10 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     );
   }, []);
 
+  const borrarSeleccionJugadores = useCallback(() => {
+    setConfig((actual) => ({ ...actual, idsIndividual: [] }));
+  }, []);
+
   const asignarEnEquipo = useCallback((equipoIdx: number, casillero: number, jugadorId: string | null) => {
     setConfig((actual) => {
       const equipos = actual.equipos.map((equipo) =>
@@ -454,6 +458,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     config,
     actualizarConfig,
     alternarSeleccionJugador,
+    borrarSeleccionJugadores,
     asignarEnEquipo,
     agregarEquipo,
     quitarEquipo,

@@ -17,6 +17,8 @@ interface Props {
   /** Modo "elegir uno": al tocar un jugador se elige y se cierra. */
   unico?: boolean;
   onElegir: (id: string) => void;
+  /** Si se pasa, aparece el botón rojo "Borrar selección" cuando hay jugadores elegidos. */
+  onBorrarSeleccion?: () => void;
 }
 
 function normalizar(texto: string): string {
@@ -27,7 +29,7 @@ function normalizar(texto: string): string {
     .trim();
 }
 
-export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionados, excluidos = [], unico = false, onElegir }: Props) {
+export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionados, excluidos = [], unico = false, onElegir, onBorrarSeleccion }: Props) {
   const { jugadores, crearJugador } = useApp();
   const [busqueda, setBusqueda] = useState('');
   const [nombreNuevo, setNombreNuevo] = useState('');
@@ -88,7 +90,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
             crear();
           }}
         >
-          <span className="text-[11px] font-black uppercase tracking-wider text-azul">Crear jugador nuevo</span>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-azul">Crear jugador nuevo</span>
           <div className="flex gap-2">
             <input
               value={nombreNuevo}
@@ -126,7 +128,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
                 >
                   <AvatarJugador palo={jugador.palo} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-base font-black text-tinta">{jugador.nombre}</span>
+                    <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">
                       {bloqueado
                         ? 'Ya está en otro lugar'
@@ -134,7 +136,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
                     </span>
                   </span>
                   {elegido && !unico && (
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-azul-vivo text-sm font-black text-white">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-azul-vivo text-sm font-bold text-white">
                       {posicion + 1}
                     </span>
                   )}
@@ -150,7 +152,12 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
       </div>
 
       {!unico && (
-        <div className="border-t border-slate-200 p-4">
+        <div className="flex flex-col gap-2 border-t border-slate-200 p-4">
+          {onBorrarSeleccion && seleccionados.length > 0 && (
+            <button type="button" onClick={onBorrarSeleccion} className="btn-peligro mx-auto px-5 py-2.5 text-sm">
+              Borrar selección
+            </button>
+          )}
           <button type="button" onClick={cerrar} className="btn-primario w-full py-3.5 text-base">
             Listo ({seleccionados.length})
           </button>
