@@ -43,25 +43,25 @@ export function ModalMenuPartida() {
               </button>
             </div>
             <button type="button" onClick={() => { cerrarMenu(); setPantallaActual('inicio'); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              🏠 Volver al inicio (se guarda)
+              Volver al inicio (se guarda)
             </button>
             <button type="button" onClick={() => { cerrarMenu(); abrirPodio(partida.id); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              🏆 Tabla general / Rondas
+              Tabla general / Rondas
             </button>
             <button type="button" onClick={() => void compartirTabla()} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              📤 Compartir tabla
+              Compartir tabla
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setReglasAbiertas(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              ⚙️ Reglas de la partida
+              Reglas de la partida
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setAjustesAbiertos(true); }} className="btn-claro justify-start px-3 py-2.5 text-sm">
-              ⚙️ Ajustes
+              Ajustes
             </button>
             <button type="button" onClick={() => { cerrarMenu(); setAccion('terminar'); }} className="btn-primario justify-start px-3 py-2.5 text-sm">
-              🏁 Terminar partida ahora
+              Terminar partida ahora
             </button>
-            <button type="button" onClick={() => { cerrarMenu(); setAccion('descartar'); }} className="btn-secundario justify-start px-3 py-2.5 text-sm">
-              🗑️ Descartar partida
+            <button type="button" onClick={() => { cerrarMenu(); setAccion('descartar'); }} className="btn-peligro justify-start px-3 py-2.5 text-sm">
+              Descartar partida
             </button>
           </nav>
         </div>

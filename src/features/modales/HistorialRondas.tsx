@@ -43,7 +43,7 @@ export function HistorialRondas({ alCambiarRonda }: Props) {
                 }}
                 className="btn-claro px-3 py-1.5 text-xs"
               >
-                ✏️ Corregir
+                Corregir
               </button>
             </div>
             <ul className="flex flex-col gap-0.5 text-sm">
@@ -60,7 +60,7 @@ export function HistorialRondas({ alCambiarRonda }: Props) {
                         <span className="mt-0.5 flex flex-wrap gap-1">
                           {destacados.map((linea) => (
                             <span key={linea.clave} className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-azul">
-                              {linea.clave === 'espejito' ? '🪞' : '🧺'} {linea.etiqueta} {formatearPuntos(linea.puntos, true)}
+                              {linea.etiqueta} {formatearPuntos(linea.puntos, true)}
                             </span>
                           ))}
                         </span>
@@ -73,7 +73,7 @@ export function HistorialRondas({ alCambiarRonda }: Props) {
             </ul>
           </div>
         ))}
-        <button type="button" disabled={!puedeEditar} onClick={() => setConfirmarEliminar(true)} className="btn-secundario w-full py-3 text-sm">
+        <button type="button" disabled={!puedeEditar} onClick={() => setConfirmarEliminar(true)} className="btn-peligro w-full py-3 text-sm">
           ↩ Deshacer última ronda
         </button>
       </div>

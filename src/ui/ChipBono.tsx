@@ -1,6 +1,6 @@
 import { vibrar } from '../infra/vibracion';
 
-export type TonoChip = 'azul' | 'rojo';
+export type TonoChip = 'azul' | 'rojo' | 'verde' | 'amarillo';
 
 interface Props {
   titulo: string;
@@ -25,6 +25,16 @@ const TONOS: Record<TonoChip, { reposo: string; activo: string; insignia: string
     reposo: 'bg-slate-50 border-slate-200 text-slate-500',
     activo: 'bg-red-50 border-rojo text-rojo-osc ring-2 ring-red-200',
     insignia: 'bg-rojo text-white',
+  },
+  verde: {
+    reposo: 'bg-slate-50 border-slate-200 text-slate-500',
+    activo: 'bg-emerald-50 border-emerald-600 text-emerald-800 ring-2 ring-emerald-200',
+    insignia: 'bg-emerald-600 text-white',
+  },
+  amarillo: {
+    reposo: 'bg-slate-50 border-slate-200 text-slate-500',
+    activo: 'bg-amber-50 border-amber-500 text-amber-800 ring-2 ring-amber-200',
+    insignia: 'bg-amber-500 text-white',
   },
 };
 

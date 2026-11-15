@@ -40,7 +40,7 @@ export function ModalConfirmacion({
         <button type="button" onClick={onCancelar} className="btn-claro py-3 text-sm">
           {textoCancelar}
         </button>
-        <button type="button" onClick={onConfirmar} className={`${tono === 'peligro' ? 'btn-secundario' : 'btn-primario'} py-3 text-sm`}>
+        <button type="button" onClick={onConfirmar} className={`${tono === 'peligro' ? 'btn-peligro' : 'btn-primario'} py-3 text-sm`}>
           {textoConfirmar}
         </button>
       </div>
