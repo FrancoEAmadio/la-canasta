@@ -34,7 +34,7 @@ const MENSAJES_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
 
 export function PantallaNuevaPartida() {
   const { setPantallaActual, partida } = useApp();
-  const { config, actualizarConfig, comenzarPartida } = partida;
+  const { config, actualizarConfig, cambiarModo, comenzarPartida } = partida;
   const [aviso, setAviso] = useState<Exclude<ResultadoComenzar, 'ok'> | null>(null);
 
   const empezar = () => {
@@ -65,12 +65,16 @@ export function PantallaNuevaPartida() {
                 type="button"
                 role="radio"
                 aria-checked={activo}
-                onClick={() => actualizarConfig({ modo: modo.id })}
+                onClick={() => cambiarModo(modo.id)}
                 className={`flex flex-col items-center gap-1 rounded-2xl border-2 p-3 text-center ${
-                  activo ? 'border-azul-vivo bg-blue-50 shadow-inner' : 'border-slate-200 bg-white'
+                  activo
+                    ? modo.id === 'parejas'
+                      ? 'border-rojo bg-red-50 shadow-inner'
+                      : 'border-azul-vivo bg-blue-50 shadow-inner'
+                    : 'border-slate-200 bg-white'
                 }`}
               >
-                <span className={`text-sm font-bold ${activo ? 'text-azul' : 'text-slate-700'}`}>{modo.titulo}</span>
+                <span className={`text-sm font-bold ${activo ? (modo.id === 'parejas' ? 'text-rojo-osc' : 'text-azul') : 'text-slate-700'}`}>{modo.titulo}</span>
                 <span className="text-[11px] font-medium leading-tight text-slate-500">{modo.detalle}</span>
               </button>
             );
