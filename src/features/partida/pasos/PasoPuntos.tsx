@@ -108,7 +108,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       </div>
 
       <div key={participante.id} className={`flex flex-col gap-4 ${animacion}`}>
-      <div className="tarjeta tarjeta-acento-azul flex flex-col gap-2.5 p-4">
+      <div className="tarjeta flex flex-col gap-2.5 p-4">
         <div className="fila-puntaje !items-end">
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
