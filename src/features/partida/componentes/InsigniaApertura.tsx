@@ -26,7 +26,7 @@ export function InsigniaApertura({ puntosAcumulados, config, compacta = false, e
 
   if (enLinea) {
     return (
-      <div className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2 py-1 text-xs font-black ${ESTILOS_NIVEL[nivel]}`}>
+      <div className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2 py-1 text-xs font-bold ${ESTILOS_NIVEL[nivel]}`}>
         <span aria-hidden="true">🔓</span>
         <span className="truncate">
           Para abrirte: mín. <span className="text-sm tabular-nums">{requisito}</span> pts
@@ -37,7 +37,7 @@ export function InsigniaApertura({ puntosAcumulados, config, compacta = false, e
 
   return (
     <div className={`rounded-xl border px-3 py-2 ${ESTILOS_NIVEL[nivel]}`}>
-      <div className="flex items-center gap-2 text-sm font-black">
+      <div className="flex items-center gap-2 text-sm font-bold">
         <span aria-hidden="true">🔓</span>
         <span>
           Para abrirte: mínimo <span className="text-base">{requisito}</span> pts

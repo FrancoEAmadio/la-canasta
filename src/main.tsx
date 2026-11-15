@@ -18,6 +18,14 @@ document.addEventListener(
   { passive: false }
 );
 
+// Sin menú contextual (mantener apretado) ni arrastrar imágenes, salvo en los campos de texto.
+document.addEventListener('contextmenu', (evento) => {
+  const elemento = evento.target as HTMLElement | null;
+  if (elemento?.closest('input, textarea')) return;
+  evento.preventDefault();
+});
+document.addEventListener('dragstart', (evento) => evento.preventDefault());
+
 const contenedor = document.getElementById('root');
 if (!contenedor) throw new Error('No se encontró el contenedor #root');
 

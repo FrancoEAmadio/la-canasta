@@ -33,7 +33,7 @@ export function PantallaPartida() {
           <button type="button" onClick={() => setPantallaActual('inicio')} className="btn-fantasma px-3 py-2 text-sm">
             ← Menú
           </button>
-          <span className="text-[10px] font-black uppercase tracking-widest text-blue-200">Partida en curso · {partida.modo === 'parejas' ? 'Parejas' : 'Individual'}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">Partida en curso · {partida.modo === 'parejas' ? 'Parejas' : 'Individual'}</span>
         </div>
 
         <div className="flex items-center justify-between gap-2">
@@ -44,14 +44,14 @@ export function PantallaPartida() {
               </svg>
             </button>
             <div>
-              <span className="block text-xs font-black uppercase tracking-widest text-blue-200">Ronda {vista.numeroRonda}</span>
-              <h2 className="font-display text-lg font-black leading-tight text-white">
+              <span className="block text-xs font-bold uppercase tracking-widest text-blue-200">Ronda {vista.numeroRonda}</span>
+              <h2 className="font-display text-lg font-bold leading-tight text-white">
                 {partida.objetivo === null ? 'Sin límite de puntos' : `Meta: ${formatearPuntos(partida.objetivo)}`}
               </h2>
             </div>
           </div>
           <button type="button" onClick={() => abrirPodio(partida.id)} className="btn-claro px-3.5 py-2.5 text-xs">
-            🏆 Tabla
+            Tabla
           </button>
         </div>
 
@@ -69,7 +69,7 @@ export function PantallaPartida() {
                 className="flex flex-1 flex-col items-center gap-1 rounded-lg px-0.5 py-1 disabled:cursor-default"
               >
                 <span className={`h-1.5 w-full rounded-full ${actual ? 'bg-white' : puedeVolver ? 'bg-blue-300' : 'bg-white/20'}`} />
-                <span className={`text-[10px] font-black uppercase ${actual ? 'text-white' : puedeVolver ? 'text-blue-200' : 'text-white/40'}`}>{etiqueta}</span>
+                <span className={`text-[10px] font-bold uppercase ${actual ? 'text-white' : puedeVolver ? 'text-blue-200' : 'text-white/40'}`}>{etiqueta}</span>
               </button>
             );
           })}
@@ -77,7 +77,7 @@ export function PantallaPartida() {
 
         {editando && (
           <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2">
-            <span className="text-xs font-black text-amber-900">✏️ Corrigiendo la ronda {vista.numeroRonda}</span>
+            <span className="text-xs font-bold text-amber-900">✏️ Corrigiendo la ronda {vista.numeroRonda}</span>
             <button type="button" onClick={estado.cancelarEdicion} className="btn-claro px-2.5 py-1 text-[11px]">
               Cancelar corrección
             </button>
