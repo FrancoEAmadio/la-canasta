@@ -22,7 +22,7 @@ export function SelectorIndividual() {
             if (!jugador) return null;
             return (
               <li key={id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-2 pr-3">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-azul-vivo text-xs font-bold text-white">{indice + 1}</span>
+                <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${indice % 2 === 1 ? 'bg-rojo' : 'bg-azul-vivo'}`}>{indice + 1}</span>
                 <AvatarJugador palo={jugador.palo} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
                 <button type="button" onClick={() => elegir(id)} aria-label={`Quitar a ${jugador.nombre}`} className="h-8 w-8 rounded-lg text-lg font-bold text-slate-400 hover:bg-slate-200">
@@ -58,8 +58,10 @@ function nombreProvisorio(integrantes: (string | undefined)[], indice: number): 
 
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
-  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, mezclarEquipos } = partida;
+  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar } = partida;
   const [casillero, setCasillero] = useState<{ equipo: number; slot: number } | null>(null);
+  /** Lista de quiénes juegan, mientras se eligen para armar las parejas al azar (null = cerrado). */
+  const [eligiendoAzar, setEligiendoAzar] = useState<string[] | null>(null);
 
   const asignados = config.equipos.flat().filter((id): id is string => id !== null);
   const ocupanteActual = casillero ? config.equipos[casillero.equipo]?.[casillero.slot] ?? null : null;
@@ -125,10 +127,23 @@ export function SelectorParejas() {
         <button type="button" onClick={agregarEquipo} className="btn-claro py-2.5 text-xs">
           + Agregar equipo
         </button>
-        <button type="button" onClick={mezclarEquipos} disabled={asignados.length < 2} className="btn-claro py-2.5 text-xs">
+        <button type="button" onClick={() => setEligiendoAzar(asignados)} className="btn-claro py-2.5 text-xs">
           Parejas al azar
         </button>
       </div>
+
+      <ModalSeleccionJugadores
+        abierto={eligiendoAzar !== null}
+        onCerrar={() => {
+          if (eligiendoAzar && eligiendoAzar.length >= 2) armarParejasAlAzar(eligiendoAzar);
+          setEligiendoAzar(null);
+        }}
+        titulo="¿Quiénes juegan?"
+        seleccionados={eligiendoAzar ?? []}
+        onElegir={(id) => setEligiendoAzar((lista) => (lista ? (lista.includes(id) ? lista.filter((otro) => otro !== id) : [...lista, id]) : lista))}
+        onBorrarSeleccion={() => setEligiendoAzar([])}
+        textoListo="Armar parejas al azar"
+      />
 
       <ModalSeleccionJugadores
         abierto={casillero !== null}
