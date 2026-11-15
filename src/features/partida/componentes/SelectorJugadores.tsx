@@ -7,7 +7,7 @@ import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
 export function SelectorIndividual() {
   const { jugadores, partida } = useApp();
-  const { config, alternarSeleccionJugador, borrarSeleccionJugadores } = partida;
+  const { config, alternarSeleccionJugador, borrarSeleccionJugadores, mezclarOrdenIndividual } = partida;
   const [abierto, setAbierto] = useState(false);
 
   const elegir = alternarSeleccionJugador;
@@ -21,7 +21,7 @@ export function SelectorIndividual() {
             const jugador = jugadores.find((candidato) => candidato.id === id);
             if (!jugador) return null;
             return (
-              <li key={id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-2 pr-3">
+              <li key={id} className={`flex items-center gap-3 rounded-xl border-2 p-2 pr-3 ${indice % 2 === 1 ? 'border-rojo bg-red-50' : 'border-azul-vivo bg-blue-50'}`}>
                 <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${indice % 2 === 1 ? 'bg-rojo' : 'bg-azul-vivo'}`}>{indice + 1}</span>
                 <AvatarJugador palo={jugador.palo} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
@@ -32,6 +32,11 @@ export function SelectorIndividual() {
             );
           })}
         </ol>
+      )}
+      {config.idsIndividual.length >= 2 && (
+        <button type="button" onClick={mezclarOrdenIndividual} className="btn-claro py-3 text-sm">
+          Ordenar al azar
+        </button>
       )}
       <button type="button" onClick={() => setAbierto(true)} className="btn-claro py-3 text-sm">
         {config.idsIndividual.length === 0 ? 'Seleccionar jugadores' : 'Cambiar selección'}
@@ -58,7 +63,7 @@ function nombreProvisorio(integrantes: (string | undefined)[], indice: number): 
 
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
-  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar } = partida;
+  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos } = partida;
   const [casillero, setCasillero] = useState<{ equipo: number; slot: number } | null>(null);
   /** Lista de quiénes juegan, mientras se eligen para armar las parejas al azar (null = cerrado). */
   const [eligiendoAzar, setEligiendoAzar] = useState<string[] | null>(null);
@@ -94,7 +99,11 @@ export function SelectorParejas() {
                     type="button"
                     onClick={() => setCasillero({ equipo: indiceEquipo, slot })}
                     className={`flex min-h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 p-2 text-center ${
-                      jugador ? 'border-azul-vivo bg-white' : 'border-dashed border-slate-300 bg-white text-slate-400'
+                      jugador
+                        ? slot % 2 === 1
+                          ? 'border-rojo bg-red-50'
+                          : 'border-azul-vivo bg-blue-50'
+                        : 'border-dashed border-slate-300 bg-white text-slate-400'
                     }`}
                   >
                     {jugador ? (
@@ -127,7 +136,7 @@ export function SelectorParejas() {
         <button type="button" onClick={agregarEquipo} className="btn-claro py-2.5 text-xs">
           + Agregar equipo
         </button>
-        <button type="button" onClick={() => setEligiendoAzar(asignados)} className="btn-claro py-2.5 text-xs">
+        <button type="button" onClick={() => (asignados.length >= 2 ? mezclarEquipos() : setEligiendoAzar(asignados))} className="btn-claro py-2.5 text-xs">
           Parejas al azar
         </button>
       </div>

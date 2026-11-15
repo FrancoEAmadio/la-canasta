@@ -37,7 +37,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
 
   return (
     <section className="entrar flex flex-col gap-4">
-      <div className="tarjeta tarjeta-acento-azul p-4">
+      <div className="tarjeta p-4">
         <span className="block text-xs font-bold uppercase text-azul">Resumen de la ronda {vista.numeroRonda}</span>
         <span className="mt-0.5 block text-xs text-slate-500">
           {editando ? 'Estás corrigiendo una ronda anterior: revisá y guardá los cambios.' : 'Revisá los puntos antes de confirmar. Podés volver a corregir cualquier dato.'}

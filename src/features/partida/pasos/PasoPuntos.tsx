@@ -62,7 +62,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
       )}
 
       {vista.metaYaAlcanzadaCerrada && !editando && (
-        <div className="tarjeta tarjeta-acento-azul flex flex-col gap-2 p-4">
+        <div className="tarjeta flex flex-col gap-2 p-4">
           <span className="font-display text-base font-bold text-azul">¡Alguien llegó a la meta!</span>
           <p className="text-sm text-slate-600">Ya hay un jugador/equipo con {partida.objetivo?.toLocaleString('es-AR')} puntos o más. Podés cerrar la partida o seguir jugando.</p>
           <button type="button" onClick={terminarPartida} className="btn-primario py-3 text-sm">

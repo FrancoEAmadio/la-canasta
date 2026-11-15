@@ -128,7 +128,7 @@ export function PantallaNuevaPartida() {
         />
       </section>
 
-      <section className="tarjeta tarjeta-acento-azul p-4">
+      <section className="tarjeta p-4">
         <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">Ajustes de reglas: mínimos para abrirse</h3>
         <EditorApertura
           umbrales={config.aperturaUmbrales}
