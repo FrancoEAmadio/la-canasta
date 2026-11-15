@@ -7,7 +7,7 @@ import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
 export function SelectorIndividual() {
   const { jugadores, partida } = useApp();
-  const { config, alternarSeleccionJugador, borrarSeleccionJugadores } = partida;
+  const { config, alternarSeleccionJugador, borrarSeleccionJugadores, mezclarOrdenIndividual } = partida;
   const [abierto, setAbierto] = useState(false);
 
   const elegir = alternarSeleccionJugador;
@@ -32,6 +32,11 @@ export function SelectorIndividual() {
             );
           })}
         </ol>
+      )}
+      {config.idsIndividual.length >= 2 && (
+        <button type="button" onClick={mezclarOrdenIndividual} className="btn-claro py-3 text-sm">
+          Ordenar al azar
+        </button>
       )}
       <button type="button" onClick={() => setAbierto(true)} className="btn-claro py-3 text-sm">
         {config.idsIndividual.length === 0 ? 'Seleccionar jugadores' : 'Cambiar selección'}
@@ -58,7 +63,7 @@ function nombreProvisorio(integrantes: (string | undefined)[], indice: number): 
 
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
-  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar } = partida;
+  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos } = partida;
   const [casillero, setCasillero] = useState<{ equipo: number; slot: number } | null>(null);
   /** Lista de quiénes juegan, mientras se eligen para armar las parejas al azar (null = cerrado). */
   const [eligiendoAzar, setEligiendoAzar] = useState<string[] | null>(null);
@@ -131,7 +136,7 @@ export function SelectorParejas() {
         <button type="button" onClick={agregarEquipo} className="btn-claro py-2.5 text-xs">
           + Agregar equipo
         </button>
-        <button type="button" onClick={() => setEligiendoAzar(asignados)} className="btn-claro py-2.5 text-xs">
+        <button type="button" onClick={() => (asignados.length >= 2 ? mezclarEquipos() : setEligiendoAzar(asignados))} className="btn-claro py-2.5 text-xs">
           Parejas al azar
         </button>
       </div>

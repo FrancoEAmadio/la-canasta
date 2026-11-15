@@ -165,6 +165,18 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     });
   }, []);
 
+  /** Mezcla el orden de los jugadores elegidos en modo individual. */
+  const mezclarOrdenIndividual = useCallback(() => {
+    setConfig((actual) => {
+      const ids = [...actual.idsIndividual];
+      for (let i = ids.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [ids[i], ids[j]] = [ids[j]!, ids[i]!];
+      }
+      return { ...actual, idsIndividual: ids };
+    });
+  }, []);
+
   /** Mezcla a los jugadores elegidos y arma las parejas (crea los equipos que hagan falta). */
   const armarParejasAlAzar = useCallback((ids: string[]) => {
     const mezclados = [...ids];
@@ -494,6 +506,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     actualizarConfig,
     cambiarModo,
     armarParejasAlAzar,
+    mezclarOrdenIndividual,
     alternarSeleccionJugador,
     borrarSeleccionJugadores,
     asignarEnEquipo,
