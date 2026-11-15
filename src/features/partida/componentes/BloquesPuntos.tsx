@@ -175,7 +175,7 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
             vibrar();
             estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: !actual.canastaComodines }));
           }}
-          className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? ESTILO_TIPO.pura : ESTILO_TIPO.ninguna}`}
+          className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? 'border-slate-900 bg-slate-100 text-slate-900 ring-2 ring-slate-400' : ESTILO_TIPO.ninguna}`}
         >
           <span className={`font-display text-xl font-bold leading-none ${entrada.canastaComodines ? '' : 'text-azul'}`}>🃏</span>
           <span className="text-[10px] font-bold uppercase leading-tight">{entrada.canastaComodines ? 'Comodín' : '—'}</span>
