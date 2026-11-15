@@ -7,14 +7,14 @@ import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
 export function SelectorIndividual() {
   const { jugadores, partida } = useApp();
-  const { config, alternarSeleccionJugador } = partida;
+  const { config, alternarSeleccionJugador, borrarSeleccionJugadores } = partida;
   const [abierto, setAbierto] = useState(false);
 
   const elegir = alternarSeleccionJugador;
 
   return (
     <section className="tarjeta flex flex-col gap-3 p-4">
-      <h3 className="text-sm font-black uppercase tracking-wider text-azul">Jugadores ({config.idsIndividual.length})</h3>
+      <h3 className="text-sm font-bold uppercase tracking-wider text-azul">Jugadores ({config.idsIndividual.length})</h3>
       {config.idsIndividual.length > 0 && (
         <ol className="flex flex-col gap-2">
           {config.idsIndividual.map((id, indice) => {
@@ -22,7 +22,7 @@ export function SelectorIndividual() {
             if (!jugador) return null;
             return (
               <li key={id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-2 pr-3">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-azul-vivo text-xs font-black text-white">{indice + 1}</span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-azul-vivo text-xs font-bold text-white">{indice + 1}</span>
                 <AvatarJugador palo={jugador.palo} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
                 <button type="button" onClick={() => elegir(id)} aria-label={`Quitar a ${jugador.nombre}`} className="h-8 w-8 rounded-lg text-lg font-bold text-slate-400 hover:bg-slate-200">
@@ -34,7 +34,7 @@ export function SelectorIndividual() {
         </ol>
       )}
       <button type="button" onClick={() => setAbierto(true)} className="btn-claro py-3 text-sm">
-        {config.idsIndividual.length === 0 ? '👥 Seleccionar jugadores' : '✏️ Cambiar selección'}
+        {config.idsIndividual.length === 0 ? 'Seleccionar jugadores' : 'Cambiar selección'}
       </button>
 
       <ModalSeleccionJugadores
@@ -43,6 +43,7 @@ export function SelectorIndividual() {
         titulo="Seleccionar jugadores"
         seleccionados={config.idsIndividual}
         onElegir={elegir}
+        onBorrarSeleccion={borrarSeleccionJugadores}
       />
     </section>
   );
@@ -65,12 +66,12 @@ export function SelectorParejas() {
 
   return (
     <section className="tarjeta flex flex-col gap-3 p-4">
-      <h3 className="text-sm font-black uppercase tracking-wider text-azul">Equipos de {JUGADORES_POR_EQUIPO}</h3>
+      <h3 className="text-sm font-bold uppercase tracking-wider text-azul">Equipos de {JUGADORES_POR_EQUIPO}</h3>
 
       {config.equipos.map((equipo, indiceEquipo) => (
         <div key={indiceEquipo} className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="min-w-0 truncate font-display text-base font-black text-azul">
+            <span className="min-w-0 truncate font-display text-base font-bold text-azul">
               {nombreProvisorio(
                 equipo.map((id) => (id ? jugadores.find((candidato) => candidato.id === id)?.nombre : undefined)),
                 indiceEquipo
@@ -97,7 +98,7 @@ export function SelectorParejas() {
                     {jugador ? (
                       <>
                         <AvatarJugador palo={jugador.palo} tamano="sm" />
-                        <span className="w-full truncate text-sm font-black text-tinta">{jugador.nombre}</span>
+                        <span className="w-full truncate text-sm font-bold text-tinta">{jugador.nombre}</span>
                       </>
                     ) : (
                       <span className="text-sm font-bold">+ Elegir jugador</span>
@@ -108,7 +109,7 @@ export function SelectorParejas() {
                       type="button"
                       onClick={() => asignarEnEquipo(indiceEquipo, slot, null)}
                       aria-label={`Quitar a ${jugador.nombre} del equipo`}
-                      className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-rojo text-sm font-black text-white shadow"
+                      className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-rojo text-sm font-bold text-white shadow"
                     >
                       ×
                     </button>
@@ -125,7 +126,7 @@ export function SelectorParejas() {
           + Agregar equipo
         </button>
         <button type="button" onClick={mezclarEquipos} disabled={asignados.length < 2} className="btn-claro py-2.5 text-xs">
-          🎲 Parejas al azar
+          Parejas al azar
         </button>
       </div>
 

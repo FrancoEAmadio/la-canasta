@@ -24,8 +24,8 @@ export function ModalAuditoria() {
       <EncabezadoModal titulo={participante.nombre} subtitulo={subtituloParticipante(participante) || 'Desglose por ronda'} onCerrar={cerrarAuditoria} />
       <div className="scroll-oculto flex flex-1 flex-col gap-2.5 overflow-y-auto p-4">
         <div className="flex shrink-0 items-end justify-between rounded-2xl bg-azul px-4 py-3 text-white">
-          <span className="text-[10px] font-black uppercase tracking-widest opacity-80">Total acumulado</span>
-          <span className="text-3xl font-black leading-none tabular-nums">{formatearPuntos(filas.at(-1)?.acumulado ?? 0)}</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">Total acumulado</span>
+          <span className="text-3xl font-bold leading-none tabular-nums">{formatearPuntos(filas.at(-1)?.acumulado ?? 0)}</span>
         </div>
 
         {filas.length === 0 && <p className="p-6 text-center text-sm text-slate-500">Todavía no hay rondas cerradas.</p>}
@@ -43,9 +43,9 @@ export function ModalAuditoria() {
           return (
             <article key={fila.numero} className="shrink-0 rounded-xl border border-slate-200 p-3">
               <div className="flex items-start justify-between gap-3">
-                <span className="font-display text-base font-black text-azul">Ronda {fila.numero}</span>
+                <span className="font-display text-base font-bold text-azul">Ronda {fila.numero}</span>
                 <span className="text-right">
-                  <strong className={`block text-lg font-black leading-tight tabular-nums ${total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(total, true)}</strong>
+                  <strong className={`block text-lg font-bold leading-tight tabular-nums ${total < 0 ? 'text-rojo-osc' : 'text-azul'}`}>{formatearPuntos(total, true)}</strong>
                   <span className="text-[10px] font-semibold text-slate-400">acum. {formatearPuntos(fila.acumulado)}</span>
                 </span>
               </div>

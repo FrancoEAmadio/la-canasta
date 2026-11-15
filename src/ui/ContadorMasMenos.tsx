@@ -46,7 +46,7 @@ export function ContadorMasMenos({ valor, onCambiar, min = 0, max = 99, tono = '
           const numero = parseInt(evento.target.value.replace(/\D/g, ''), 10);
           aplicar(Number.isNaN(numero) ? 0 : numero);
         }}
-        className={`h-11 w-12 rounded-lg border-0 bg-transparent text-center text-2xl font-black ${colorValor} focus:bg-slate-100 disabled:opacity-40`}
+        className={`h-11 w-12 rounded-lg border-0 bg-transparent text-center text-2xl font-bold ${colorValor} focus:bg-slate-100 disabled:opacity-40`}
       />
       <button
         type="button"

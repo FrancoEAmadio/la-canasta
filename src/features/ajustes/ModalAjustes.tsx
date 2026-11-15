@@ -54,14 +54,14 @@ export function ModalAjustes() {
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <span className="block text-sm font-black text-tinta">Mantener la pantalla encendida</span>
+                <span className="block text-sm font-bold text-tinta">Mantener la pantalla encendida</span>
                 <span className="block text-xs text-slate-500">Durante la partida, para no desbloquear el celu en cada ronda.</span>
               </div>
               <Toggle etiqueta="Mantener la pantalla encendida" checked={ajustes.mantenerPantallaEncendida} onChange={(valor) => cambiarAjustes({ mantenerPantallaEncendida: valor })} />
             </div>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <span className="block text-sm font-black text-tinta">Vibración al tocar contadores</span>
+                <span className="block text-sm font-bold text-tinta">Vibración al tocar contadores</span>
                 <span className="block text-xs text-slate-500">Solo en dispositivos compatibles.</span>
               </div>
               <Toggle etiqueta="Vibración" checked={ajustes.vibracion} onChange={(valor) => cambiarAjustes({ vibracion: valor })} />
@@ -69,7 +69,7 @@ export function ModalAjustes() {
           </section>
 
           <section className="rounded-2xl border border-slate-200 p-3">
-            <h4 className="text-sm font-black text-azul">💾 Copia de seguridad</h4>
+            <h4 className="text-sm font-bold text-azul">💾 Copia de seguridad</h4>
             <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">
               Tus datos viven en este dispositivo (sin servidor ni cuenta). Exportá un archivo para guardarlos o pasarlos a otro celular.
             </p>
@@ -85,7 +85,7 @@ export function ModalAjustes() {
           </section>
 
           <section className="rounded-2xl border border-slate-200 p-3">
-            <h4 className="text-sm font-black text-azul">Tu opinión</h4>
+            <h4 className="text-sm font-bold text-azul">Tu opinión</h4>
             <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">¿Encontraste un error o tenés una idea para mejorar la app? Contanos.</p>
             <button type="button" onClick={() => setFeedbackAbierto(true)} className="btn-claro w-full py-2.5 text-sm">
               💬 Enviar comentarios o reportar error

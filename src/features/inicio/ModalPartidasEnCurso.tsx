@@ -33,7 +33,7 @@ export function ModalPartidasEnCurso({ abierto, onCerrar }: Props) {
             return (
               <article key={item.id} className="flex flex-col gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
                 <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                  <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase text-amber-800">
+                  <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase text-amber-800">
                     Ronda {item.borrador.numero} · {item.modo === 'parejas' ? '🤝 Parejas' : '🙋 Individual'}
                   </span>
                   <span className="text-[11px] font-bold text-slate-500">{formatearFecha(item.actualizada)}</span>

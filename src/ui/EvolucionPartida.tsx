@@ -52,7 +52,7 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
             role="tab"
             aria-selected={vista === id}
             onClick={() => setVista(id)}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-black transition-colors ${vista === id ? 'bg-white text-azul shadow-sm' : 'text-slate-500'}`}
+            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-colors ${vista === id ? 'bg-white text-azul shadow-sm' : 'text-slate-500'}`}
           >
             {etiqueta}
           </button>
@@ -88,7 +88,7 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
                   })}
                   className={`group border-t border-slate-100 text-tinta ${sinDesglose ? '' : 'cursor-pointer'}`}
                 >
-                  <th className="sticky left-0 z-10 min-w-28 max-w-36 bg-white p-2 text-left font-black group-active:bg-blue-50">
+                  <th className="sticky left-0 z-10 min-w-28 max-w-36 bg-white p-2 text-left font-bold group-active:bg-blue-50">
                     <span className="block text-[13px] leading-tight" style={{ overflowWrap: 'anywhere' }}>
                       {fila.participante.nombre}
                     </span>
@@ -96,11 +96,11 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
                   </th>
                   {fila.rondas.map((ronda) => (
                     <td key={ronda.numero} className="whitespace-nowrap p-2 tabular-nums group-active:bg-blue-50">
-                      <span className={`block text-sm font-black ${ronda.puntos < 0 ? 'text-rojo-osc' : 'text-tinta'}`}>{formatearPuntos(ronda.puntos, true)}</span>
+                      <span className={`block text-sm font-bold ${ronda.puntos < 0 ? 'text-rojo-osc' : 'text-tinta'}`}>{formatearPuntos(ronda.puntos, true)}</span>
                       <span className="block text-[10px] font-semibold text-slate-400">acum. {formatearPuntos(ronda.acumulado)}</span>
                     </td>
                   ))}
-                  {!sinDesglose && <td className="whitespace-nowrap p-2 text-base font-black tabular-nums text-azul group-active:bg-blue-50">{formatearPuntos(fila.total)}</td>}
+                  {!sinDesglose && <td className="whitespace-nowrap p-2 text-base font-bold tabular-nums text-azul group-active:bg-blue-50">{formatearPuntos(fila.total)}</td>}
                 </tr>
               ))}
             </tbody>

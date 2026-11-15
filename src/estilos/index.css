@@ -26,6 +26,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Mismo color que el fondo de abajo, la barra del sistema y el manifest: así no aparece ninguna franja de otro color. */
+  background-color: #0b1437;
+}
+
 html,
 body {
   overscroll-behavior: none;
@@ -50,8 +55,11 @@ button,
 }
 input,
 textarea {
-  -webkit-user-select: text;
-  user-select: text;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+img {
+  -webkit-user-drag: none;
 }
 
 body {
@@ -68,6 +76,7 @@ body {
     linear-gradient(180deg, #11205c 0%, var(--noche, #0b1437) 70%);
   background-color: #0b1437;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   overflow-x: hidden;
 }
 
@@ -96,7 +105,6 @@ h3,
 }
 
 button {
-  font: inherit;
   cursor: pointer;
   transition: transform 0.12s ease, filter 0.12s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   user-select: none;
@@ -110,6 +118,31 @@ button:disabled {
 :focus-visible {
   outline: 3px solid #93c5fd;
   outline-offset: 2px;
+}
+
+/* Márgenes laterales: 1rem en teléfono, más aire en tablet y PC (igual que Skull King). */
+html {
+  font-size: 15px;
+  --gutter: 1rem;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 17px;
+    --gutter: 2rem;
+  }
+}
+.contenedor-app {
+  padding: max(1rem, env(safe-area-inset-top)) var(--gutter) 0 var(--gutter);
+}
+/* Bloques que llegan de borde a borde (barras fijas) sin romper los márgenes. */
+.sangrado {
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+}
+main,
+section,
+.tarjeta {
+  min-width: 0;
 }
 
 .scroll-oculto {
@@ -149,7 +182,8 @@ button:disabled {
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  font-weight: 800;
+  min-height: 2.75rem;
+  font-weight: 700;
   border-radius: 0.9rem;
   border: 1px solid transparent;
   text-align: center;
@@ -203,6 +237,33 @@ button:disabled {
 .btn-fantasma:disabled {
   opacity: 0.4;
   box-shadow: none;
+}
+
+/* Borrar / eliminar: siempre en rojo. */
+.btn-peligro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  border-radius: 0.9rem;
+  color: #fff;
+  background: linear-gradient(180deg, #ef4444 0%, var(--rojo) 55%, var(--rojo-osc) 100%);
+  border: 1px solid #991b1b;
+  box-shadow: 0 6px 16px -4px rgba(220, 38, 38, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.btn-peligro:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Barra inferior fija con "Anterior / Siguiente". */
+.barra-inferior {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 1.5rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(11, 20, 55, 0.97) 55%, rgba(11, 20, 55, 0) 100%);
 }
 
 /* ── Campos ──────────────────────────────────────────────────────────── */
@@ -403,6 +464,34 @@ button:disabled {
     transform: translateY(0);
   }
 }
+/* Deslizamiento al cambiar de jugador, de sección o de modo. */
+@keyframes entrar-desde-derecha {
+  from {
+    opacity: 0;
+    transform: translateX(34px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes entrar-desde-izquierda {
+  from {
+    opacity: 0;
+    transform: translateX(-34px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.entra-derecha {
+  animation: entrar-desde-derecha 0.22s ease-out backwards;
+}
+.entra-izquierda {
+  animation: entrar-desde-izquierda 0.22s ease-out backwards;
+}
+
 .entrar {
   /* `backwards` (no `both`): al terminar no queda ningún transform activo que atrape a los hijos con position: fixed. */
   animation: entrar 0.22s ease-out backwards;
@@ -423,6 +512,8 @@ button:disabled {
 
 @media (prefers-reduced-motion: reduce) {
   .entrar,
+  .entra-derecha,
+  .entra-izquierda,
   .latir {
     animation: none;
   }
