@@ -9,9 +9,9 @@ import { EditorPremioCanastas } from './componentes/EditorPremioCanastas';
 import { SelectorIndividual, SelectorParejas } from './componentes/SelectorJugadores';
 import type { ResultadoComenzar } from './usePartidaState';
 
-const MODOS: { id: ModoJuego; titulo: string; detalle: string; icono: string }[] = [
-  { id: 'individual', titulo: 'Individual', detalle: 'Todos contra todos (o mano a mano)', icono: '🙋' },
-  { id: 'parejas', titulo: 'Grupal (Parejas)', detalle: 'Equipos de 2 jugadores', icono: '🤝' },
+const MODOS: { id: ModoJuego; titulo: string; detalle: string }[] = [
+  { id: 'individual', titulo: 'Individual', detalle: 'Todos contra todos (o mano a mano)' },
+  { id: 'parejas', titulo: 'Grupal (Parejas)', detalle: 'Equipos de 2 jugadores' },
 ];
 
 const TITULOS_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
@@ -34,7 +34,7 @@ const MENSAJES_AVISO: Record<Exclude<ResultadoComenzar, 'ok'>, string> = {
 
 export function PantallaNuevaPartida() {
   const { setPantallaActual, partida } = useApp();
-  const { config, actualizarConfig, comenzarPartida } = partida;
+  const { config, actualizarConfig, cambiarModo, comenzarPartida } = partida;
   const [aviso, setAviso] = useState<Exclude<ResultadoComenzar, 'ok'> | null>(null);
 
   const empezar = () => {
@@ -65,13 +65,16 @@ export function PantallaNuevaPartida() {
                 type="button"
                 role="radio"
                 aria-checked={activo}
-                onClick={() => actualizarConfig({ modo: modo.id })}
+                onClick={() => cambiarModo(modo.id)}
                 className={`flex flex-col items-center gap-1 rounded-2xl border-2 p-3 text-center ${
-                  activo ? 'border-azul-vivo bg-blue-50 shadow-inner' : 'border-slate-200 bg-white'
+                  activo
+                    ? modo.id === 'parejas'
+                      ? 'border-rojo bg-red-50 shadow-inner'
+                      : 'border-azul-vivo bg-blue-50 shadow-inner'
+                    : 'border-slate-200 bg-white'
                 }`}
               >
-                <span className="text-2xl">{modo.icono}</span>
-                <span className={`text-sm font-bold ${activo ? 'text-azul' : 'text-slate-700'}`}>{modo.titulo}</span>
+                <span className={`text-sm font-bold ${activo ? (modo.id === 'parejas' ? 'text-rojo-osc' : 'text-azul') : 'text-slate-700'}`}>{modo.titulo}</span>
                 <span className="text-[11px] font-medium leading-tight text-slate-500">{modo.detalle}</span>
               </button>
             );
@@ -110,7 +113,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta p-4">
-        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">Premio por cantidad de canastas</h3>
         <EditorPremioCanastas
           activo={config.premioActivo}
           cantidad={config.premioCantidad}
@@ -126,7 +129,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta tarjeta-acento-azul p-4">
-        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">🔓 Ajustes de reglas: mínimos para abrirse</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">Ajustes de reglas: mínimos para abrirse</h3>
         <EditorApertura
           umbrales={config.aperturaUmbrales}
           requisitos={config.aperturaRequisitos}
@@ -138,7 +141,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <button type="button" onClick={empezar} className="btn-secundario w-full py-4 text-lg">
-        Empezar partida ➔
+        Empezar partida →
       </button>
 
       <ModalAviso

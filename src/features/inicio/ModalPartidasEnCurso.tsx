@@ -34,7 +34,7 @@ export function ModalPartidasEnCurso({ abierto, onCerrar }: Props) {
               <article key={item.id} className="flex flex-col gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
                 <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase text-amber-800">
-                    Ronda {item.borrador.numero} · {item.modo === 'parejas' ? '🤝 Parejas' : '🙋 Individual'}
+                    Ronda {item.borrador.numero} · {item.modo === 'parejas' ? 'Parejas' : 'Individual'}
                   </span>
                   <span className="text-[11px] font-bold text-slate-500">{formatearFecha(item.actualizada)}</span>
                 </header>
@@ -59,10 +59,10 @@ export function ModalPartidasEnCurso({ abierto, onCerrar }: Props) {
 
                 <div className="grid grid-cols-[1fr_auto] gap-2">
                   <button type="button" onClick={() => continuar(item.id)} className="btn-primario py-3 text-sm">
-                    ▶ Continuar
+                    Continuar
                   </button>
-                  <button type="button" onClick={() => setADescartar(item)} aria-label="Descartar esta partida" className="btn-claro px-4 py-3 text-base">
-                    🗑️
+                  <button type="button" onClick={() => setADescartar(item)} aria-label="Descartar esta partida" className="btn-peligro px-4 py-3 text-sm">
+                    Descartar
                   </button>
                 </div>
               </article>

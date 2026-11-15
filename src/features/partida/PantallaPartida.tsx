@@ -77,7 +77,7 @@ export function PantallaPartida() {
 
         {editando && (
           <div className="flex items-center justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2">
-            <span className="text-xs font-bold text-amber-900">✏️ Corrigiendo la ronda {vista.numeroRonda}</span>
+            <span className="text-xs font-bold text-amber-900">Corrigiendo la ronda {vista.numeroRonda}</span>
             <button type="button" onClick={estado.cancelarEdicion} className="btn-claro px-2.5 py-1 text-[11px]">
               Cancelar corrección
             </button>

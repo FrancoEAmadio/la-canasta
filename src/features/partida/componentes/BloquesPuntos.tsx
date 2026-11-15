@@ -3,8 +3,9 @@ import { CONFIG_PUNTAJE } from '../../../constantes';
 import { FIGURAS_ESTANDAR, formatearPuntos, puntosTresRojos, subtotalBloque1, subtotalBloque2, subtotalBloque3, subtotalBloque4, valorCanasta } from '../../../dominio/puntuacion';
 import { maxCartas, maxTresNegros, maxTresRojos } from '../../../dominio/validaciones';
 import { useApp } from '../../../estado/AppProvider';
+import { vibrar } from '../../../infra/vibracion';
+import { ChipBono } from '../../../ui/ChipBono';
 import { CampoCantidad } from '../../../ui/CampoCantidad';
-import { Toggle } from '../../../ui/Toggle';
 import type { EntradaRonda, FiguraCanasta, Participante, Partida, TipoCanasta } from '../../../tipos';
 
 interface PropsBloques {
@@ -29,39 +30,33 @@ function Bloque({ numero, titulo, subtotal, tono = 'azul', children }: { numero:
   );
 }
 
-function FilaInterruptor({ titulo, detalle, activo, onCambiar, aviso }: { titulo: string; detalle: string; activo: boolean; onCambiar: (valor: boolean) => void; aviso?: string }) {
+function BotonLimpiar({ visible, onLimpiar, texto = 'Limpiar' }: { visible: boolean; onLimpiar: () => void; texto?: string }) {
+  if (!visible) return null;
   return (
-    <div>
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <span className="block text-sm font-bold text-tinta">{titulo}</span>
-          <span className="block text-xs font-semibold text-azul">{detalle}</span>
-        </div>
-        <Toggle etiqueta={titulo} checked={activo} onChange={onCambiar} />
-      </div>
-      {aviso && <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">{aviso}</p>}
-    </div>
+    <button type="button" onClick={onLimpiar} className="btn-peligro mx-auto px-5 py-2.5 text-sm">
+      {texto}
+    </button>
   );
 }
 
-function FilaContador({ titulo, ejemplo, unitario, valor, subtotal, max, tono = 'azul', deshabilitado, onCambiar }: {
+function FilaCantidad({ titulo, ejemplo, valorCarta, valor, max, tono = 'azul', deshabilitado, onCambiar }: {
   titulo: string;
   ejemplo: string;
-  unitario: string;
+  valorCarta: number;
   valor: number;
-  subtotal: number;
   max: number;
   tono?: 'azul' | 'rojo';
   deshabilitado?: boolean;
   onCambiar: (nuevo: number) => void;
 }) {
+  const signo = tono === 'rojo' ? '−' : '+';
   return (
     <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3 last:border-none last:pb-0">
       <div className="min-w-0 flex-1 pt-0.5">
         <span className="block text-sm font-bold leading-tight text-tinta">{titulo}</span>
         <span className="block text-[11px] font-semibold text-slate-500">{ejemplo}</span>
         <span className={`mt-0.5 block text-xs font-bold tabular-nums ${tono === 'rojo' ? 'text-rojo-osc' : 'text-azul'}`}>
-          {unitario} · {formatearPuntos(subtotal, true)} pts
+          {valor} {valor === 1 ? 'carta' : 'cartas'} × {valorCarta} = {valor > 0 ? signo : ""}{(valor * valorCarta).toLocaleString('es-AR')} pts
         </span>
       </div>
       <CampoCantidad valor={valor} onCambiar={onCambiar} max={max} tono={tono} etiqueta={titulo} deshabilitado={deshabilitado} />
@@ -75,71 +70,84 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
   const { borrador } = partida;
   const otroCon = (clave: 'corteExacto' | 'cerro') =>
     partida.participantes.find((otro) => otro.id !== participante.id && borrador.entradas[otro.id]?.[clave])?.nombre;
-  const avisoExclusivo = (clave: 'corteExacto' | 'cerro', texto: string) => {
+  const aviso = (clave: 'corteExacto' | 'cerro') => {
     const otro = otroCon(clave);
-    return otro && !entrada[clave] ? `${texto} ${otro}. Si lo activás acá, se lo sacás.` : undefined;
+    return otro && !entrada[clave] ? `Lo tiene ${otro}` : undefined;
   };
+  const maxRojos = maxTresRojos(borrador.entradas, participante.id, partida.reglas.mazos);
+  const cambiarRojos = (nuevo: number) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, tresRojos: nuevo }));
+  const cambiarEspejito = (valor: boolean) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, espejito: valor }));
 
   return (
     <Bloque numero={1} titulo="Bonificaciones de ronda" subtotal={subtotalBloque1(entrada)}>
-      <FilaInterruptor
-        titulo="¿Corte exacto en el reparto?"
-        detalle={`+${CONFIG_PUNTAJE.bonoCorteExacto} pts · al repartir, el corte salió justo`}
-        activo={entrada.corteExacto}
-        onCambiar={() => estado.alternarBonoExclusivo('corteExacto', participante.id)}
-        aviso={avisoExclusivo('corteExacto', 'Ya lo tiene')}
-      />
-      <FilaInterruptor
-        titulo="¿Cerró / cortó la ronda?"
-        detalle={`+${CONFIG_PUNTAJE.bonoCierre} pts · se quedó sin cartas (solo uno por ronda)`}
-        activo={entrada.cerro}
-        onCambiar={() => estado.alternarBonoExclusivo('cerro', participante.id)}
-        aviso={avisoExclusivo('cerro', 'Ya cerró')}
-      />
-      <FilaInterruptor
-        titulo={`¿Tenés espejito? (+${CONFIG_PUNTAJE.bonoEspejito} pts)`}
-        detalle="Al momento de repartir, en el pozo está dada vuelta la misma carta que tenés en tu mano."
-        activo={entrada.espejito}
-        onCambiar={(valor) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, espejito: valor }))}
-      />
-      <FilaContador
-        titulo="Tres Rojos (3♥ 3♦)"
-        ejemplo={`1 = +100 · 2 = +200 · 3 = +300 · 4 = +500 · 5 = +1.000${partida.reglas.mazos > 2 ? ` · cada extra +${CONFIG_PUNTAJE.tresRojoExtra}` : ''}`}
-        unitario={`${entrada.tresRojos} de ${2 * partida.reglas.mazos}`}
-        valor={entrada.tresRojos}
-        subtotal={puntosTresRojos(entrada.tresRojos)}
-        max={maxTresRojos(borrador.entradas, participante.id, partida.reglas.mazos)}
-        onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, tresRojos: nuevo }))}
-      />
+      <div className="grid grid-cols-2 gap-2.5 pt-1">
+        <ChipBono
+          titulo="Cerró la ronda"
+          tono="verde"
+          puntos={`+${CONFIG_PUNTAJE.bonoCierre} pts`}
+          cantidad={entrada.cerro ? 1 : 0}
+          maximo={1}
+          aviso={aviso('cerro')}
+          onMas={() => estado.alternarBonoExclusivo('cerro', participante.id)}
+          onBorrar={() => estado.alternarBonoExclusivo('cerro', participante.id)}
+        />
+        <ChipBono
+          titulo="Corte exacto"
+          tono="amarillo"
+          puntos={`+${CONFIG_PUNTAJE.bonoCorteExacto} pts`}
+          cantidad={entrada.corteExacto ? 1 : 0}
+          maximo={1}
+          aviso={aviso('corteExacto')}
+          onMas={() => estado.alternarBonoExclusivo('corteExacto', participante.id)}
+          onBorrar={() => estado.alternarBonoExclusivo('corteExacto', participante.id)}
+        />
+        <ChipBono
+          titulo="Espejito"
+          puntos={`+${CONFIG_PUNTAJE.bonoEspejito} pts`}
+          cantidad={entrada.espejito ? 1 : 0}
+          maximo={1}
+          onMas={() => cambiarEspejito(true)}
+          onBorrar={() => cambiarEspejito(false)}
+        />
+        <ChipBono
+          titulo="Tres Rojos"
+          tono="rojo"
+          puntos={entrada.tresRojos > 0 ? `+${puntosTresRojos(entrada.tresRojos).toLocaleString('es-AR')} pts` : `hasta ${maxRojos}`}
+          cantidad={entrada.tresRojos}
+          maximo={maxRojos}
+          onMas={() => cambiarRojos(entrada.tresRojos + 1)}
+          onBorrar={() => cambiarRojos(0)}
+        />
+      </div>
     </Bloque>
   );
 }
 
 // ───────────── Bloque 2: canastas ─────────────
-const OPCIONES_CANASTA: { tipo: TipoCanasta; etiqueta: string }[] = [
-  { tipo: 'ninguna', etiqueta: 'Ninguna' },
-  { tipo: 'pura', etiqueta: 'Pura' },
-  { tipo: 'impura', etiqueta: 'Impura' },
-];
+/** Cada toque pasa a la siguiente: nada → Pura → Impura → nada. */
+const SIGUIENTE_TIPO: Record<TipoCanasta, TipoCanasta> = { ninguna: 'pura', pura: 'impura', impura: 'ninguna' };
 
-const TONO_TIPO: Record<TipoCanasta, string> = { ninguna: 'tono-neutro', pura: 'tono-pura', impura: 'tono-impura' };
+const ESTILO_TIPO: Record<TipoCanasta, string> = {
+  ninguna: 'border-slate-200 bg-slate-50 text-slate-400',
+  pura: 'border-azul-vivo bg-blue-50 text-azul ring-2 ring-blue-200',
+  impura: 'border-rojo bg-red-50 text-rojo-osc ring-2 ring-red-200',
+};
 
-function FilaCanasta({ figura, tipo, onCambiar }: { figura: FiguraCanasta; tipo: TipoCanasta; onCambiar: (tipo: TipoCanasta) => void }) {
-  const nombre = figura === 'A' ? 'Ases' : figura;
+function FichaCanasta({ figura, tipo, puntos, etiqueta, onTocar }: { figura: string; tipo: TipoCanasta; puntos: number; etiqueta: string; onTocar: () => void }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-bold text-azul" aria-hidden="true">
-        {figura}
-      </span>
-      <div className="seg grid-cols-3 flex-1" role="group" aria-label={`Canasta de ${nombre}`}>
-        {OPCIONES_CANASTA.map((opcion) => (
-          <button key={opcion.tipo} type="button" aria-pressed={tipo === opcion.tipo} onClick={() => onCambiar(opcion.tipo)} className={`seg-btn ${TONO_TIPO[opcion.tipo]}`}>
-            {opcion.etiqueta}
-            {opcion.tipo !== 'ninguna' && <span className="block text-[10px] font-bold opacity-85">+{valorCanasta(figura, opcion.tipo).toLocaleString('es-AR')}</span>}
-          </button>
-        ))}
-      </div>
-    </div>
+    <button
+      type="button"
+      aria-label={`Canasta de ${etiqueta}: ${tipo === 'ninguna' ? 'ninguna' : tipo}`}
+      onClick={() => {
+        vibrar();
+        onTocar();
+      }}
+      className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${ESTILO_TIPO[tipo]}`}
+    >
+      <span className={`font-display text-xl font-bold leading-none ${tipo === 'ninguna' ? 'text-azul' : ''}`}>{figura}</span>
+      <span className="text-[10px] font-bold uppercase leading-tight">{tipo === 'ninguna' ? '—' : tipo}</span>
+      {tipo !== 'ninguna' && <span className="text-[10px] font-bold tabular-nums leading-tight">+{puntos.toLocaleString('es-AR')}</span>}
+    </button>
   );
 }
 
@@ -147,106 +155,141 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
   const { partida: estado } = useApp();
   const cambiar = (figura: FiguraCanasta, tipo: TipoCanasta) =>
     estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastas: { ...actual.canastas, [figura]: tipo } }));
+  const hayCanastas = entrada.canastaComodines || Object.values(entrada.canastas).some((tipo) => tipo !== 'ninguna');
+  const figuras: FiguraCanasta[] = ['A', ...FIGURAS_ESTANDAR];
 
   return (
     <Bloque numero={2} titulo="Canastas (máximo 1 por equipo o jugador)" subtotal={subtotalBloque2(entrada)}>
-      <FilaCanasta figura="A" tipo={entrada.canastas.A} onCambiar={(tipo) => cambiar('A', tipo)} />
-
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-bold text-azul" aria-hidden="true">
-          C
-        </span>
-        <div className="seg grid-cols-2 flex-1" role="group" aria-label="Canasta de Comodines">
-          <button type="button" aria-pressed={!entrada.canastaComodines} onClick={() => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: false }))} className="seg-btn tono-neutro">
-            Ninguna
-          </button>
-          <button type="button" aria-pressed={entrada.canastaComodines} onClick={() => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: true }))} className="seg-btn tono-pura">
-            Comodines
-            <span className="block text-[10px] font-bold opacity-85">+{CONFIG_PUNTAJE.canastaComodines.toLocaleString('es-AR')}</span>
-          </button>
-        </div>
+      <p className="text-[11px] font-semibold leading-snug text-slate-500">
+        Tocá el número: <strong className="text-azul">1 vez = Pura</strong>, <strong className="text-rojo-osc">2 = Impura</strong>, 3 = sin canasta.
+      </p>
+      <div className="grid grid-cols-4 gap-2">
+        {figuras.slice(0, 1).map((figura) => (
+          <FichaCanasta key={figura} figura={figura} etiqueta="Ases" tipo={entrada.canastas[figura]} puntos={valorCanasta(figura, entrada.canastas[figura])} onTocar={() => cambiar(figura, SIGUIENTE_TIPO[entrada.canastas[figura]])} />
+        ))}
+        <button
+          type="button"
+          aria-pressed={entrada.canastaComodines}
+          aria-label="Canasta de Comodines"
+          onClick={() => {
+            vibrar();
+            estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: !actual.canastaComodines }));
+          }}
+          className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? ESTILO_TIPO.pura : ESTILO_TIPO.ninguna}`}
+        >
+          <span className={`font-display text-xl font-bold leading-none ${entrada.canastaComodines ? '' : 'text-azul'}`}>🃏</span>
+          <span className="text-[10px] font-bold uppercase leading-tight">{entrada.canastaComodines ? 'Comodín' : '—'}</span>
+          {entrada.canastaComodines && <span className="text-[10px] font-bold tabular-nums leading-tight">+{CONFIG_PUNTAJE.canastaComodines.toLocaleString('es-AR')}</span>}
+        </button>
+        {figuras.slice(1).map((figura) => (
+          <FichaCanasta key={figura} figura={figura} etiqueta={figura} tipo={entrada.canastas[figura]} puntos={valorCanasta(figura, entrada.canastas[figura])} onTocar={() => cambiar(figura, SIGUIENTE_TIPO[entrada.canastas[figura]])} />
+        ))}
       </div>
-
-      <div className="h-px bg-slate-200" />
-      {FIGURAS_ESTANDAR.map((figura) => (
-        <FilaCanasta key={figura} figura={figura} tipo={entrada.canastas[figura]} onCambiar={(tipo) => cambiar(figura, tipo)} />
-      ))}
+      <BotonLimpiar
+        visible={hayCanastas}
+        texto="Limpiar canastas"
+        onLimpiar={() =>
+          estado.modificarEntrada(participante.id, (actual) => ({
+            ...actual,
+            canastaComodines: false,
+            canastas: Object.fromEntries(Object.keys(actual.canastas).map((figura) => [figura, 'ninguna'])) as EntradaRonda['canastas'],
+          }))
+        }
+      />
     </Bloque>
   );
 }
 
-// ───────────── Bloque 3: cartas en mesa ─────────────
+// ───────────── Bloques 3 y 4: cartas en la mesa / en la mano ─────────────
+const FILAS_CARTAS = [
+  { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7' },
+  { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K' },
+  { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los dos' },
+  { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50 puntos' },
+] as const;
+
+const AYUDA_CONTEO = 'Escribí cuántas cartas hay de cada tipo (no los puntos): la app hace la cuenta.';
+
 export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloques) {
   const { partida: estado } = useApp();
   const { entradas } = partida.borrador;
   const v = CONFIG_PUNTAJE.valorCarta;
-  const filas = [
-    { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7', unitario: v.c5 },
-    { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los dos', unitario: v.c20 },
-    { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50', unitario: v.c50 },
-  ] as const;
+  const hayCartas = FILAS_CARTAS.some((fila) => entrada.cartasMesa[fila.clave] > 0);
 
   return (
     <Bloque numero={3} titulo="Cartas en la mesa (a favor)" subtotal={subtotalBloque3(entrada)}>
-      {filas.map((fila) => (
-        <FilaContador
-          key={fila.clave}
-          titulo={fila.titulo}
-          ejemplo={fila.ejemplo}
-          unitario={`×${fila.unitario}`}
-          valor={entrada.cartasMesa[fila.clave]}
-          subtotal={entrada.cartasMesa[fila.clave] * fila.unitario}
-          max={maxCartas(entradas, participante.id, 'mesa', fila.clave, partida.reglas.mazos)}
-          onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { ...actual.cartasMesa, [fila.clave]: nuevo } }))}
-        />
-      ))}
+      <p className="text-[11px] font-semibold leading-snug text-slate-500">{AYUDA_CONTEO}</p>
+      <div className="flex flex-col gap-3">
+        {FILAS_CARTAS.map((fila) => (
+          <FilaCantidad
+            key={fila.clave}
+            valorCarta={v[fila.clave]}
+            titulo={fila.titulo}
+            ejemplo={fila.ejemplo}
+            valor={entrada.cartasMesa[fila.clave]}
+            max={maxCartas(entradas, participante.id, 'mesa', fila.clave, partida.reglas.mazos)}
+            onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { ...actual.cartasMesa, [fila.clave]: nuevo } }))}
+          />
+        ))}
+      </div>
+      <BotonLimpiar
+        visible={hayCartas}
+        texto="Limpiar cartas de la mesa"
+        onLimpiar={() => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { c5: 0, c10: 0, c20: 0, c50: 0 } }))}
+      />
     </Bloque>
   );
 }
 
-// ───────────── Bloque 4: cartas en mano (puntos negativos) ─────────────
 export function BloqueCartasMano({ partida, participante, entrada }: PropsBloques) {
   const { partida: estado } = useApp();
   const { entradas } = partida.borrador;
   const v = CONFIG_PUNTAJE.valorCarta;
   const sinCartas = partida.modo === 'individual' && entrada.cerro;
-  const filas = [
-    { clave: 'c5', titulo: 'Cartas de 5 en mano', ejemplo: '4 al 7', unitario: v.c5 },
-    { clave: 'c10', titulo: 'Cartas de 10 en mano', ejemplo: '8 al K', unitario: v.c10 },
-    { clave: 'c20', titulo: 'Cartas de 20 en mano', ejemplo: 'Ases y los dos', unitario: v.c20 },
-    { clave: 'c50', titulo: 'Jokers en mano', ejemplo: 'Comodines de 50', unitario: v.c50 },
-  ] as const;
+  const hayCartas = entrada.cartasMano.tresNegros > 0 || FILAS_CARTAS.some((fila) => entrada.cartasMano[fila.clave] > 0);
+  const maxNegros = maxTresNegros(entradas, participante.id, partida.reglas.mazos);
+  const cambiarNegros = (nuevo: number) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, tresNegros: nuevo } }));
 
   return (
     <Bloque numero={4} titulo="Cartas que quedaron en la mano" subtotal={subtotalBloque4(entrada)} tono="rojo">
-      {sinCartas && <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-rojo-osc">Cerró la ronda: se quedó sin cartas, así que no resta nada.</p>}
-      {partida.modo === 'parejas' && <p className="text-[11px] font-semibold text-slate-500">Sumá las cartas que les quedaron a los dos integrantes del equipo.</p>}
-      <FilaContador
-        titulo="Tres Negros en mano (3♠ 3♣)"
-        ejemplo="Sanción grave por no descartarlos"
-        unitario={`×−${CONFIG_PUNTAJE.penalidadTresNegro}`}
-        valor={entrada.cartasMano.tresNegros}
-        subtotal={-entrada.cartasMano.tresNegros * CONFIG_PUNTAJE.penalidadTresNegro}
-        max={maxTresNegros(entradas, participante.id, partida.reglas.mazos)}
-        tono="rojo"
-        deshabilitado={sinCartas}
-        onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, tresNegros: nuevo } }))}
-      />
-      {filas.map((fila) => (
-        <FilaContador
-          key={fila.clave}
-          titulo={fila.titulo}
-          ejemplo={fila.ejemplo}
-          unitario={`×−${fila.unitario}`}
-          valor={entrada.cartasMano[fila.clave]}
-          subtotal={-entrada.cartasMano[fila.clave] * fila.unitario}
-          max={maxCartas(entradas, participante.id, 'mano', fila.clave, partida.reglas.mazos)}
+      {sinCartas ? (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-rojo-osc">Cerró la ronda: se quedó sin cartas, así que no resta nada.</p>
+      ) : (
+        <p className="text-[11px] font-semibold leading-snug text-slate-500">
+          {partida.modo === 'parejas' ? 'Contá las cartas que les quedaron a los dos integrantes. ' : ''}
+          {AYUDA_CONTEO}
+        </p>
+      )}
+      <div className="flex flex-col gap-3">
+        <FilaCantidad
+          titulo="Tres Negros en mano (3♠ 3♣)"
+          ejemplo="Sanción por no descartarlos"
+          valorCarta={CONFIG_PUNTAJE.penalidadTresNegro}
+          valor={entrada.cartasMano.tresNegros}
+          max={maxNegros}
           tono="rojo"
           deshabilitado={sinCartas}
-          onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, [fila.clave]: nuevo } }))}
+          onCambiar={cambiarNegros}
         />
-      ))}
+        {FILAS_CARTAS.map((fila) => (
+          <FilaCantidad
+            key={fila.clave}
+            valorCarta={v[fila.clave]}
+            titulo={fila.titulo.replace('Jokers', 'Jokers en mano').replace(' puntos', ' en mano')}
+            ejemplo={fila.ejemplo}
+            tono="rojo"
+            deshabilitado={sinCartas}
+            valor={entrada.cartasMano[fila.clave]}
+            max={maxCartas(entradas, participante.id, 'mano', fila.clave, partida.reglas.mazos)}
+            onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, [fila.clave]: nuevo } }))}
+          />
+        ))}
+      </div>
+      <BotonLimpiar
+        visible={hayCartas && !sinCartas}
+        texto="Limpiar cartas de la mano"
+        onLimpiar={() => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { c5: 0, c10: 0, c20: 0, c50: 0, tresNegros: 0 } }))}
+      />
     </Bloque>
   );
 }
