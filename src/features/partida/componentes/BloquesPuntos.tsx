@@ -5,7 +5,7 @@ import { maxCartas, maxTresNegros, maxTresRojos } from '../../../dominio/validac
 import { useApp } from '../../../estado/AppProvider';
 import { vibrar } from '../../../infra/vibracion';
 import { ChipBono } from '../../../ui/ChipBono';
-import { FichaCartas } from '../../../ui/FichaCartas';
+import { CampoCantidad } from '../../../ui/CampoCantidad';
 import type { EntradaRonda, FiguraCanasta, Participante, Partida, TipoCanasta } from '../../../tipos';
 
 interface PropsBloques {
@@ -36,6 +36,31 @@ function BotonLimpiar({ visible, onLimpiar, texto = 'Limpiar' }: { visible: bool
     <button type="button" onClick={onLimpiar} className="btn-peligro mx-auto px-5 py-2.5 text-sm">
       {texto}
     </button>
+  );
+}
+
+function FilaCantidad({ titulo, ejemplo, valorCarta, valor, max, tono = 'azul', deshabilitado, onCambiar }: {
+  titulo: string;
+  ejemplo: string;
+  valorCarta: number;
+  valor: number;
+  max: number;
+  tono?: 'azul' | 'rojo';
+  deshabilitado?: boolean;
+  onCambiar: (nuevo: number) => void;
+}) {
+  const signo = tono === 'rojo' ? '−' : '+';
+  return (
+    <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3 last:border-none last:pb-0">
+      <div className="min-w-0 flex-1 pt-0.5">
+        <span className="block text-sm font-bold leading-tight text-tinta">{titulo}</span>
+        <span className="block text-[11px] font-semibold text-slate-500">{ejemplo}</span>
+        <span className={`mt-0.5 block text-xs font-bold tabular-nums ${tono === 'rojo' ? 'text-rojo-osc' : 'text-azul'}`}>
+          {valor} {valor === 1 ? 'carta' : 'cartas'} × {valorCarta} = {valor > 0 ? signo : ""}{(valor * valorCarta).toLocaleString('es-AR')} pts
+        </span>
+      </div>
+      <CampoCantidad valor={valor} onCambiar={onCambiar} max={max} tono={tono} etiqueta={titulo} deshabilitado={deshabilitado} />
+    </div>
   );
 }
 
@@ -154,8 +179,8 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
           }}
           className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? ESTILO_TIPO.pura : ESTILO_TIPO.ninguna}`}
         >
-          <span className={`font-display text-xl font-bold leading-none ${entrada.canastaComodines ? '' : 'text-azul'}`}>C</span>
-          <span className="text-[10px] font-bold uppercase leading-tight">Comodines</span>
+          <span className={`font-display text-xl font-bold leading-none ${entrada.canastaComodines ? '' : 'text-azul'}`}>🃏</span>
+          <span className="text-[10px] font-bold uppercase leading-tight">{entrada.canastaComodines ? 'Canasta' : '—'}</span>
           {entrada.canastaComodines && <span className="text-[10px] font-bold tabular-nums leading-tight">+{CONFIG_PUNTAJE.canastaComodines.toLocaleString('es-AR')}</span>}
         </button>
         {figuras.slice(1).map((figura) => (
@@ -179,13 +204,13 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
 
 // ───────────── Bloques 3 y 4: cartas en la mesa / en la mano ─────────────
 const FILAS_CARTAS = [
-  { clave: 'c5', titulo: 'De 5', ejemplo: '4, 5, 6 y 7' },
-  { clave: 'c10', titulo: 'De 10', ejemplo: '8, 9, 10, J, Q y K' },
-  { clave: 'c20', titulo: 'De 20', ejemplo: 'Ases y los dos' },
-  { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50' },
+  { clave: 'c5', titulo: 'Cartas de 5 puntos', ejemplo: '4, 5, 6 y 7' },
+  { clave: 'c10', titulo: 'Cartas de 10 puntos', ejemplo: '8, 9, 10, J, Q y K' },
+  { clave: 'c20', titulo: 'Cartas de 20 puntos', ejemplo: 'Ases y los dos' },
+  { clave: 'c50', titulo: 'Jokers', ejemplo: 'Comodines de 50 puntos' },
 ] as const;
 
-const AYUDA_CONTEO = 'Tocá la ficha una vez por cada carta mientras las vas levantando. Con +5 contás de a pilas de 5 y con −1 corregís.';
+const AYUDA_CONTEO = 'Escribí cuántas cartas hay de cada tipo (no los puntos): la app hace la cuenta.';
 
 export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloques) {
   const { partida: estado } = useApp();
@@ -196,14 +221,14 @@ export function BloqueCartasMesa({ partida, participante, entrada }: PropsBloque
   return (
     <Bloque numero={3} titulo="Cartas en la mesa (a favor)" subtotal={subtotalBloque3(entrada)}>
       <p className="text-[11px] font-semibold leading-snug text-slate-500">{AYUDA_CONTEO}</p>
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="flex flex-col gap-3">
         {FILAS_CARTAS.map((fila) => (
-          <FichaCartas
+          <FilaCantidad
             key={fila.clave}
-            valor={v[fila.clave]}
+            valorCarta={v[fila.clave]}
             titulo={fila.titulo}
             ejemplo={fila.ejemplo}
-            cantidad={entrada.cartasMesa[fila.clave]}
+            valor={entrada.cartasMesa[fila.clave]}
             max={maxCartas(entradas, participante.id, 'mesa', fila.clave, partida.reglas.mazos)}
             onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMesa: { ...actual.cartasMesa, [fila.clave]: nuevo } }))}
           />
@@ -242,23 +267,23 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
         <ChipBono
           titulo="Tres Negros en mano (3♠ 3♣)"
           tono="rojo"
-          puntos={entrada.cartasMano.tresNegros > 0 ? `−${(entrada.cartasMano.tresNegros * CONFIG_PUNTAJE.penalidadTresNegro).toLocaleString('es-AR')} pts` : `−${CONFIG_PUNTAJE.penalidadTresNegro} c/u · tocá por cada uno`}
+          puntos={entrada.cartasMano.tresNegros > 0 ? `−${(entrada.cartasMano.tresNegros * CONFIG_PUNTAJE.penalidadTresNegro).toLocaleString('es-AR')} pts` : `−${CONFIG_PUNTAJE.penalidadTresNegro} cada uno`}
           cantidad={entrada.cartasMano.tresNegros}
           maximo={sinCartas ? 0 : maxNegros}
           onMas={() => cambiarNegros(entrada.cartasMano.tresNegros + 1)}
           onBorrar={() => cambiarNegros(0)}
         />
       </div>
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="flex flex-col gap-3">
         {FILAS_CARTAS.map((fila) => (
-          <FichaCartas
+          <FilaCantidad
             key={fila.clave}
-            valor={v[fila.clave]}
-            titulo={fila.titulo}
+            valorCarta={v[fila.clave]}
+            titulo={fila.titulo.replace('Jokers', 'Jokers en mano').replace(' puntos', ' en mano')}
             ejemplo={fila.ejemplo}
             tono="rojo"
             deshabilitado={sinCartas}
-            cantidad={entrada.cartasMano[fila.clave]}
+            valor={entrada.cartasMano[fila.clave]}
             max={maxCartas(entradas, participante.id, 'mano', fila.clave, partida.reglas.mazos)}
             onCambiar={(nuevo) => estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cartasMano: { ...actual.cartasMano, [fila.clave]: nuevo } }))}
           />
