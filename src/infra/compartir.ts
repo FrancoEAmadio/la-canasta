@@ -6,12 +6,11 @@ import {
 import { formatearPuntos } from '../dominio/puntuacion.ts';
 import type { Partida } from '../tipos/index.ts';
 
-const MEDALLAS = ['🥇', '🥈', '🥉'];
 
 export function textoResultado(partida: Partida): string {
   const ranking = calcularRanking(partida);
   const lineas = ranking.map((fila) => {
-    const medalla = MEDALLAS[fila.posicion - 1] ?? `${fila.posicion}.`;
+    const medalla = `${fila.posicion}.º`;
     return `${medalla} ${nombreCompletoParticipante(fila.participante)} — ${formatearPuntos(fila.puntos)} pts`;
   });
   const meta = partida.objetivo === null ? 'sin límite de puntos' : `a ${partida.objetivo.toLocaleString('es-AR')} puntos`;

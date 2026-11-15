@@ -8,8 +8,8 @@ interface Props {
 }
 
 const TIPOS: { id: TipoFeedback; etiqueta: string }[] = [
-  { id: 'bug', etiqueta: '🐞 Reportar un error (Bug)' },
-  { id: 'sugerencia', etiqueta: '💡 Sugerencia / Comentario' },
+  { id: 'bug', etiqueta: 'Reportar un error (Bug)' },
+  { id: 'sugerencia', etiqueta: 'Sugerencia / Comentario' },
 ];
 
 const MENSAJES_ERROR = {
@@ -51,13 +51,13 @@ export function ModalFeedback({ abierto, onCerrar }: Props) {
 
   return (
     <Modal abierto={abierto} onCerrar={cerrar} ancho="max-w-md" zIndex="z-[70]" etiqueta="Enviar comentarios o reportar error">
-      <EncabezadoModal titulo="💬 Comentarios" subtitulo="Errores y sugerencias" onCerrar={cerrar} />
+      <EncabezadoModal titulo="Comentarios" subtitulo="Errores y sugerencias" onCerrar={cerrar} />
 
       {estado.fase === 'enviado' ? (
         <>
           <div className="flex flex-col items-center gap-2 p-8 text-center" role="status">
-            <span className="text-4xl" aria-hidden="true">
-              ✅
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-3xl font-bold text-emerald-700" aria-hidden="true">
+              ✓
             </span>
             <p className="text-sm font-bold leading-relaxed text-tinta">¡Gracias! Tu observación fue enviada correctamente.</p>
           </div>

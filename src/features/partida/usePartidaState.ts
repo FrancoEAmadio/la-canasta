@@ -55,6 +55,14 @@ export interface ConfigNuevaPartida {
   aperturaRequisitos: (number | null)[];
 }
 
+/** Pone a los jugadores en orden en las parejas: 1 y 2 en la primera, 3 y 4 en la segunda… */
+function repartirEnEquipos(ids: string[]): (string | null)[][] {
+  const cantidad = Math.max(MIN_EQUIPOS, Math.ceil(ids.length / JUGADORES_POR_EQUIPO));
+  return Array.from({ length: cantidad }, (_, equipo) =>
+    Array.from({ length: JUGADORES_POR_EQUIPO }, (_, slot) => ids[equipo * JUGADORES_POR_EQUIPO + slot] ?? null)
+  );
+}
+
 function crearConfigInicial(): ConfigNuevaPartida {
   return {
     modo: 'individual',
@@ -138,6 +146,33 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
 
   const actualizarConfig = useCallback((parcial: Partial<ConfigNuevaPartida>) => {
     setConfig((actual) => ({ ...actual, ...parcial }));
+  }, []);
+
+  /**
+   * Cambia de modo y lleva a los jugadores ya elegidos al otro lado:
+   * individual → parejas: 1.º y 2.º a la pareja 1, 3.º y 4.º a la pareja 2, y así;
+   * parejas → individual: quedan en el orden de los casilleros.
+   */
+  const cambiarModo = useCallback((modo: ModoJuego) => {
+    setConfig((actual) => {
+      if (actual.modo === modo) return actual;
+      if (modo === 'parejas') {
+        if (actual.idsIndividual.length === 0) return { ...actual, modo };
+        return { ...actual, modo, equipos: repartirEnEquipos(actual.idsIndividual) };
+      }
+      const enEquipos = actual.equipos.flat().filter((id): id is string => id !== null);
+      return { ...actual, modo, idsIndividual: enEquipos.length > 0 ? enEquipos : actual.idsIndividual };
+    });
+  }, []);
+
+  /** Mezcla a los jugadores elegidos y arma las parejas (crea los equipos que hagan falta). */
+  const armarParejasAlAzar = useCallback((ids: string[]) => {
+    const mezclados = [...ids];
+    for (let i = mezclados.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [mezclados[i], mezclados[j]] = [mezclados[j]!, mezclados[i]!];
+    }
+    setConfig((actual) => ({ ...actual, equipos: repartirEnEquipos(mezclados) }));
   }, []);
 
   const alternarSeleccionJugador = useCallback((id: string) => {
@@ -457,6 +492,8 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
 
     config,
     actualizarConfig,
+    cambiarModo,
+    armarParejasAlAzar,
     alternarSeleccionJugador,
     borrarSeleccionJugadores,
     asignarEnEquipo,

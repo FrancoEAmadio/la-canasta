@@ -33,10 +33,10 @@ export function ModalAuditoria() {
         {filas.map((fila) => {
           const total = fila.desglose?.total ?? 0;
           const partes: [string, number][] = [
-            ['🧺 Canastas', fila.desglose?.subtotalCanastas ?? 0],
-            ['🃏 Cartas', fila.desglose?.subtotalCartas ?? 0],
-            ['⭐ Bonos', fila.desglose?.subtotalBonos ?? 0],
-            ['⚠️ Penalizaciones', fila.desglose?.subtotalPenalizaciones ?? 0],
+            ['Canastas', fila.desglose?.subtotalCanastas ?? 0],
+            ['Cartas', fila.desglose?.subtotalCartas ?? 0],
+            ['Bonos', fila.desglose?.subtotalBonos ?? 0],
+            ['Penalizaciones', fila.desglose?.subtotalPenalizaciones ?? 0],
           ];
           const conValor = partes.filter(([, puntos]) => puntos !== 0);
           const bonos = fila.desglose?.bonos ?? [];
@@ -62,7 +62,7 @@ export function ModalAuditoria() {
                 <p className="mt-2 text-xs text-slate-600" style={{ overflowWrap: 'anywhere' }}>
                   {bonos.map((linea, indice) => (
                     <span key={indice} className="mr-2 inline-block whitespace-nowrap">
-                      {linea.clave === 'espejito' ? '🪞 ' : linea.clave === 'premio_canastas' ? '🧺 ' : ''}
+                      
                       {linea.etiqueta} <strong>{formatearPuntos(linea.puntos, true)}</strong>
                     </span>
                   ))}

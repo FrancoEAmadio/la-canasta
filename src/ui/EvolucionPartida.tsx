@@ -24,7 +24,7 @@ export function construirSeries(partida: Partida): SerieGrafico[] {
   return calcularFilas(partida).map((fila) => ({ nombre: fila.participante.nombre, puntos: [0, ...fila.rondas.map((ronda) => ronda.acumulado)] }));
 }
 
-/** Selector "📊 Ver Gráfico" / "📋 Ver Tabla" con la evolución de todos los jugadores y rondas. */
+/** Selector "Gráfico" / "Tabla" con la evolución de todos los jugadores y rondas. */
 /**
  * `sinDesglose`: se usa en el podio, donde el ranking de arriba ya muestra el total y abre el desglose;
  * la tabla queda solo con los puntos de cada ronda, sin repetir ni el total ni el acceso al desglose.
@@ -42,8 +42,8 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
       <div className="inline-flex self-start rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Forma de ver la evolución">
         {(
           [
-            ['grafico', '📊 Gráfico'],
-            ['tabla', '📋 Tabla'],
+            ['grafico', 'Gráfico'],
+            ['tabla', 'Tabla'],
           ] as const
         ).map(([id, etiqueta]) => (
           <button
@@ -92,7 +92,7 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
                     <span className="block text-[13px] leading-tight" style={{ overflowWrap: 'anywhere' }}>
                       {fila.participante.nombre}
                     </span>
-                    {!sinDesglose && <span className="block text-[10px] font-semibold text-azul">🔍 Ver desglose</span>}
+                    {!sinDesglose && <span className="block text-[10px] font-semibold text-azul">Ver desglose ›</span>}
                   </th>
                   {fila.rondas.map((ronda) => (
                     <td key={ronda.numero} className="whitespace-nowrap p-2 tabular-nums group-active:bg-blue-50">

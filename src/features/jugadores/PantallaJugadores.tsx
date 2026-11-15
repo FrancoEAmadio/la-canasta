@@ -18,9 +18,9 @@ import type { JugadorPermanente, Palo, Partida } from '../../tipos';
 type Vista = 'gestor' | 'estadisticas' | 'historial';
 
 const PESTANAS: [Vista, string][] = [
-  ['gestor', '👤 Jugadores'],
-  ['estadisticas', '📊 Estadísticas'],
-  ['historial', '📜 Historial'],
+  ['gestor', 'Jugadores'],
+  ['estadisticas', 'Estadísticas'],
+  ['historial', 'Historial'],
 ];
 
 export function PantallaJugadores() {
@@ -148,15 +148,15 @@ function VistaGestor() {
                   <span className="min-w-0">
                     <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">
-                      {jugador.estadisticas.partidasJugadas} partida{jugador.estadisticas.partidasJugadas === 1 ? '' : 's'} · 🏆 {jugador.estadisticas.victorias} · {calcularPorcentajeVictorias(jugador)}%
+                      {jugador.estadisticas.partidasJugadas} partida{jugador.estadisticas.partidasJugadas === 1 ? '' : 's'} · {jugador.estadisticas.victorias} {jugador.estadisticas.victorias === 1 ? 'victoria' : 'victorias'} · {calcularPorcentajeVictorias(jugador)}%
                     </span>
                   </span>
                 </button>
-                <button type="button" onClick={() => { setEdicion({ id: jugador.id, nombre: jugador.nombre, palo: jugador.palo }); setError(null); }} aria-label={`Editar a ${jugador.nombre}`} className="btn-claro h-10 w-10 text-sm">
-                  ✏️
+                <button type="button" onClick={() => { setEdicion({ id: jugador.id, nombre: jugador.nombre, palo: jugador.palo }); setError(null); }} aria-label={`Editar a ${jugador.nombre}`} className="btn-claro h-10 px-3 text-xs">
+                  Editar
                 </button>
-                <button type="button" onClick={() => setPendienteEliminar(jugador)} aria-label={`Eliminar a ${jugador.nombre}`} className="btn-claro h-10 w-10 text-sm">
-                  🗑️
+                <button type="button" onClick={() => setPendienteEliminar(jugador)} aria-label={`Eliminar a ${jugador.nombre}`} className="btn-peligro h-10 w-10 text-base">
+                  ✕
                 </button>
               </div>
             )}
@@ -204,7 +204,7 @@ function VistaEstadisticas() {
           <span className="min-w-0 flex-1">
             <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
             <span className="block text-[11px] font-semibold text-slate-500">
-              {jugador.estadisticas.partidasJugadas} jugadas · 🏆 {jugador.estadisticas.victorias} · récord{' '}
+              {jugador.estadisticas.partidasJugadas} jugadas · {jugador.estadisticas.victorias} {jugador.estadisticas.victorias === 1 ? 'victoria' : 'victorias'} · récord{' '}
               {jugador.estadisticas.mejorPartida === null ? '—' : formatearPuntos(jugador.estadisticas.mejorPartida)}
             </span>
           </span>
@@ -238,7 +238,7 @@ function VistaHistorial() {
     <div className="flex flex-col gap-4">
       {hayFinalizadas && (
         <div className="flex justify-end">
-          <button type="button" onClick={() => setConfirmarBorrado(true)} className="btn-secundario px-3 py-2 text-xs">
+          <button type="button" onClick={() => setConfirmarBorrado(true)} className="btn-peligro px-3 py-2 text-xs">
             Borrar historial
           </button>
         </div>
@@ -255,10 +255,10 @@ function VistaHistorial() {
               <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${enCurso ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-azul'}`}>
-                    {enCurso ? '⏳ En curso' : '🏁 Finalizada'}
+                    {enCurso ? 'En curso' : 'Finalizada'}
                   </span>
                   <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase text-slate-600">
-                    {item.modo === 'parejas' ? '🤝 Parejas' : '🙋 Individual'}
+                    {item.modo === 'parejas' ? 'Parejas' : 'Individual'}
                   </span>
                 </div>
                 <span className="text-[11px] font-bold text-slate-500">{formatearFecha(item.finalizadaEn ?? item.actualizada)}</span>
@@ -282,12 +282,12 @@ function VistaHistorial() {
                     <span className="fila-puntaje-izq">
                       <span className="min-w-0 flex-1">
                         <span className="fila-puntaje-nombre">
-                          {['🥇', '🥈', '🥉'][fila.posicion - 1] ?? `${fila.posicion}.`} {fila.participante.nombre}
+                          {fila.posicion}.º {fila.participante.nombre}
                         </span>
                         {subtituloParticipante(fila.participante) && (
                           <span className="fila-puntaje-nombre text-[11px] font-semibold opacity-75">{subtituloParticipante(fila.participante)}</span>
                         )}
-                        <span className="block text-[10px] font-semibold opacity-70">🔍 Ver desglose por ronda</span>
+                        <span className="block text-[10px] font-semibold opacity-70">Ver desglose por ronda ›</span>
                       </span>
                     </span>
                     <span className="fila-puntaje-valor text-base font-bold">{formatearPuntos(fila.puntos)} pts</span>
@@ -299,22 +299,22 @@ function VistaHistorial() {
                 {enCurso ? (
                   <>
                     <button type="button" onClick={() => partida.reanudarPartida(item.id)} className="btn-primario py-2.5 text-sm">
-                      ▶ Reanudar
+                      Reanudar
                     </button>
-                    <button type="button" onClick={() => setAEliminar(item)} className="btn-claro py-2.5 text-sm">
-                      🗑️ Descartar
+                    <button type="button" onClick={() => setAEliminar(item)} className="btn-peligro py-2.5 text-sm">
+                      Descartar
                     </button>
                   </>
                 ) : (
                   <>
                     <button type="button" onClick={() => abrirPodio(item.id)} className="btn-primario py-2.5 text-sm">
-                      🏆 Ver podio
+                      Ver podio
                     </button>
                     <button type="button" onClick={() => void compartir(item)} className="btn-claro py-2.5 text-sm">
-                      📤 Compartir
+                      Compartir
                     </button>
-                    <button type="button" onClick={() => setAEliminar(item)} className="btn-claro col-span-2 py-2 text-xs text-rojo-osc">
-                      ✕ Eliminar del historial
+                    <button type="button" onClick={() => setAEliminar(item)} className="btn-peligro col-span-2 py-2.5 text-sm">
+                      Eliminar del historial
                     </button>
                   </>
                 )}

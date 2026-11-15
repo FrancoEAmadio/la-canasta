@@ -46,7 +46,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
 
       {vista.advertencias.length > 0 && (
         <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4">
-          <span className="mb-1 block text-sm font-bold text-amber-900">⚠️ Revisá estos puntos</span>
+          <span className="mb-1 block text-sm font-bold text-amber-900">Revisá estos puntos</span>
           <ul className="flex list-disc flex-col gap-1 pl-5 text-xs text-amber-900">
             {vista.advertencias.map((texto) => (
               <li key={texto}>{texto}</li>
@@ -98,7 +98,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
         {vista.meta ? (
           <>
             <button type="button" onClick={confirmarFinal} className="btn-secundario w-full py-4 text-lg">
-              🏁 Confirmar resultado final
+              Confirmar resultado final
             </button>
             {!editando && (
               <button type="button" onClick={() => estado.confirmarRonda()} className="btn-fantasma w-full py-3 text-sm">
@@ -108,7 +108,7 @@ export function PasoResumen({ partida, vista }: PropsPaso) {
           </>
         ) : (
           <button type="button" onClick={() => estado.confirmarRonda()} className="btn-secundario w-full py-4 text-lg">
-            {editando ? 'Guardar corrección ✓' : 'Confirmar ronda y seguir ➔'}
+            {editando ? 'Guardar corrección' : 'Confirmar ronda y seguir →'}
           </button>
         )}
         <button type="button" onClick={() => estado.irAPaso('puntos')} className="btn-fantasma w-full py-3 text-sm">

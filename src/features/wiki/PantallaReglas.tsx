@@ -88,7 +88,7 @@ export function PantallaReglas() {
               value={termino}
               onChange={(evento) => setTermino(evento.target.value)}
               type="search"
-              placeholder="🔍 Buscar carta (ej: K, joker, pozo)..."
+              placeholder="Buscar carta (ej: K, joker, pozo)..."
               aria-label="Buscar en el catálogo de cartas"
               className="campo pr-10"
             />
