@@ -21,7 +21,7 @@ export function SelectorIndividual() {
             const jugador = jugadores.find((candidato) => candidato.id === id);
             if (!jugador) return null;
             return (
-              <li key={id} className="flex items-center gap-3 rounded-xl bg-slate-50 p-2 pr-3">
+              <li key={id} className={`flex items-center gap-3 rounded-xl border-2 p-2 pr-3 ${indice % 2 === 1 ? 'border-rojo bg-red-50' : 'border-azul-vivo bg-blue-50'}`}>
                 <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${indice % 2 === 1 ? 'bg-rojo' : 'bg-azul-vivo'}`}>{indice + 1}</span>
                 <AvatarJugador palo={jugador.palo} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
@@ -94,7 +94,11 @@ export function SelectorParejas() {
                     type="button"
                     onClick={() => setCasillero({ equipo: indiceEquipo, slot })}
                     className={`flex min-h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 p-2 text-center ${
-                      jugador ? 'border-azul-vivo bg-white' : 'border-dashed border-slate-300 bg-white text-slate-400'
+                      jugador
+                        ? slot % 2 === 1
+                          ? 'border-rojo bg-red-50'
+                          : 'border-azul-vivo bg-blue-50'
+                        : 'border-dashed border-slate-300 bg-white text-slate-400'
                     }`}
                   >
                     {jugador ? (
