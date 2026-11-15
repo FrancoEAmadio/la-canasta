@@ -37,7 +37,7 @@ export function ModalMenuPartida() {
         <div className="fixed inset-0 z-50 flex items-start justify-start bg-black/70 p-4 backdrop-blur-sm" onClick={cerrarMenu}>
           <nav className="tarjeta entrar mt-12 flex w-72 flex-col gap-2 p-4" onClick={(evento) => evento.stopPropagation()} aria-label="Menú de partida">
             <div className="mb-1 flex items-center justify-between border-b border-slate-200 pb-2">
-              <span className="font-display text-base font-black text-azul">Menú de partida</span>
+              <span className="font-display text-base font-bold text-azul">Menú de partida</span>
               <button type="button" onClick={cerrarMenu} aria-label="Cerrar menú" className="h-8 w-8 rounded-lg text-lg font-bold text-slate-400 hover:bg-slate-100">
                 ×
               </button>

@@ -46,8 +46,8 @@ export function PantallaNuevaPartida() {
     <main className="flex w-full flex-col gap-5 pt-5 pb-1">
       <div className="flex items-center justify-between">
         <div>
-          <span className="block text-[10px] font-black uppercase tracking-widest text-blue-200">Nueva partida</span>
-          <h2 className="font-display text-2xl font-black text-white">Configurar mesa</h2>
+          <span className="block text-[10px] font-bold uppercase tracking-widest text-blue-200">Nueva partida</span>
+          <h2 className="font-display text-2xl font-bold text-white">Configurar mesa</h2>
         </div>
         <button type="button" onClick={() => setPantallaActual('inicio')} className="btn-fantasma px-3 py-2 text-sm">
           ✕ Cancelar
@@ -55,7 +55,7 @@ export function PantallaNuevaPartida() {
       </div>
 
       <section className="tarjeta p-4">
-        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">1. Modo de juego</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">1. Modo de juego</h3>
         <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Modo de juego">
           {MODOS.map((modo) => {
             const activo = config.modo === modo.id;
@@ -71,7 +71,7 @@ export function PantallaNuevaPartida() {
                 }`}
               >
                 <span className="text-2xl">{modo.icono}</span>
-                <span className={`text-sm font-black ${activo ? 'text-azul' : 'text-slate-700'}`}>{modo.titulo}</span>
+                <span className={`text-sm font-bold ${activo ? 'text-azul' : 'text-slate-700'}`}>{modo.titulo}</span>
                 <span className="text-[11px] font-medium leading-tight text-slate-500">{modo.detalle}</span>
               </button>
             );
@@ -82,7 +82,7 @@ export function PantallaNuevaPartida() {
       {config.modo === 'individual' ? <SelectorIndividual /> : <SelectorParejas />}
 
       <section className="tarjeta p-4">
-        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">2. Puntaje para ganar</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">2. Puntaje para ganar</h3>
         <div className="flex items-center justify-between gap-3">
           <span className="text-sm font-bold text-slate-700">Puntos para ganar</span>
           <CampoNumero valor={config.objetivo} onCambiar={(objetivo) => actualizarConfig({ objetivo })} etiqueta="Puntaje para ganar" placeholder="Sin límite" ancho={140} alto={46} />
@@ -93,7 +93,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta p-4">
-        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">3. Cantidad de mazos</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">3. Cantidad de mazos</h3>
         <div className="flex items-center justify-between gap-3">
           <span className="text-sm font-bold text-slate-700">Mazos</span>
           <CampoNumero valor={config.mazos} onCambiar={(mazos) => actualizarConfig({ mazos })} etiqueta="Cantidad de mazos" placeholder="4" ancho={140} alto={46} />
@@ -110,7 +110,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta p-4">
-        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h3>
         <EditorPremioCanastas
           activo={config.premioActivo}
           cantidad={config.premioCantidad}
@@ -126,7 +126,7 @@ export function PantallaNuevaPartida() {
       </section>
 
       <section className="tarjeta tarjeta-acento-azul p-4">
-        <h3 className="mb-3 text-sm font-black uppercase tracking-wider text-azul">🔓 Ajustes de reglas: mínimos para abrirse</h3>
+        <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-azul">🔓 Ajustes de reglas: mínimos para abrirse</h3>
         <EditorApertura
           umbrales={config.aperturaUmbrales}
           requisitos={config.aperturaRequisitos}

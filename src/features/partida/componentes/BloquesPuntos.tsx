@@ -18,11 +18,11 @@ function Bloque({ numero, titulo, subtotal, tono = 'azul', children }: { numero:
   return (
     <section className={`tarjeta overflow-hidden ${tono === 'rojo' ? 'border-red-300' : ''}`}>
       <header className={`flex items-center justify-between gap-2 px-4 py-2.5 text-white ${fondo}`}>
-        <h3 className="text-sm font-black leading-tight">
+        <h3 className="text-sm font-bold leading-tight">
           <span className="mr-1.5 opacity-70">{numero}.</span>
           {titulo}
         </h3>
-        <span className="rounded-full bg-white/20 px-2.5 py-1 text-sm font-black tabular-nums">{formatearPuntos(subtotal, true)}</span>
+        <span className="rounded-full bg-white/20 px-2.5 py-1 text-sm font-bold tabular-nums">{formatearPuntos(subtotal, true)}</span>
       </header>
       <div className="flex flex-col gap-3 p-4">{children}</div>
     </section>
@@ -34,7 +34,7 @@ function FilaInterruptor({ titulo, detalle, activo, onCambiar, aviso }: { titulo
     <div>
       <div className="flex items-center justify-between gap-3">
         <div>
-          <span className="block text-sm font-black text-tinta">{titulo}</span>
+          <span className="block text-sm font-bold text-tinta">{titulo}</span>
           <span className="block text-xs font-semibold text-azul">{detalle}</span>
         </div>
         <Toggle etiqueta={titulo} checked={activo} onChange={onCambiar} />
@@ -58,9 +58,9 @@ function FilaContador({ titulo, ejemplo, unitario, valor, subtotal, max, tono = 
   return (
     <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3 last:border-none last:pb-0">
       <div className="min-w-0 flex-1 pt-0.5">
-        <span className="block text-sm font-black leading-tight text-tinta">{titulo}</span>
+        <span className="block text-sm font-bold leading-tight text-tinta">{titulo}</span>
         <span className="block text-[11px] font-semibold text-slate-500">{ejemplo}</span>
-        <span className={`mt-0.5 block text-xs font-black tabular-nums ${tono === 'rojo' ? 'text-rojo-osc' : 'text-azul'}`}>
+        <span className={`mt-0.5 block text-xs font-bold tabular-nums ${tono === 'rojo' ? 'text-rojo-osc' : 'text-azul'}`}>
           {unitario} · {formatearPuntos(subtotal, true)} pts
         </span>
       </div>
@@ -128,7 +128,7 @@ function FilaCanasta({ figura, tipo, onCambiar }: { figura: FiguraCanasta; tipo:
   const nombre = figura === 'A' ? 'Ases' : figura;
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-black text-azul" aria-hidden="true">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-bold text-azul" aria-hidden="true">
         {figura}
       </span>
       <div className="seg grid-cols-3 flex-1" role="group" aria-label={`Canasta de ${nombre}`}>
@@ -153,7 +153,7 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
       <FilaCanasta figura="A" tipo={entrada.canastas.A} onCambiar={(tipo) => cambiar('A', tipo)} />
 
       <div className="flex items-center gap-2.5">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-black text-azul" aria-hidden="true">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-200 bg-slate-50 font-display text-lg font-bold text-azul" aria-hidden="true">
           C
         </span>
         <div className="seg grid-cols-2 flex-1" role="group" aria-label="Canasta de Comodines">

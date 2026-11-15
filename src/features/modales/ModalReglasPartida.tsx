@@ -30,7 +30,7 @@ export function ModalReglasPartida({ partida, onGuardar, onCerrar }: Props) {
       <EncabezadoModal titulo="Reglas de la partida" subtitulo="Mínimos y premio por canastas" onCerrar={onCerrar} />
       <div className="scroll-oculto flex flex-col gap-4 overflow-y-auto p-4">
         <section className="flex flex-col gap-2">
-          <h4 className="text-sm font-black uppercase tracking-wider text-azul">🔓 Mínimos para abrirse</h4>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-azul">🔓 Mínimos para abrirse</h4>
           <EditorApertura
             umbrales={umbrales}
             requisitos={requisitos}
@@ -43,7 +43,7 @@ export function ModalReglasPartida({ partida, onGuardar, onCerrar }: Props) {
         </section>
 
         <section className="flex flex-col gap-2">
-          <h4 className="text-sm font-black uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h4>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-azul">🧺 Premio por cantidad de canastas</h4>
           <EditorPremioCanastas
             activo={premioActivo}
             cantidad={premioCantidad}
