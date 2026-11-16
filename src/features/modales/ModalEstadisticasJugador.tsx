@@ -2,6 +2,7 @@ import { useApp } from '../../estado/AppProvider';
 import { calcularPorcentajeVictorias, calcularPorcentajeVictoriasModo, calcularPromedioPuntos } from '../../dominio/estadisticas';
 import { formatearFecha } from '../../dominio/partida';
 import { formatearPuntos } from '../../dominio/puntuacion';
+import { hexColorJugador } from '../../datos/coloresJugador';
 import { AvatarJugador } from '../../ui/AvatarJugador';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 
@@ -26,7 +27,7 @@ export function ModalEstadisticasJugador() {
           <EncabezadoModal titulo={jugador.nombre} subtitulo="Perfil del jugador" onCerrar={cerrarEstadisticasJugador} />
           <div className="scroll-oculto flex flex-1 flex-col gap-4 overflow-y-auto p-4">
             <div className="flex items-center gap-3">
-              <AvatarJugador palo={jugador.palo} tamano="lg" />
+              <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} tamano="lg" />
               <div>
                 <span className="block text-3xl font-bold text-azul">{calcularPorcentajeVictorias(jugador)}%</span>
                 <span className="text-[11px] font-bold uppercase text-slate-500">Win rate general</span>

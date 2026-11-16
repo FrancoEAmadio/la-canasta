@@ -1,3 +1,4 @@
+import { colorLibre, esColorValido } from '../datos/coloresJugador.ts';
 import {
   CLAVE_LS_AJUSTES,
   CLAVE_LS_JUGADORES,
@@ -52,6 +53,7 @@ function normalizarJugador(crudo: Partial<JugadorPermanente>): JugadorPermanente
     id: crudo.id,
     nombre: crudo.nombre,
     palo: crudo.palo && PALOS.includes(crudo.palo) ? crudo.palo : 'picas',
+    ...(esColorValido(crudo.color) ? { color: crudo.color } : {}),
     estadisticas,
     evolucion: Array.isArray(crudo.evolucion) ? crudo.evolucion : [],
   };
@@ -60,7 +62,15 @@ function normalizarJugador(crudo: Partial<JugadorPermanente>): JugadorPermanente
 export function cargarJugadores(): JugadorPermanente[] {
   const lista = leerJson<Partial<JugadorPermanente>[]>(CLAVE_LS_JUGADORES);
   if (!Array.isArray(lista)) return [];
-  return lista.map(normalizarJugador).filter((jugador): jugador is JugadorPermanente => jugador !== null);
+  const jugadores = lista.map(normalizarJugador).filter((jugador): jugador is JugadorPermanente => jugador !== null);
+  // Jugadores de antes de los colores: se les reparte el primer color libre, así no se repiten.
+  const usados = jugadores.map((jugador) => jugador.color);
+  return jugadores.map((jugador, indice) => {
+    if (jugador.color) return jugador;
+    const color = colorLibre(usados);
+    usados[indice] = color;
+    return { ...jugador, color };
+  });
 }
 
 export function guardarJugadores(lista: JugadorPermanente[]): boolean {

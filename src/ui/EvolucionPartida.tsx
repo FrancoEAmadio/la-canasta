@@ -1,7 +1,8 @@
 import { useState, type KeyboardEvent } from 'react';
 import { calcularEntrada, formatearPuntos } from '../dominio/puntuacion';
 import { useApp } from '../estado/AppProvider';
-import type { Partida } from '../tipos';
+import { colorDelParticipante } from '../datos/coloresJugador';
+import type { JugadorPermanente, Partida } from '../tipos';
 import { GraficoEvolucion, type SerieGrafico } from './GraficoEvolucion';
 
 type Vista = 'grafico' | 'tabla';
@@ -20,8 +21,13 @@ function calcularFilas(partida: Partida) {
   });
 }
 
-export function construirSeries(partida: Partida): SerieGrafico[] {
-  return calcularFilas(partida).map((fila) => ({ nombre: fila.participante.nombre, puntos: [0, ...fila.rondas.map((ronda) => ronda.acumulado)] }));
+export function construirSeries(partida: Partida, jugadores: JugadorPermanente[] = []): SerieGrafico[] {
+  return calcularFilas(partida).map((fila) => ({
+    nombre: fila.participante.nombre,
+    puntos: [0, ...fila.rondas.map((ronda) => ronda.acumulado)],
+    // En individual cada línea va con el color del jugador; en parejas (dos colores por equipo) se usa la paleta del gráfico.
+    color: partida.modo === 'individual' ? colorDelParticipante(fila.participante, jugadores) : undefined,
+  }));
 }
 
 /** Selector "Gráfico" / "Tabla" con la evolución de todos los jugadores y rondas. */
@@ -30,7 +36,7 @@ export function construirSeries(partida: Partida): SerieGrafico[] {
  * la tabla queda solo con los puntos de cada ronda, sin repetir ni el total ni el acceso al desglose.
  */
 export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Partida; sinDesglose?: boolean }) {
-  const { verAuditoria } = useApp();
+  const { verAuditoria, jugadores } = useApp();
   const [vista, setVista] = useState<Vista>('grafico');
 
   if (partida.rondas.length === 0) return <p className="text-xs text-slate-500">Todavía no hay rondas cerradas.</p>;
@@ -60,7 +66,7 @@ export function EvolucionPartida({ partida, sinDesglose = false }: { partida: Pa
       </div>
 
       {vista === 'grafico' ? (
-        partida.rondas.length >= 1 && <GraficoEvolucion series={construirSeries(partida)} />
+        partida.rondas.length >= 1 && <GraficoEvolucion series={construirSeries(partida, jugadores)} />
       ) : (
         <div className="scroll-oculto overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full border-collapse text-right text-xs">

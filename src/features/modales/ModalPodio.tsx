@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../../estado/AppProvider';
+import { coloresDelParticipante } from '../../datos/coloresJugador';
 import { calcularRanking, subtituloParticipante } from '../../dominio/partida';
 import { formatearPuntos } from '../../dominio/puntuacion';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
@@ -9,7 +10,7 @@ import { ModalAviso } from '../../ui/ModalAviso';
 import { HistorialRondas } from './HistorialRondas';
 
 export function ModalPodio() {
-  const { podioPartidaId, cerrarPodio, partida: estado, verAuditoria } = useApp();
+  const { podioPartidaId, cerrarPodio, partida: estado, verAuditoria, jugadores } = useApp();
   const [aviso, setAviso] = useState<string | null>(null);
   const partida = estado.partidas.find((candidata) => candidata.id === podioPartidaId) ?? null;
 
@@ -47,8 +48,11 @@ export function ModalPodio() {
                 <span className="w-9 text-center text-xl font-bold leading-none">{fila.posicion}.º</span>
 
                 <span className="flex min-w-0 flex-col gap-1.5">
-                  <span className="text-base font-bold leading-tight" style={{ overflowWrap: 'anywhere' }}>
-                    {fila.participante.nombre}
+                  <span className="flex items-center gap-1.5 text-base font-bold leading-tight" style={{ overflowWrap: 'anywhere' }}>
+                    {coloresDelParticipante(fila.participante, jugadores).map((color, posicion) => (
+                      <span key={posicion} aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-white/70" style={{ backgroundColor: color }} />
+                    ))}
+                    <span className="min-w-0">{fila.participante.nombre}</span>
                   </span>
                   {subtituloParticipante(fila.participante) && (
                     <span className="text-[11px] font-semibold leading-tight opacity-80" style={{ overflowWrap: 'anywhere' }}>
