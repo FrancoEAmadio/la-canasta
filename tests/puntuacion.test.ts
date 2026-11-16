@@ -11,7 +11,7 @@ import {
   subtotalBloque3,
   subtotalBloque4,
 } from '../src/dominio/puntuacion.ts';
-import { calcularRanking, crearPartida, nombreEquipo, objetivoAlcanzado, quienMezclaYReparte, subtituloParticipante, totalesPartida } from '../src/dominio/partida.ts';
+import { calcularRanking, crearPartida, nombreEquipo, objetivoAlcanzado, quienMezclaYReparte, renombrarJugadorEnPartida, subtituloParticipante, totalesPartida } from '../src/dominio/partida.ts';
 import { reglasPorDefecto, mazosValidos } from '../src/dominio/reglas.ts';
 import { advertenciasRonda, maxCartas, maxTresNegros, maxTresRojos } from '../src/dominio/validaciones.ts';
 import type { Participante } from '../src/tipos/index.ts';
@@ -253,4 +253,35 @@ test('advertencias de olvidos: nadie cerró o alguien sin cartas en la mano', ()
   const sinMano = advertenciasRonda(participantes, entradas, 4);
   assert.equal(sinMano.length, 1);
   assert.match(sinMano[0]!, /^Caro no tiene cartas cargadas/);
+});
+
+test('editar el nombre de un jugador lo cambia en la partida (individual y parejas)', () => {
+  const individual = crearPartida({
+    modo: 'individual',
+    objetivo: null,
+    reglas: reglasPorDefecto(),
+    participantes: [
+      { id: 'p1', nombre: 'Franco', jugadoresIds: ['j1'], jugadoresNombres: ['Franco'] },
+      { id: 'p2', nombre: 'Sol', jugadoresIds: ['j2'], jugadoresNombres: ['Sol'] },
+    ],
+  });
+  const renombrada = renombrarJugadorEnPartida(individual, 'j1', 'Franco', 'Fran');
+  assert.equal(renombrada.participantes[0]!.nombre, 'Fran');
+  assert.deepEqual(renombrada.ordenMesa, ['Fran', 'Sol']);
+  assert.equal(renombrarJugadorEnPartida(individual, 'otro', 'X', 'Y'), individual);
+
+  const parejas = crearPartida({
+    modo: 'parejas',
+    objetivo: null,
+    reglas: reglasPorDefecto(),
+    participantes: [
+      { id: 'e1', nombre: 'Franco y Sol', jugadoresIds: ['j1', 'j2'], jugadoresNombres: ['Franco', 'Sol'] },
+      { id: 'e2', nombre: 'Equipo 2', jugadoresIds: ['j3', 'j4'], jugadoresNombres: ['Ana', 'Beto'] },
+    ],
+  });
+  const conPareja = renombrarJugadorEnPartida(parejas, 'j2', 'Sol', 'Sole');
+  assert.equal(conPareja.participantes[0]!.nombre, 'Franco y Sole');
+  const conEquipoViejo = renombrarJugadorEnPartida(parejas, 'j3', 'Ana', 'Anita');
+  assert.equal(conEquipoViejo.participantes[1]!.nombre, 'Equipo 2');
+  assert.deepEqual(conEquipoViejo.participantes[1]!.jugadoresNombres, ['Anita', 'Beto']);
 });
