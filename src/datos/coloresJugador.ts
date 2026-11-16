@@ -68,3 +68,9 @@ export function coloresDelParticipante(
 export function colorDelParticipante(participante: { jugadoresIds: string[] }, jugadores: { id: string; color?: string }[]): string | undefined {
   return coloresDelParticipante(participante, jugadores)[0];
 }
+
+/** Borde y fondo clarito con el color del jugador, para mostrarlo como elegido (selector, lista y parejas). */
+export function estiloElegido(jugador: { id: string; color?: string }): { borderColor: string; backgroundColor: string } {
+  const hex = hexColorJugador(jugador);
+  return { borderColor: hex, backgroundColor: fondoSuave(hex) };
+}
