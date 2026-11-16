@@ -1,11 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { registerSW } from 'virtual:pwa-register';
 import { App } from './App';
+import { iniciarServiceWorker } from './actualizar';
 import './estilos/index.css';
 
 // Registra el service worker: la app queda instalable y funciona sin conexión.
-registerSW({ immediate: true });
+iniciarServiceWorker();
 
 // Bloquea el zoom por pellizco (iOS ignora user-scalable=no): el scroll con un dedo sigue funcionando normal.
 document.addEventListener('gesturestart', (evento) => evento.preventDefault(), { passive: false });
