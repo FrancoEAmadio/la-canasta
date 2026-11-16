@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { useApp } from '../../estado/AppProvider';
 import { borrarTodosLosDatos, crearCopiaSeguridad, interpretarCopiaSeguridad } from '../../infra/almacenamiento';
 import { descargarArchivo } from '../../infra/compartir';
+import { VERSION_APP } from '../../constantes';
+import { buscarActualizacion, limpiarYRecargar } from '../../actualizar';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
@@ -14,6 +16,19 @@ export function ModalAjustes() {
   const [aviso, setAviso] = useState<string | null>(null);
   const [confirmarBorrado, setConfirmarBorrado] = useState(false);
   const [feedbackAbierto, setFeedbackAbierto] = useState(false);
+  const [estadoActualizacion, setEstadoActualizacion] = useState<string | null>(null);
+
+  const buscarNovedades = async () => {
+    setEstadoActualizacion('Buscando…');
+    const r = await buscarActualizacion();
+    setEstadoActualizacion(
+      r === 'nueva'
+        ? 'Hay una versión nueva: se está instalando y la app se recarga sola.'
+        : r === 'actual'
+          ? 'Ya tenés la última versión.'
+          : 'No se pudo comprobar. Revisá la conexión o usá "limpiar y recargar".'
+    );
+  };
 
   const exportar = () => {
     const copia = crearCopiaSeguridad(jugadores, partida.partidas, ajustes);
@@ -82,6 +97,20 @@ export function ModalAjustes() {
               </button>
             </div>
             <input ref={archivoRef} type="file" accept="application/json,.json" className="hidden" onChange={(evento) => void importar(evento.target.files?.[0])} />
+          </section>
+
+          <section className="rounded-2xl border border-slate-200 p-3">
+            <h4 className="text-sm font-bold text-azul">Actualizaciones</h4>
+            <p className="mb-3 mt-1 text-xs leading-relaxed text-slate-500">
+              Versión {VERSION_APP}. La app busca novedades sola; si querés, podés forzarlo.
+            </p>
+            <button type="button" onClick={() => void buscarNovedades()} className="btn-claro w-full py-2.5 text-sm">
+              Buscar actualizaciones
+            </button>
+            {estadoActualizacion && <p className="mt-2 text-xs text-slate-600">{estadoActualizacion}</p>}
+            <button type="button" onClick={() => void limpiarYRecargar()} className="mt-2 w-full py-2 text-xs text-slate-500 underline">
+              Si algo se ve viejo: limpiar archivos guardados y recargar (no borra tus partidas)
+            </button>
           </section>
 
           <section className="rounded-2xl border border-slate-200 p-3">
