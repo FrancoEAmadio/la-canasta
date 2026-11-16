@@ -189,6 +189,28 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     });
   }, []);
 
+  /** Mueve a un jugador elegido (modo individual) a otra posición del orden de juego. */
+  const moverJugadorIndividual = useCallback((desde: number, hasta: number) => {
+    setConfig((actual) => {
+      const ids = [...actual.idsIndividual];
+      if (desde === hasta || desde < 0 || hasta < 0 || desde >= ids.length || hasta >= ids.length) return actual;
+      const [movido] = ids.splice(desde, 1);
+      ids.splice(hasta, 0, movido!);
+      return { ...actual, idsIndividual: ids };
+    });
+  }, []);
+
+  /** Mueve un equipo a otra posición del orden de juego. */
+  const moverEquipo = useCallback((desde: number, hasta: number) => {
+    setConfig((actual) => {
+      const equipos = [...actual.equipos];
+      if (desde === hasta || desde < 0 || hasta < 0 || desde >= equipos.length || hasta >= equipos.length) return actual;
+      const [movido] = equipos.splice(desde, 1);
+      equipos.splice(hasta, 0, movido!);
+      return { ...actual, equipos };
+    });
+  }, []);
+
   /** Mezcla a los jugadores elegidos y arma las parejas (crea los equipos que hagan falta). */
   const armarParejasAlAzar = useCallback((ids: string[]) => {
     const mezclados = [...ids];
@@ -520,6 +542,8 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     cambiarModo,
     armarParejasAlAzar,
     mezclarOrdenIndividual,
+    moverJugadorIndividual,
+    moverEquipo,
     alternarSeleccionJugador,
     borrarSeleccionJugadores,
     asignarEnEquipo,

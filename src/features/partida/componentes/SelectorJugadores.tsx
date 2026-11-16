@@ -4,11 +4,12 @@ import { nombreEquipo } from '../../../dominio/partida';
 import { useApp } from '../../../estado/AppProvider';
 import { estiloElegido, hexColorJugador } from '../../../datos/coloresJugador';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
+import { ItemOrdenable, ListaOrdenable } from '../../../ui/ListaOrdenable';
 import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
 export function SelectorIndividual() {
   const { jugadores, partida } = useApp();
-  const { config, alternarSeleccionJugador, borrarSeleccionJugadores, mezclarOrdenIndividual } = partida;
+  const { config, alternarSeleccionJugador, borrarSeleccionJugadores, mezclarOrdenIndividual, moverJugadorIndividual } = partida;
   const [abierto, setAbierto] = useState(false);
 
   const elegir = alternarSeleccionJugador;
@@ -17,22 +18,27 @@ export function SelectorIndividual() {
     <section className="tarjeta flex flex-col gap-3 p-4">
       <h3 className="text-sm font-bold uppercase tracking-wider text-azul">Jugadores ({config.idsIndividual.length})</h3>
       {config.idsIndividual.length > 0 && (
+        <ListaOrdenable ids={config.idsIndividual} onMover={moverJugadorIndividual}>
         <ol className="flex flex-col gap-2">
           {config.idsIndividual.map((id, indice) => {
             const jugador = jugadores.find((candidato) => candidato.id === id);
             if (!jugador) return null;
             return (
-              <li key={id} className="flex items-center gap-3 rounded-xl border-2 p-2 pr-3" style={estiloElegido(jugador)}>
+              <ItemOrdenable key={id} id={id} className="flex items-center gap-3 rounded-xl border-2 p-2 pr-3" style={estiloElegido(jugador)}>
                 <span className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: hexColorJugador(jugador) }}>{indice + 1}</span>
                 <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
                 <button type="button" onClick={() => elegir(id)} aria-label={`Quitar a ${jugador.nombre}`} className="h-8 w-8 rounded-lg text-lg font-bold text-slate-400 hover:bg-slate-200">
                   ×
                 </button>
-              </li>
+              </ItemOrdenable>
             );
           })}
         </ol>
+        </ListaOrdenable>
+      )}
+      {config.idsIndividual.length >= 2 && (
+        <p className="text-center text-xs font-semibold text-slate-400">Mantené apretado un jugador y arrastralo para cambiar el orden</p>
       )}
       {config.idsIndividual.length >= 2 && (
         <button type="button" onClick={mezclarOrdenIndividual} className="btn-claro py-3 text-sm">
@@ -64,7 +70,7 @@ function nombreProvisorio(integrantes: (string | undefined)[], indice: number): 
 
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
-  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos } = partida;
+  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos, moverEquipo } = partida;
   const [casillero, setCasillero] = useState<{ equipo: number; slot: number } | null>(null);
   /** Lista de quiénes juegan, mientras se eligen para armar las parejas al azar (null = cerrado). */
   const [eligiendoAzar, setEligiendoAzar] = useState<string[] | null>(null);
@@ -76,8 +82,9 @@ export function SelectorParejas() {
     <section className="tarjeta flex flex-col gap-3 p-4">
       <h3 className="text-sm font-bold uppercase tracking-wider text-azul">Equipos de {JUGADORES_POR_EQUIPO}</h3>
 
+      <ListaOrdenable ids={config.equipos.map((_, i) => `equipo-${i}`)} onMover={moverEquipo}>
       {config.equipos.map((equipo, indiceEquipo) => (
-        <div key={indiceEquipo} className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
+        <ItemOrdenable key={indiceEquipo} id={`equipo-${indiceEquipo}`} etiqueta="div" className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="min-w-0 truncate font-display text-base font-bold text-azul">
               {nombreProvisorio(
@@ -127,8 +134,12 @@ export function SelectorParejas() {
               );
             })}
           </div>
-        </div>
+        </ItemOrdenable>
       ))}
+      </ListaOrdenable>
+      {config.equipos.length >= 2 && (
+        <p className="text-center text-xs font-semibold text-slate-400">Mantené apretado un equipo y arrastralo para cambiar el orden</p>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         <button type="button" onClick={agregarEquipo} className="btn-claro py-2.5 text-xs">
