@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { JUGADORES_POR_EQUIPO, MIN_EQUIPOS } from '../../../constantes';
 import { nombreEquipo } from '../../../dominio/partida';
 import { useApp } from '../../../estado/AppProvider';
-import { estiloElegido, hexColorJugador } from '../../../datos/coloresJugador';
+import { estiloElegido, estiloElegidoSolido, hexColorJugador } from '../../../datos/coloresJugador';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
 import { ItemOrdenable, ListaOrdenable } from '../../../ui/ListaOrdenable';
 import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
@@ -111,13 +111,15 @@ export function SelectorParejas() {
               const jugador = jugadorId ? jugadores.find((candidato) => candidato.id === jugadorId) : null;
               return (
                 <ItemOrdenable key={slot} id={`casillero-${indiceEquipo}-${slot}`} etiqueta="div" fijo={!jugador}>
+                  {(arrastrando) => (
+                  <>
                   <button
                     type="button"
                     onClick={() => setCasillero({ equipo: indiceEquipo, slot })}
                     className={`flex min-h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 p-2 text-center ${
-                      jugador ? '' : 'border-dashed border-slate-300 bg-white text-slate-400'
+                      (jugador ? '' : 'border-dashed border-slate-300 bg-white text-slate-400') + (arrastrando ? ' shadow-2xl' : '')
                     }`}
-                    style={jugador ? estiloElegido(jugador) : undefined}
+                    style={jugador ? (arrastrando ? estiloElegidoSolido(jugador) : estiloElegido(jugador)) : undefined}
                   >
                     {jugador ? (
                       <>
@@ -137,6 +139,8 @@ export function SelectorParejas() {
                     >
                       ×
                     </button>
+                  )}
+                </>
                   )}
                 </ItemOrdenable>
               );

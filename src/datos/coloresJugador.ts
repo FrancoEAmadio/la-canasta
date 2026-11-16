@@ -57,6 +57,13 @@ export function fondoSuave(hex: string): string {
   return `${hex}1f`;
 }
 
+/** Igual que estiloElegido pero con fondo sólido (el tinte apoyado sobre blanco): para tarjetas levantadas al arrastrar. */
+export function estiloElegidoSolido(jugador: { id: string; color?: string }): { borderColor: string; backgroundColor: string; backgroundImage: string } {
+  const hex = hexColorJugador(jugador);
+  const tinte = fondoSuave(hex);
+  return { borderColor: hex, backgroundColor: '#ffffff', backgroundImage: `linear-gradient(${tinte}, ${tinte})` };
+}
+
 /** Colores de los integrantes de un participante (1 en individual, 2 en parejas), en orden. */
 export function coloresDelParticipante(
   participante: { jugadoresIds: string[] },
