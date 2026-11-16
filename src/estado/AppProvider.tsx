@@ -70,6 +70,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     alErrorGuardado,
   });
 
+  const { renombrarJugador } = partida;
+  /** Editar un jugador también cambia su nombre en las partidas en curso y en el historial. */
+  const editarJugador = useCallback(
+    (id: string, nombre: string, palo: Palo, color?: string) => {
+      const nombreViejo = obtenerLista().find((jugador) => jugador.id === id)?.nombre;
+      const resultado = editar(id, nombre, palo, color);
+      if (resultado === 'ok' && nombreViejo !== undefined) renombrarJugador(id, nombreViejo, nombre.trim());
+      return resultado;
+    },
+    [editar, obtenerLista, renombrarJugador]
+  );
+
   useEffect(() => {
     configurarVibracion(ajustes.vibracion);
   }, [ajustes.vibracion]);
@@ -109,7 +121,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setPantallaActual,
       jugadores,
       crearJugador: crear,
-      editarJugador: editar,
+      editarJugador,
       eliminarJugador: eliminar,
       reemplazarJugadores: reemplazarLista,
       partida,
@@ -135,7 +147,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       pantallaActual,
       jugadores,
       crear,
-      editar,
+      editarJugador,
       eliminar,
       reemplazarLista,
       partida,

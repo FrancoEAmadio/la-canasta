@@ -156,3 +156,24 @@ export function formatearFecha(iso: string): string {
     minute: '2-digit',
   });
 }
+
+/**
+ * Cambia el nombre de un jugador dentro de una partida (en curso o terminada): su lugar como participante,
+ * el nombre de su pareja ("Franco y Sol") y el orden de la mesa. Los equipos con nombre viejo ("Equipo 1") lo conservan.
+ */
+export function renombrarJugadorEnPartida(partida: Partida, jugadorId: string, nombreViejo: string, nombreNuevo: string): Partida {
+  let cambio = false;
+  const participantes = partida.participantes.map((participante) => {
+    const posicion = participante.jugadoresIds.indexOf(jugadorId);
+    if (posicion < 0) return participante;
+    cambio = true;
+    const jugadoresNombres = participante.jugadoresNombres.map((nombre, indice) => (indice === posicion ? nombreNuevo : nombre));
+    let nombre = participante.nombre;
+    if (participante.jugadoresIds.length <= 1) nombre = nombreNuevo;
+    else if (participante.nombre === nombreEquipo(participante.jugadoresNombres)) nombre = nombreEquipo(jugadoresNombres);
+    return { ...participante, nombre, jugadoresNombres };
+  });
+  if (!cambio) return partida;
+  const ordenMesa = partida.ordenMesa.map((nombre) => (nombre === nombreViejo ? nombreNuevo : nombre));
+  return { ...partida, participantes, ordenMesa };
+}
