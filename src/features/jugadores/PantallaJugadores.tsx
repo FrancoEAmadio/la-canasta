@@ -9,6 +9,8 @@ import {
 } from '../../dominio/partida';
 import { formatearPuntos } from '../../dominio/puntuacion';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
+import { hexColorJugador, idColorJugador } from '../../datos/coloresJugador';
+import { SelectorColor } from '../../ui/SelectorColor';
 import { AvatarJugador } from '../../ui/AvatarJugador';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { ModalConfirmacion } from '../../ui/ModalConfirmacion';
@@ -61,7 +63,7 @@ function VistaGestor() {
   const { jugadores, crearJugador, editarJugador, eliminarJugador, verEstadisticasJugador } = useApp();
   const [nombreNuevo, setNombreNuevo] = useState('');
   const [paloNuevo, setPaloNuevo] = useState<Palo>('picas');
-  const [edicion, setEdicion] = useState<{ id: string; nombre: string; palo: Palo } | null>(null);
+  const [edicion, setEdicion] = useState<{ id: string; nombre: string; palo: Palo; color: string } | null>(null);
   const [pendienteEliminar, setPendienteEliminar] = useState<JugadorPermanente | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,7 +79,7 @@ function VistaGestor() {
 
   const guardarEdicion = () => {
     if (!edicion) return;
-    const resultado = editarJugador(edicion.id, edicion.nombre, edicion.palo);
+    const resultado = editarJugador(edicion.id, edicion.nombre, edicion.palo, edicion.color);
     if (resultado === 'ok') {
       setEdicion(null);
       setError(null);
@@ -102,7 +104,7 @@ function VistaGestor() {
             onChange={(evento) => setNombreNuevo(evento.target.value)}
             type="text"
             maxLength={24}
-            placeholder="Nombre del jugador..."
+            placeholder="Nombre (opcional)"
             aria-label="Nombre del jugador"
             className="campo min-w-0 flex-1"
           />
@@ -139,12 +141,18 @@ function VistaGestor() {
                   </button>
                 </div>
                 <SelectorPalo valor={edicion.palo} onCambiar={(palo) => setEdicion({ ...edicion, palo })} />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Color</span>
+                <SelectorColor
+                  valor={edicion.color}
+                  onCambiar={(color) => setEdicion({ ...edicion, color })}
+                  ocupados={jugadores.filter((otro) => otro.id !== edicion.id).map((otro) => otro.color ?? '')}
+                />
                 {error && <span className="text-xs font-bold text-rojo-osc">{error}</span>}
               </>
             ) : (
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => verEstadisticasJugador(jugador)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
-                  <AvatarJugador palo={jugador.palo} />
+                  <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} />
                   <span className="min-w-0">
                     <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">
@@ -152,7 +160,7 @@ function VistaGestor() {
                     </span>
                   </span>
                 </button>
-                <button type="button" onClick={() => { setEdicion({ id: jugador.id, nombre: jugador.nombre, palo: jugador.palo }); setError(null); }} aria-label={`Editar a ${jugador.nombre}`} className="btn-claro h-10 px-3 text-xs">
+                <button type="button" onClick={() => { setEdicion({ id: jugador.id, nombre: jugador.nombre, palo: jugador.palo, color: idColorJugador(jugador) }); setError(null); }} aria-label={`Editar a ${jugador.nombre}`} className="btn-claro h-10 px-3 text-xs">
                   Editar
                 </button>
                 <button type="button" onClick={() => setPendienteEliminar(jugador)} aria-label={`Eliminar a ${jugador.nombre}`} className="btn-peligro h-10 w-10 text-base">
@@ -200,7 +208,7 @@ function VistaEstadisticas() {
       {ordenados.map((jugador, indice) => (
         <button key={jugador.id} type="button" onClick={() => verEstadisticasJugador(jugador)} className="tarjeta flex items-center gap-3 p-3.5 text-left">
           <span className="w-6 text-center font-display text-lg font-bold text-slate-400">{indice + 1}</span>
-          <AvatarJugador palo={jugador.palo} />
+          <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
             <span className="block text-[11px] font-semibold text-slate-500">

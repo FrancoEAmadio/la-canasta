@@ -63,6 +63,21 @@ export function advertenciasRonda(
     }
   }
 
+  // Olvidos típicos al cargar: nadie cerró la ronda, o alguien que no cerró no tiene nada cargado en la mano.
+  const quienCerro = participantes.find((participante) => entradas[participante.id]?.cerro);
+  if (!quienCerro) {
+    avisos.push('Nadie figura como quien cerró la ronda. Si alguien se quedó sin cartas, marcá «Cerró la ronda» en sus bonificaciones.');
+  } else {
+    for (const participante of participantes) {
+      const entrada = entradas[participante.id];
+      if (!entrada || participante.id === quienCerro.id) continue;
+      const enMano = entrada.cartasMano;
+      if (enMano.c5 + enMano.c10 + enMano.c20 + enMano.c50 + enMano.tresNegros === 0) {
+        avisos.push(`${participante.nombre} no tiene cartas cargadas en la mano. Si le quedaron cartas, sumalas en el bloque 4.`);
+      }
+    }
+  }
+
   for (const figura of FIGURAS_CANASTA) {
     const nombreFigura = figura === 'A' ? 'Ases' : figura;
     const tipos = participantes

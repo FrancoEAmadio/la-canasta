@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { JUGADORES_POR_EQUIPO, MIN_EQUIPOS } from '../../../constantes';
 import { nombreEquipo } from '../../../dominio/partida';
 import { useApp } from '../../../estado/AppProvider';
+import { estiloElegido, hexColorJugador } from '../../../datos/coloresJugador';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
 import { ModalSeleccionJugadores } from './ModalSeleccionJugadores';
 
@@ -21,9 +22,9 @@ export function SelectorIndividual() {
             const jugador = jugadores.find((candidato) => candidato.id === id);
             if (!jugador) return null;
             return (
-              <li key={id} className={`flex items-center gap-3 rounded-xl border-2 p-2 pr-3 ${indice % 2 === 1 ? 'border-rojo bg-red-50' : 'border-azul-vivo bg-blue-50'}`}>
-                <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${indice % 2 === 1 ? 'bg-rojo' : 'bg-azul-vivo'}`}>{indice + 1}</span>
-                <AvatarJugador palo={jugador.palo} tamano="sm" />
+              <li key={id} className="flex items-center gap-3 rounded-xl border-2 p-2 pr-3" style={estiloElegido(jugador)}>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white" style={{ backgroundColor: hexColorJugador(jugador) }}>{indice + 1}</span>
+                <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} tamano="sm" />
                 <span className="flex-1 truncate font-bold text-tinta">{jugador.nombre}</span>
                 <button type="button" onClick={() => elegir(id)} aria-label={`Quitar a ${jugador.nombre}`} className="h-8 w-8 rounded-lg text-lg font-bold text-slate-400 hover:bg-slate-200">
                   ×
@@ -99,16 +100,13 @@ export function SelectorParejas() {
                     type="button"
                     onClick={() => setCasillero({ equipo: indiceEquipo, slot })}
                     className={`flex min-h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 p-2 text-center ${
-                      jugador
-                        ? slot % 2 === 1
-                          ? 'border-rojo bg-red-50'
-                          : 'border-azul-vivo bg-blue-50'
-                        : 'border-dashed border-slate-300 bg-white text-slate-400'
+                      jugador ? '' : 'border-dashed border-slate-300 bg-white text-slate-400'
                     }`}
+                    style={jugador ? estiloElegido(jugador) : undefined}
                   >
                     {jugador ? (
                       <>
-                        <AvatarJugador palo={jugador.palo} tamano="sm" />
+                        <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} tamano="sm" />
                         <span className="w-full truncate text-sm font-bold text-tinta">{jugador.nombre}</span>
                       </>
                     ) : (

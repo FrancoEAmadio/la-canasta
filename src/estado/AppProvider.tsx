@@ -14,7 +14,7 @@ interface ContextoApp {
 
   jugadores: JugadorPermanente[];
   crearJugador: (nombre: string, palo?: Palo) => ResultadoCrear;
-  editarJugador: (id: string, nombre: string, palo: Palo) => 'ok' | 'vacio' | 'duplicado';
+  editarJugador: (id: string, nombre: string, palo: Palo, color?: string) => 'ok' | 'vacio' | 'duplicado';
   eliminarJugador: (id: string) => void;
   reemplazarJugadores: (lista: JugadorPermanente[]) => void;
 

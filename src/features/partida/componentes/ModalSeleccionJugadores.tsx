@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../../../estado/AppProvider';
 import { calcularPorcentajeVictorias } from '../../../dominio/estadisticas';
+import { estiloElegido, hexColorJugador } from '../../../datos/coloresJugador';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
 import { EncabezadoModal, Modal } from '../../../ui/Modal';
 import { SelectorPalo } from '../../../ui/SelectorPalo';
@@ -99,7 +100,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
               onChange={(evento) => setNombreNuevo(evento.target.value)}
               type="text"
               maxLength={24}
-              placeholder="Nombre..."
+              placeholder="Nombre (opcional)"
               aria-label="Nombre del jugador nuevo"
               className="campo min-w-0 flex-1"
             />
@@ -125,10 +126,11 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
                   aria-pressed={elegido}
                   onClick={() => tocar(jugador.id)}
                   className={`flex items-center gap-3 rounded-2xl border-2 p-3 text-left disabled:opacity-40 ${
-                    elegido ? (!unico && posicion % 2 === 1 ? 'border-rojo bg-red-50' : 'border-azul-vivo bg-blue-50') : 'border-slate-200 bg-white'
+                    elegido ? '' : 'border-slate-200 bg-white'
                   }`}
+                  style={elegido ? estiloElegido(jugador) : undefined}
                 >
-                  <AvatarJugador palo={jugador.palo} />
+                  <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">
@@ -138,7 +140,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
                     </span>
                   </span>
                   {elegido && !unico && (
-                    <span className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold text-white ${posicion % 2 === 1 ? 'bg-rojo' : 'bg-azul-vivo'}`}>
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold text-white" style={{ backgroundColor: hexColorJugador(jugador) }}>
                       {posicion + 1}
                     </span>
                   )}
