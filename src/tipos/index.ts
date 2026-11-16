@@ -164,6 +164,8 @@ export interface JugadorPermanente {
   id: string;
   nombre: string;
   palo: Palo;
+  /** Color propio (id de PALETA_JUGADOR). Los jugadores viejos no lo tienen: se calcula uno estable. */
+  color?: string;
   estadisticas: EstadisticasJugador;
   evolucion: EntradaEvolucion[];
 }

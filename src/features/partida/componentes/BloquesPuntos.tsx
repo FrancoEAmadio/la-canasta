@@ -3,7 +3,7 @@ import { CONFIG_PUNTAJE } from '../../../constantes';
 import { FIGURAS_ESTANDAR, formatearPuntos, puntosTresRojos, subtotalBloque1, subtotalBloque2, subtotalBloque3, subtotalBloque4, valorCanasta } from '../../../dominio/puntuacion';
 import { maxCartas, maxTresNegros, maxTresRojos } from '../../../dominio/validaciones';
 import { useApp } from '../../../estado/AppProvider';
-import { vibrar } from '../../../infra/vibracion';
+import { vibrar, vibrarBorrado } from '../../../infra/vibracion';
 import { ChipBono } from '../../../ui/ChipBono';
 import { CampoCantidad } from '../../../ui/CampoCantidad';
 import type { EntradaRonda, FiguraCanasta, Participante, Partida, TipoCanasta } from '../../../tipos';
@@ -33,7 +33,7 @@ function Bloque({ numero, titulo, subtotal, tono = 'azul', children }: { numero:
 function BotonLimpiar({ visible, onLimpiar, texto = 'Limpiar' }: { visible: boolean; onLimpiar: () => void; texto?: string }) {
   if (!visible) return null;
   return (
-    <button type="button" onClick={onLimpiar} className="btn-peligro mx-auto px-5 py-2.5 text-sm">
+    <button type="button" onClick={() => { vibrarBorrado(); onLimpiar(); }} className="btn-peligro mx-auto px-5 py-2.5 text-sm">
       {texto}
     </button>
   );
@@ -139,7 +139,8 @@ function FichaCanasta({ figura, tipo, puntos, etiqueta, onTocar }: { figura: str
       type="button"
       aria-label={`Canasta de ${etiqueta}: ${tipo === 'ninguna' ? 'ninguna' : tipo}`}
       onClick={() => {
-        vibrar();
+        if (tipo === 'impura') vibrarBorrado();
+        else vibrar();
         onTocar();
       }}
       className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${ESTILO_TIPO[tipo]}`}
@@ -172,7 +173,8 @@ export function BloqueCanastas({ participante, entrada }: PropsBloques) {
           aria-pressed={entrada.canastaComodines}
           aria-label="Canasta de Comodines"
           onClick={() => {
-            vibrar();
+            if (entrada.canastaComodines) vibrarBorrado();
+            else vibrar();
             estado.modificarEntrada(participante.id, (actual) => ({ ...actual, canastaComodines: !actual.canastaComodines }));
           }}
           className={`flex min-h-[4.25rem] flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-center active:scale-95 ${entrada.canastaComodines ? 'border-slate-900 bg-slate-100 text-slate-900 ring-2 ring-slate-400' : ESTILO_TIPO.ninguna}`}
@@ -260,6 +262,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
           {AYUDA_CONTEO}
         </p>
       )}
+      {!sinCartas && (
       <div className="flex flex-col gap-3">
         <FilaCantidad
           titulo="Tres Negros en mano (3♠ 3♣)"
@@ -285,6 +288,7 @@ export function BloqueCartasMano({ partida, participante, entrada }: PropsBloque
           />
         ))}
       </div>
+      )}
       <BotonLimpiar
         visible={hayCartas && !sinCartas}
         texto="Limpiar cartas de la mano"
