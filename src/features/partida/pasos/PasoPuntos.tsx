@@ -4,13 +4,12 @@ import { formatearPuntos } from '../../../dominio/puntuacion';
 import { useApp } from '../../../estado/AppProvider';
 import { vibrar } from '../../../infra/vibracion';
 import { useGestosMultiDedo } from '../../../ui/useGestosMultiDedo';
-import { coloresDelParticipante } from '../../../datos/coloresJugador';
 import { InsigniaApertura } from '../componentes/InsigniaApertura';
 import { BloqueBonificaciones, BloqueCanastas, BloqueCartasMano, BloqueCartasMesa } from '../componentes/BloquesPuntos';
 import type { PropsPaso } from './tiposPaso';
 
 export function PasoPuntos({ partida, vista }: PropsPaso) {
-  const { partida: estado, abrirPodio, jugadores } = useApp();
+  const { partida: estado, abrirPodio } = useApp();
   const { borrador, participantes } = partida;
   const indice = Math.min(borrador.seleccionIdx, participantes.length - 1);
   const participante = participantes[indice]!;
@@ -96,12 +95,7 @@ export function PasoPuntos({ partida, vista }: PropsPaso) {
                     onClick={() => irA(posicion)}
                     className={`selector-jugador ${activo ? 'text-azul' : 'text-white/80 active:bg-white/10'}`}
                   >
-                    <span className="flex w-full min-w-0 items-center justify-center gap-1">
-                      {coloresDelParticipante(candidato, jugadores).map((color, posicionColor) => (
-                        <span key={posicionColor} aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full ring-1 ring-white/60" style={{ backgroundColor: color }} />
-                      ))}
-                      <span className="selector-jugador-nombre !w-auto min-w-0 text-xs font-bold">{candidato.nombre}</span>
-                    </span>
+                    <span className="selector-jugador-nombre text-xs font-bold">{candidato.nombre}</span>
                     <span className={`selector-jugador-total text-[11px] font-bold tabular-nums ${activo ? (total < 0 ? 'text-rojo-osc' : 'text-azul-vivo') : 'opacity-75'}`}>
                       {formatearPuntos(total, true)}
                     </span>
