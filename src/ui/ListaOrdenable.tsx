@@ -74,6 +74,10 @@ export function ItemOrdenable({ id, className = '', etiqueta: Etiqueta = 'li', s
     position: 'relative',
     zIndex: isDragging ? 20 : undefined,
     boxShadow: isDragging ? '0 12px 28px rgba(0,0,0,0.35)' : undefined,
+    // Al levantarla, el fondo suave (con transparencia) se apoya sobre blanco para que la tarjeta no se vea translúcida.
+    ...(isDragging && typeof style?.backgroundColor === 'string'
+      ? { backgroundImage: `linear-gradient(${style.backgroundColor}, ${style.backgroundColor})`, backgroundColor: '#ffffff' }
+      : {}),
     userSelect: 'none',
     WebkitTouchCallout: 'none',
   };
