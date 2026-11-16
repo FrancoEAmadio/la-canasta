@@ -94,5 +94,5 @@ export const CLAVE_LS_PARTIDAS_FINALIZADAS = 'lacanasta_partidas_finalizadas';
 export const CLAVE_LS_AJUSTES = 'lacanasta_ajustes';
 export const CLAVE_LS_VERSION = 'lacanasta_version';
 
-export const VERSION_APP = '1.3.0';
+export const VERSION_APP = '1.3.1';
 export const TEXTO_FOOTER = 'Desarrollado por Franco Ezequiel Amadio';

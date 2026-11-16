@@ -119,6 +119,13 @@ export function BloqueBonificaciones({ partida, participante, entrada }: PropsBl
           onBorrar={() => cambiarRojos(0)}
         />
       </div>
+      <BotonLimpiar
+        visible={entrada.cerro || entrada.corteExacto || entrada.espejito || entrada.tresRojos > 0}
+        texto="Limpiar bonificaciones"
+        onLimpiar={() =>
+          estado.modificarEntrada(participante.id, (actual) => ({ ...actual, cerro: false, corteExacto: false, espejito: false, tresRojos: 0 }))
+        }
+      />
     </Bloque>
   );
 }
