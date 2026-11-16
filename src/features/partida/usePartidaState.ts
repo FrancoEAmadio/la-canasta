@@ -19,6 +19,7 @@ import {
   ordenarPartidas,
   quienMezclaYReparte,
   recortarPartidas,
+  renombrarJugadorEnPartida,
   totalesHastaRonda,
 } from '../../dominio/partida';
 import { aplicarPartidaFinalizada } from '../../dominio/estadisticas';
@@ -130,6 +131,17 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
           partida.id === id ? { ...transformar(partida), actualizada: new Date().toISOString() } : partida
         )
       );
+    },
+    [guardarEstado]
+  );
+
+  /** Al editar el nombre de un jugador, se actualiza en todas sus partidas (en curso y del historial). */
+  const renombrarJugador = useCallback(
+    (jugadorId: string, nombreViejo: string, nombreNuevo: string) => {
+      if (nombreViejo === nombreNuevo) return;
+      const actuales = partidasRef.current;
+      const nuevas = actuales.map((partida) => renombrarJugadorEnPartida(partida, jugadorId, nombreViejo, nombreNuevo));
+      if (nuevas.some((partida, indice) => partida !== actuales[indice])) guardarEstado(nuevas);
     },
     [guardarEstado]
   );
@@ -504,6 +516,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
 
     config,
     actualizarConfig,
+    renombrarJugador,
     cambiarModo,
     armarParejasAlAzar,
     mezclarOrdenIndividual,
