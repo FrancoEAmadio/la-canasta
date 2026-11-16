@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import { iniciarServiceWorker } from './actualizar';
+import { iniciarServiceWorker, limpiarYRecargar } from './actualizar';
+import { PantallaError } from './PantallaError';
 import './estilos/index.css';
 
 // Registra el service worker: la app queda instalable y funciona sin conexión.
@@ -26,11 +27,24 @@ document.addEventListener('contextmenu', (evento) => {
 });
 document.addEventListener('dragstart', (evento) => evento.preventDefault());
 
+// Si después de una actualización falta un archivo viejo, se limpia todo y se recarga una sola vez.
+window.addEventListener('vite:preloadError', () => {
+  try {
+    if (sessionStorage.getItem('recarga-por-error')) return;
+    sessionStorage.setItem('recarga-por-error', '1');
+  } catch {
+    /* sin sessionStorage: se recarga igual */
+  }
+  void limpiarYRecargar();
+});
+
 const contenedor = document.getElementById('root');
 if (!contenedor) throw new Error('No se encontró el contenedor #root');
 
 createRoot(contenedor).render(
   <StrictMode>
-    <App />
+    <PantallaError>
+      <App />
+    </PantallaError>
   </StrictMode>
 );
