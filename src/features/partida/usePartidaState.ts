@@ -200,13 +200,15 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     });
   }, []);
 
-  /** Mueve un equipo a otra posición del orden de juego. */
-  const moverEquipo = useCallback((desde: number, hasta: number) => {
+  /** Intercambia dos casilleros de las parejas (jugador con jugador, o jugador con un casillero vacío). */
+  const intercambiarCasilleros = useCallback((a: { equipo: number; slot: number }, b: { equipo: number; slot: number }) => {
     setConfig((actual) => {
-      const equipos = [...actual.equipos];
-      if (desde === hasta || desde < 0 || hasta < 0 || desde >= equipos.length || hasta >= equipos.length) return actual;
-      const [movido] = equipos.splice(desde, 1);
-      equipos.splice(hasta, 0, movido!);
+      const equipos = actual.equipos.map((equipo) => [...equipo]);
+      const idA = equipos[a.equipo]?.[a.slot];
+      const idB = equipos[b.equipo]?.[b.slot];
+      if (idA === undefined || idB === undefined || (a.equipo === b.equipo && a.slot === b.slot)) return actual;
+      equipos[a.equipo]![a.slot] = idB;
+      equipos[b.equipo]![b.slot] = idA;
       return { ...actual, equipos };
     });
   }, []);
@@ -543,7 +545,7 @@ export function usePartidaState({ setPantallaActual, obtenerJugadores, reemplaza
     armarParejasAlAzar,
     mezclarOrdenIndividual,
     moverJugadorIndividual,
-    moverEquipo,
+    intercambiarCasilleros,
     alternarSeleccionJugador,
     borrarSeleccionJugadores,
     asignarEnEquipo,

@@ -10,7 +10,7 @@ import {
   type DragEndEvent,
   type Modifier,
 } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { vibrar } from '../infra/vibracion';
 
@@ -21,11 +21,13 @@ interface PropsLista {
   ids: string[];
   /** Se llama al soltar una tarjeta en otro lugar: índice de origen y de destino. */
   onMover: (desde: number, hasta: number) => void;
+  /** En vez de correr la lista, el elemento soltado intercambia su lugar con el otro (casilleros sueltos en varios grupos). */
+  intercambio?: boolean;
   children: ReactNode;
 }
 
 /** Lista que se reordena manteniendo apretado un elemento y arrastrándolo (el scroll normal sigue andando). */
-export function ListaOrdenable({ ids, onMover, children }: PropsLista) {
+export function ListaOrdenable({ ids, onMover, intercambio = false, children }: PropsLista) {
   const sensores = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 220, tolerance: 8 } }),
@@ -43,11 +45,11 @@ export function ListaOrdenable({ ids, onMover, children }: PropsLista) {
     <DndContext
       sensors={sensores}
       collisionDetection={closestCenter}
-      modifiers={[soloVertical]}
+      modifiers={intercambio ? undefined : [soloVertical]}
       onDragStart={() => vibrar()}
       onDragEnd={alSoltar}
     >
-      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+      <SortableContext items={ids} strategy={intercambio ? rectSwappingStrategy : verticalListSortingStrategy}>
         {children}
       </SortableContext>
     </DndContext>
@@ -59,13 +61,15 @@ interface PropsItem {
   className?: string;
   /** Etiqueta HTML del elemento (por defecto, elemento de lista). */
   etiqueta?: 'li' | 'div';
+  /** Si es true, no se puede levantar (pero sí soltar otro encima). */
+  fijo?: boolean;
   style?: CSSProperties;
   children: ReactNode;
 }
 
 /** Elemento de la lista: al levantarlo se agranda y proyecta sombra. */
-export function ItemOrdenable({ id, className = '', etiqueta: Etiqueta = 'li', style, children }: PropsItem) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+export function ItemOrdenable({ id, className = '', etiqueta: Etiqueta = 'li', fijo = false, style, children }: PropsItem) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled: fijo ? { draggable: true } : undefined });
   const estilo: CSSProperties = {
     ...style,
     transform: CSS.Transform.toString(transform ? { ...transform, scaleX: isDragging ? 1.04 : 1, scaleY: isDragging ? 1.04 : 1 } : null),

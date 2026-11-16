@@ -70,11 +70,19 @@ function nombreProvisorio(integrantes: (string | undefined)[], indice: number): 
 
 export function SelectorParejas() {
   const { jugadores, partida } = useApp();
-  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos, moverEquipo } = partida;
+  const { config, asignarEnEquipo, agregarEquipo, quitarEquipo, armarParejasAlAzar, mezclarEquipos, intercambiarCasilleros } = partida;
   const [casillero, setCasillero] = useState<{ equipo: number; slot: number } | null>(null);
   /** Lista de quiénes juegan, mientras se eligen para armar las parejas al azar (null = cerrado). */
   const [eligiendoAzar, setEligiendoAzar] = useState<string[] | null>(null);
 
+  const idsCasilleros = config.equipos.flatMap((equipo, e) => equipo.map((_, s) => `casillero-${e}-${s}`));
+  const moverCasillero = (desde: number, hasta: number) => {
+    const aCasillero = (indice: number) => {
+      const [, e, s] = idsCasilleros[indice]!.split('-');
+      return { equipo: Number(e), slot: Number(s) };
+    };
+    intercambiarCasilleros(aCasillero(desde), aCasillero(hasta));
+  };
   const asignados = config.equipos.flat().filter((id): id is string => id !== null);
   const ocupanteActual = casillero ? config.equipos[casillero.equipo]?.[casillero.slot] ?? null : null;
 
@@ -82,9 +90,9 @@ export function SelectorParejas() {
     <section className="tarjeta flex flex-col gap-3 p-4">
       <h3 className="text-sm font-bold uppercase tracking-wider text-azul">Equipos de {JUGADORES_POR_EQUIPO}</h3>
 
-      <ListaOrdenable ids={config.equipos.map((_, i) => `equipo-${i}`)} onMover={moverEquipo}>
+      <ListaOrdenable ids={idsCasilleros} onMover={moverCasillero} intercambio>
       {config.equipos.map((equipo, indiceEquipo) => (
-        <ItemOrdenable key={indiceEquipo} id={`equipo-${indiceEquipo}`} etiqueta="div" className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
+        <div key={indiceEquipo} className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="min-w-0 truncate font-display text-base font-bold text-azul">
               {nombreProvisorio(
@@ -102,7 +110,7 @@ export function SelectorParejas() {
             {equipo.map((jugadorId, slot) => {
               const jugador = jugadorId ? jugadores.find((candidato) => candidato.id === jugadorId) : null;
               return (
-                <div key={slot} className="relative">
+                <ItemOrdenable key={slot} id={`casillero-${indiceEquipo}-${slot}`} etiqueta="div" fijo={!jugador}>
                   <button
                     type="button"
                     onClick={() => setCasillero({ equipo: indiceEquipo, slot })}
@@ -130,15 +138,15 @@ export function SelectorParejas() {
                       ×
                     </button>
                   )}
-                </div>
+                </ItemOrdenable>
               );
             })}
           </div>
-        </ItemOrdenable>
+        </div>
       ))}
       </ListaOrdenable>
-      {config.equipos.length >= 2 && (
-        <p className="text-center text-xs font-semibold text-slate-400">Mantené apretado un equipo y arrastralo para cambiar el orden</p>
+      {asignados.length >= 2 && (
+        <p className="text-center text-xs font-semibold text-slate-400">Mantené apretado un jugador y soltalo sobre otro lugar para intercambiarlos</p>
       )}
 
       <div className="grid grid-cols-2 gap-2">
