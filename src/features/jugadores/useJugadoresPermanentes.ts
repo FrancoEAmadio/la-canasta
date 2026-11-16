@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { PALOS, crearJugadorPermanente } from '../../dominio/estadisticas';
 import { cargarJugadores, guardarJugadores } from '../../infra/almacenamiento';
+import { colorLibre } from '../../datos/coloresJugador';
 import type { JugadorPermanente, Palo } from '../../tipos';
 
 export type ResultadoCrear =
@@ -27,13 +28,18 @@ export function useJugadoresPermanentes(alErrorGuardado: () => void) {
 
   const crear = useCallback(
     (nombre: string, palo?: Palo): ResultadoCrear => {
-      const limpio = nombre.trim();
-      if (!limpio) return { ok: false, motivo: 'vacio' };
+      let limpio = nombre.trim();
+      // Sin nombre: perfil automático "Jugador 1", "Jugador 2"… (el primer número libre).
+      if (!limpio) {
+        let numero = 1;
+        while (listaRef.current.some((jugador) => normalizar(jugador.nombre) === normalizar(`Jugador ${numero}`))) numero += 1;
+        limpio = `Jugador ${numero}`;
+      }
       if (listaRef.current.some((jugador) => normalizar(jugador.nombre) === normalizar(limpio))) {
         return { ok: false, motivo: 'duplicado' };
       }
       const paloElegido = palo ?? PALOS[listaRef.current.length % PALOS.length]!;
-      const nuevo = crearJugadorPermanente(limpio, paloElegido);
+      const nuevo = { ...crearJugadorPermanente(limpio, paloElegido), color: colorLibre(listaRef.current.map((jugador) => jugador.color)) };
       persistir([...listaRef.current, nuevo]);
       return { ok: true, jugador: nuevo };
     },
@@ -41,13 +47,13 @@ export function useJugadoresPermanentes(alErrorGuardado: () => void) {
   );
 
   const editar = useCallback(
-    (id: string, nombre: string, palo: Palo): 'ok' | 'vacio' | 'duplicado' => {
+    (id: string, nombre: string, palo: Palo, color?: string): 'ok' | 'vacio' | 'duplicado' => {
       const limpio = nombre.trim();
       if (!limpio) return 'vacio';
       if (listaRef.current.some((jugador) => jugador.id !== id && normalizar(jugador.nombre) === normalizar(limpio))) {
         return 'duplicado';
       }
-      persistir(listaRef.current.map((jugador) => (jugador.id === id ? { ...jugador, nombre: limpio, palo } : jugador)));
+      persistir(listaRef.current.map((jugador) => (jugador.id === id ? { ...jugador, nombre: limpio, palo, ...(color ? { color } : {}) } : jugador)));
       return 'ok';
     },
     [persistir]

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../../../estado/AppProvider';
 import { calcularPorcentajeVictorias } from '../../../dominio/estadisticas';
+import { hexColorJugador } from '../../../datos/coloresJugador';
 import { AvatarJugador } from '../../../ui/AvatarJugador';
 import { EncabezadoModal, Modal } from '../../../ui/Modal';
 import { SelectorPalo } from '../../../ui/SelectorPalo';
@@ -99,7 +100,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
               onChange={(evento) => setNombreNuevo(evento.target.value)}
               type="text"
               maxLength={24}
-              placeholder="Nombre..."
+              placeholder="Nombre (opcional)"
               aria-label="Nombre del jugador nuevo"
               className="campo min-w-0 flex-1"
             />
@@ -128,7 +129,7 @@ export function ModalSeleccionJugadores({ abierto, onCerrar, titulo, seleccionad
                     elegido ? (!unico && posicion % 2 === 1 ? 'border-rojo bg-red-50' : 'border-azul-vivo bg-blue-50') : 'border-slate-200 bg-white'
                   }`}
                 >
-                  <AvatarJugador palo={jugador.palo} />
+                  <AvatarJugador palo={jugador.palo} color={hexColorJugador(jugador)} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-base font-bold text-tinta">{jugador.nombre}</span>
                     <span className="block text-[11px] font-semibold text-slate-500">

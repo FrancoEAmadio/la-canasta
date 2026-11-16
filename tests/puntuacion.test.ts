@@ -165,6 +165,7 @@ test('advertencias: cierre sin canasta y canastas imposibles', () => {
   const participantes = jugadores('Ana', 'Beto');
   const entradas = { Ana: crearEntradaVacia(), Beto: crearEntradaVacia() };
   entradas.Ana.cerro = true;
+  entradas.Beto.cartasMano.c5 = 3;
   assert.equal(advertenciasRonda(participantes, entradas, 2).length, 1);
   entradas.Ana.canastas['8'] = 'pura';
   entradas.Beto.canastas['8'] = 'impura';
@@ -230,10 +231,26 @@ test('advertencias de canastas se adaptan a la cantidad de mazos', () => {
   const entradas = { Ana: crearEntradaVacia(), Beto: crearEntradaVacia() };
   entradas.Ana.canastas['8'] = 'pura';
   entradas.Beto.canastas['8'] = 'pura';
+  entradas.Ana.cerro = true;
+  entradas.Beto.cartasMano.c10 = 2;
   assert.equal(advertenciasRonda(participantes, entradas, 2).length, 1); // 14 naturales > 8
   assert.equal(advertenciasRonda(participantes, entradas, 4).length, 0); // 14 ≤ 16
   entradas.Ana.canastaComodines = true;
   entradas.Beto.canastaComodines = true;
   assert.equal(advertenciasRonda(participantes, entradas, 2).length, 2); // 14 > 12
   assert.equal(advertenciasRonda(participantes, entradas, 4).length, 0); // 14 ≤ 24
+});
+
+test('advertencias de olvidos: nadie cerró o alguien sin cartas en la mano', () => {
+  const participantes = jugadores('Ana', 'Beto', 'Caro');
+  const entradas = { Ana: crearEntradaVacia(), Beto: crearEntradaVacia(), Caro: crearEntradaVacia() };
+  entradas.Ana.canastas['8'] = 'pura';
+  const sinCierre = advertenciasRonda(participantes, entradas, 4);
+  assert.equal(sinCierre.length, 1);
+  assert.match(sinCierre[0]!, /Nadie figura como quien cerró/);
+  entradas.Ana.cerro = true;
+  entradas.Beto.cartasMano.c5 = 4;
+  const sinMano = advertenciasRonda(participantes, entradas, 4);
+  assert.equal(sinMano.length, 1);
+  assert.match(sinMano[0]!, /^Caro no tiene cartas cargadas/);
 });

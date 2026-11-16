@@ -1,4 +1,4 @@
-import { vibrar } from '../infra/vibracion';
+import { vibrar, vibrarBorrado } from '../infra/vibracion';
 
 export type TonoChip = 'azul' | 'rojo' | 'verde' | 'amarillo';
 
@@ -53,9 +53,13 @@ export function ChipBono({ titulo, puntos, cantidad, maximo, tono = 'azul', avis
       aria-label={`${titulo}${maximo > 1 ? `: ${cantidad} de ${maximo}` : ''}`}
       disabled={bloqueado}
       onClick={() => {
-        vibrar();
-        if (cantidad >= maximo) onBorrar();
-        else onMas();
+        if (cantidad >= maximo) {
+          vibrarBorrado();
+          onBorrar();
+        } else {
+          vibrar();
+          onMas();
+        }
       }}
       className={`relative flex min-h-[4.25rem] w-full flex-col items-center justify-center gap-0.5 rounded-xl border-2 px-2 py-2 text-center disabled:opacity-35 ${
         activo ? clases.activo : clases.reposo

@@ -4,6 +4,8 @@ export interface SerieGrafico {
   nombre: string;
   /** Puntaje acumulado: posición 0 = antes de la primera ronda. */
   puntos: number[];
+  /** Color propio del jugador; si falta o se repite con otra serie, se usa la paleta del gráfico. */
+  color?: string;
 }
 
 const COLORES = ['#1d4ed8', '#dc2626', '#059669', '#d97706', '#7c3aed', '#0891b2'];
@@ -17,6 +19,10 @@ const MARGEN = { izq: 38, der: 10, arr: 10, aba: 22 };
  */
 export function GraficoEvolucion({ series }: { series: SerieGrafico[] }) {
   const [apagadas, setApagadas] = useState<ReadonlySet<number>>(new Set());
+
+  const propios = series.map((serie) => serie.color);
+  const usarPropios = propios.every(Boolean) && new Set(propios).size === series.length;
+  const colorSerie = (indice: number) => (usarPropios ? propios[indice]! : COLORES[indice % COLORES.length]!);
 
   const cantidadPuntos = Math.max(...series.map((serie) => serie.puntos.length), 0);
   if (cantidadPuntos < 2) return null;
@@ -67,7 +73,7 @@ export function GraficoEvolucion({ series }: { series: SerieGrafico[] }) {
         ))}
         {series.map((serie, indiceSerie) => {
           if (!mostrar(indiceSerie)) return null;
-          const color = COLORES[indiceSerie % COLORES.length]!;
+          const color = colorSerie(indiceSerie);
           const puntos = serie.puntos.map((valor, indice) => `${x(indice).toFixed(1)},${y(valor).toFixed(1)}`).join(' ');
           const ultimo = serie.puntos.length - 1;
           return (
@@ -81,7 +87,7 @@ export function GraficoEvolucion({ series }: { series: SerieGrafico[] }) {
       <figcaption className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Mostrar u ocultar jugadores">
         {series.map((serie, indice) => {
           const encendida = mostrar(indice);
-          const color = COLORES[indice % COLORES.length]!;
+          const color = colorSerie(indice);
           const ultimaEncendida = encendida && cantidadVisibles <= 1;
           return (
             <button
