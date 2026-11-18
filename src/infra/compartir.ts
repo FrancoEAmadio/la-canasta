@@ -43,8 +43,8 @@ export async function compartirTexto(titulo: string, texto: string): Promise<Res
   }
 }
 
-export function descargarArchivo(nombre: string, contenido: string, tipo = 'application/json'): void {
-  const blob = new Blob([contenido], { type: tipo });
+export function descargarArchivo(nombre: string, contenido: Blob | string, tipo = 'application/json'): void {
+  const blob = typeof contenido === "string" ? new Blob([contenido], { type: tipo }) : contenido;
   const url = URL.createObjectURL(blob);
   const enlace = document.createElement('a');
   enlace.href = url;

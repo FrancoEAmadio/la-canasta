@@ -1,11 +1,12 @@
 /** Datos viejos o rotos: lo guardado por versiones anteriores (o a medias) nunca debe dejar la app en blanco. */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { cargarAjustes, cargarJugadores, cargarPartidas, interpretarCopiaSeguridad } from './almacenamiento';
-import { CLAVE_LS_AJUSTES, CLAVE_LS_JUGADORES, CLAVE_LS_PARTIDAS_EN_CURSO, CLAVE_LS_PARTIDAS_FINALIZADAS } from '../constantes';
+import assert from 'node:assert/strict';
+import { beforeEach, describe, it } from 'node:test';
+import { cargarAjustes, cargarJugadores, cargarPartidas, interpretarCopiaSeguridad } from '../src/infra/almacenamiento.ts';
+import { CLAVE_LS_AJUSTES, CLAVE_LS_JUGADORES, CLAVE_LS_PARTIDAS_EN_CURSO, CLAVE_LS_PARTIDAS_FINALIZADAS } from '../src/constantes.ts';
 
 function instalarLocalStorage(datos: Record<string, string>) {
   const almacen = new Map(Object.entries(datos));
-  vi.stubGlobal('localStorage', {
+  (globalThis as { localStorage?: unknown }).localStorage = ({
     getItem: (k: string) => almacen.get(k) ?? null,
     setItem: (k: string, v: string) => void almacen.set(k, String(v)),
     removeItem: (k: string) => void almacen.delete(k),
@@ -50,9 +51,9 @@ describe('datos viejos o rotos en localStorage', () => {
       [CLAVE_LS_PARTIDAS_FINALIZADAS]: 'undefined',
       [CLAVE_LS_AJUSTES]: '[[[',
     });
-    expect(cargarJugadores()).toEqual([]);
-    expect(cargarPartidas()).toEqual([]);
-    expect(() => cargarAjustes()).not.toThrow();
+    assert.deepEqual(cargarJugadores(), []);
+    assert.deepEqual(cargarPartidas(), []);
+    assert.doesNotThrow(() => cargarAjustes());
   });
 
   it('miles de combinaciones de datos raros nunca rompen la carga', () => {
@@ -65,11 +66,11 @@ describe('datos viejos o rotos en localStorage', () => {
         [CLAVE_LS_AJUSTES]: JSON.stringify(valorRaro(azar)),
       });
       const contexto = `iteración ${i}`;
-      expect(() => cargarJugadores(), contexto).not.toThrow();
-      expect(() => cargarPartidas(), contexto).not.toThrow();
-      expect(() => cargarAjustes(), contexto).not.toThrow();
-      expect(Array.isArray(cargarJugadores()), contexto).toBe(true);
-      expect(Array.isArray(cargarPartidas()), contexto).toBe(true);
+      assert.doesNotThrow(() => cargarJugadores(), contexto);
+      assert.doesNotThrow(() => cargarPartidas(), contexto);
+      assert.doesNotThrow(() => cargarAjustes(), contexto);
+      assert.ok(Array.isArray(cargarJugadores()), contexto);
+      assert.ok(Array.isArray(cargarPartidas()), contexto);
     }
   });
 
@@ -77,7 +78,7 @@ describe('datos viejos o rotos en localStorage', () => {
     const azar = crearAzar(22);
     for (let i = 0; i < 3000; i++) {
       const texto = azar() < 0.2 ? 'no json' : JSON.stringify({ app: 'la-canasta', version: 1, jugadores: valorRaro(azar), partidas: valorRaro(azar), ajustes: valorRaro(azar) });
-      expect(() => interpretarCopiaSeguridad(texto), `iteración ${i}: ${texto.slice(0, 120)}`).not.toThrow();
+      assert.doesNotThrow(() => interpretarCopiaSeguridad(texto), `iteración ${i}: ${texto.slice(0, 120)}`);
     }
   });
 });
