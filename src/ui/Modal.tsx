@@ -1,5 +1,6 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { useBloqueoScroll } from './useBloqueoScroll';
 
 interface Props {
   abierto: boolean;
@@ -23,6 +24,7 @@ export function Modal({
   etiqueta,
   desenfocarFondo = true,
 }: Props) {
+  useBloqueoScroll(abierto);
   if (!abierto) return null;
 
   const alTocarFondo = (evento: MouseEvent<HTMLDivElement>) => {

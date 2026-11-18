@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { TEXTO_FOOTER, VERSION_APP } from './constantes';
 import { AppProvider, useApp } from './estado/AppProvider';
 import { ModalAjustes } from './features/ajustes/ModalAjustes';
@@ -17,8 +18,23 @@ function ContenidoApp() {
 
   useWakeLock(ajustes.mantenerPantallaEncendida && pantallaActual === 'partida');
 
+  const enInicio = pantallaActual === 'inicio';
+  // En el inicio la página no se desplaza: solo scrollea (dentro del contenedor fijo) si el contenido no entra en la pantalla.
+  useEffect(() => {
+    if (!enInicio) return;
+    const { documentElement: html, body } = document;
+    const anterior = [html.style.overflow, body.style.overflow];
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    return () => {
+      html.style.overflow = anterior[0]!;
+      body.style.overflow = anterior[1]!;
+    };
+  }, [enInicio]);
+
   return (
-    <div className="contenedor-app mx-auto flex min-h-dvh w-full max-w-md flex-col justify-between md:max-w-2xl">
+    <div className={enInicio ? 'fixed inset-0 overflow-y-auto overscroll-none' : undefined}>
+    <div className={`contenedor-app mx-auto flex ${enInicio ? 'min-h-full' : 'min-h-dvh'} w-full max-w-md flex-col justify-between md:max-w-2xl`}>
       <header className="sr-only">
         <h1>La Canasta — Anotador de puntos</h1>
       </header>
@@ -48,6 +64,7 @@ function ContenidoApp() {
       <ModalEstadisticasJugador />
       <ModalMenuPartida />
       <ModalAjustes />
+    </div>
     </div>
   );
 }

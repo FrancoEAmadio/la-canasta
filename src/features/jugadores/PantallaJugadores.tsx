@@ -9,6 +9,8 @@ import {
 } from '../../dominio/partida';
 import { formatearPuntos } from '../../dominio/puntuacion';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
+import { compartirTarjetaResultado } from '../../infra/tarjetaResultado';
+import { construirSeries } from '../../ui/EvolucionPartida';
 import { hexColorJugador, idColorJugador } from '../../datos/coloresJugador';
 import { SelectorColor } from '../../ui/SelectorColor';
 import { AvatarJugador } from '../../ui/AvatarJugador';
@@ -228,7 +230,8 @@ function VistaEstadisticas() {
 
 // ───────────────────────── Historial ─────────────────────────
 function VistaHistorial() {
-  const { partida, abrirPodio, verAuditoria } = useApp();
+  const { partida, abrirPodio, verAuditoria, jugadores } = useApp();
+  const [generandoId, setGenerandoId] = useState<string | null>(null);
   const [aEliminar, setAEliminar] = useState<Partida | null>(null);
   const [confirmarBorrado, setConfirmarBorrado] = useState(false);
   const [avisoCompartir, setAvisoCompartir] = useState<string | null>(null);
@@ -237,9 +240,16 @@ function VistaHistorial() {
   const hayFinalizadas = lista.some((item) => item.estado === 'finalizada');
 
   const compartir = async (item: Partida) => {
-    const resultado = await compartirTexto('La Canasta', textoResultado(item));
-    if (resultado === 'copiado') setAvisoCompartir('Resultado copiado al portapapeles.');
-    if (resultado === 'error') setAvisoCompartir('No se pudo compartir en este dispositivo.');
+    setGenerandoId(item.id);
+    const resultado = await compartirTarjetaResultado(item, construirSeries(item, jugadores));
+    setGenerandoId(null);
+    if (resultado === 'descargado') setAvisoCompartir('La imagen se descargó en tu dispositivo.');
+    if (resultado === 'error') {
+      // Si no se pudo armar la imagen, se comparte el texto.
+      const texto = await compartirTexto('La Canasta', textoResultado(item));
+      if (texto === 'copiado') setAvisoCompartir('Resultado copiado al portapapeles.');
+      if (texto === 'error') setAvisoCompartir('No se pudo compartir en este dispositivo.');
+    }
   };
 
   return (
@@ -318,8 +328,8 @@ function VistaHistorial() {
                     <button type="button" onClick={() => abrirPodio(item.id)} className="btn-primario py-2.5 text-sm">
                       Ver podio
                     </button>
-                    <button type="button" onClick={() => void compartir(item)} className="btn-claro py-2.5 text-sm">
-                      Compartir
+                    <button type="button" disabled={generandoId === item.id} onClick={() => void compartir(item)} className="btn-claro py-2.5 text-sm">
+                      {generandoId === item.id ? 'Armando…' : 'Compartir'}
                     </button>
                     <button type="button" onClick={() => setAEliminar(item)} className="btn-peligro col-span-2 py-2.5 text-sm">
                       Eliminar del historial

@@ -4,7 +4,8 @@ import { coloresDelParticipante } from '../../datos/coloresJugador';
 import { calcularRanking, subtituloParticipante } from '../../dominio/partida';
 import { formatearPuntos } from '../../dominio/puntuacion';
 import { compartirTexto, textoResultado } from '../../infra/compartir';
-import { EvolucionPartida } from '../../ui/EvolucionPartida';
+import { compartirTarjetaResultado } from '../../infra/tarjetaResultado';
+import { EvolucionPartida, construirSeries } from '../../ui/EvolucionPartida';
 import { EncabezadoModal, Modal } from '../../ui/Modal';
 import { ModalAviso } from '../../ui/ModalAviso';
 import { HistorialRondas } from './HistorialRondas';
@@ -12,6 +13,7 @@ import { HistorialRondas } from './HistorialRondas';
 export function ModalPodio() {
   const { podioPartidaId, cerrarPodio, partida: estado, verAuditoria, jugadores } = useApp();
   const [aviso, setAviso] = useState<string | null>(null);
+  const [generando, setGenerando] = useState(false);
   const partida = estado.partidas.find((candidata) => candidata.id === podioPartidaId) ?? null;
 
   if (!partida) return null;
@@ -24,6 +26,14 @@ export function ModalPodio() {
     const resultado = await compartirTexto('La Canasta', textoResultado(partida));
     if (resultado === 'copiado') setAviso('Resultado copiado al portapapeles.');
     if (resultado === 'error') setAviso('No se pudo compartir en este dispositivo.');
+  };
+
+  const compartirImagen = async () => {
+    setGenerando(true);
+    const resultado = await compartirTarjetaResultado(partida, construirSeries(partida, jugadores));
+    setGenerando(false);
+    if (resultado === 'descargado') setAviso('La imagen se descargó en tu dispositivo.');
+    if (resultado === 'error') setAviso('No se pudo armar la imagen en este dispositivo.');
   };
 
   return (
@@ -93,9 +103,14 @@ export function ModalPodio() {
         </div>
 
         <div className="grid gap-2 border-t border-slate-200 p-4">
-          <button type="button" onClick={() => void compartir()} className="btn-claro py-3 text-sm">
-            Compartir resultado
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" disabled={generando} onClick={() => void compartirImagen()} className="btn-claro py-3 text-sm">
+              {generando ? 'Armando…' : 'Compartir imagen'}
+            </button>
+            <button type="button" onClick={() => void compartir()} className="btn-claro py-3 text-sm">
+              Compartir texto
+            </button>
+          </div>
           <button type="button" onClick={cerrarPodio} className="btn-primario py-3.5 text-base">
             {finalizada ? 'Finalizar y guardar' : '← Volver'}
           </button>
